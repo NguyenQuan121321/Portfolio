@@ -3,7 +3,6 @@ import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FinnApiGoSection } from './components/FinnApiGoSection';
-import { VovinamSection } from './components/VovinamSection';
 import { Skills } from './components/Skills';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
@@ -17,7 +16,6 @@ export const App: React.FC = () => {
         <main>
           <Hero />
           <FinnApiGoSection />
-          <VovinamSection />
           <Skills />
           <About />
           <Contact />

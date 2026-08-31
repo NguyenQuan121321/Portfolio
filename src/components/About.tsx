@@ -1,9 +1,9 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
-  Quotes, 
   CheckCircle, 
-  TrendUp
+  TrendUp, 
+  UserCheck
 } from '@phosphor-icons/react';
 
 export const About: React.FC = () => {
@@ -13,30 +13,26 @@ export const About: React.FC = () => {
   const growth = [1, 2, 3, 4].map(num => t(`about.growth_${num}`));
 
   return (
-    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border-subtle/80 bg-surface-900/40">
+    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border-subtle/80 bg-surface-950">
       <div className="max-w-6xl mx-auto space-y-12">
         
         {/* Section Header */}
         <div className="space-y-2">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-100">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-900 border border-border-subtle text-xs font-mono text-zinc-300">
+            <UserCheck size={16} className="text-accent-cyan" />
+            <span>{t('nav.about')}</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-normal text-zinc-100 leading-snug">
             {t('about.title')}
           </h2>
         </div>
 
-        {/* Philosophy Callout Banner */}
-        <div className="p-6 sm:p-8 rounded-xl bg-surface-900 border border-border-subtle relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/[0.02] rounded-full blur-2xl pointer-events-none" />
-          <div className="flex items-start gap-4">
-            <Quotes size={36} weight="duotone" className="text-accent-cyan shrink-0 hidden sm:block mt-1" />
-            <div className="space-y-4">
-              <blockquote className="text-base sm:text-lg text-zinc-200 font-medium leading-relaxed italic">
-                "{t('about.quote')}"
-              </blockquote>
-              <div className="space-y-3 text-sm text-zinc-400 leading-relaxed font-sans">
-                <p>{t('about.p1')}</p>
-                <p>{t('about.p2')}</p>
-              </div>
-            </div>
+        {/* Grounded Bio Narrative */}
+        <div className="p-6 sm:p-8 rounded-xl bg-surface-900 border border-border-subtle space-y-4">
+          <div className="space-y-3.5 text-sm sm:text-base text-zinc-300 leading-relaxed font-sans font-normal">
+            <p>{t('about.p1')}</p>
+            <p>{t('about.p2')}</p>
+            <p>{t('about.p3')}</p>
           </div>
         </div>
 
@@ -54,7 +50,7 @@ export const About: React.FC = () => {
               {strengths.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
                   <span className="text-accent-mint font-bold shrink-0 mt-0.5">•</span>
-                  <span className="leading-relaxed">{item}</span>
+                  <span className="leading-relaxed font-normal">{item}</span>
                 </li>
               ))}
             </ul>
@@ -72,7 +68,7 @@ export const About: React.FC = () => {
               {growth.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
                   <span className="text-accent-cyan font-bold shrink-0 mt-0.5">→</span>
-                  <span className="leading-relaxed">{item}</span>
+                  <span className="leading-relaxed font-normal">{item}</span>
                 </li>
               ))}
             </ul>

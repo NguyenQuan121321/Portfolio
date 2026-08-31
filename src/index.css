@@ -11,7 +11,8 @@
   body {
     background-color: #080a0f;
     color: #e2e8f0;
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
   }
 
   /* Custom sleek scrollbar */

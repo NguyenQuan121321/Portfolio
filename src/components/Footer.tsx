@@ -19,7 +19,7 @@ export const Footer: React.FC = () => {
           <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle flex items-center justify-center text-accent-cyan">
             <TerminalWindow size={14} weight="bold" />
           </div>
-          <span>&copy; {year} Nguyen Quan. {t('footer.text')}</span>
+          <span>&copy; {year} Nguyễn Hoàng Anh Quân. {t('footer.text')}</span>
         </div>
 
         {/* Right: Back to top button */}

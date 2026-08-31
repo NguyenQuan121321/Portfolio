@@ -65,14 +65,14 @@ export const Hero: React.FC = () => {
 
         {/* Headline & Value Proposition */}
         <div className="space-y-5 max-w-4xl">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-100 leading-[1.1]">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-normal text-zinc-100 leading-snug sm:leading-tight">
             <span>{t('hero.greeting')} </span>
             <span className="text-accent-cyan">{t('hero.name')}. </span>
             <br className="hidden sm:inline" />
-            <span className="text-zinc-200">{t('hero.headline')}</span>
+            <span className="text-zinc-200 mt-2 block sm:inline">{t('hero.headline')}</span>
           </h1>
 
-          <p className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed">
+          <p className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed font-normal">
             {t('hero.description')}
           </p>
         </div>

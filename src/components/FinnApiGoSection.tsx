@@ -14,7 +14,8 @@ import {
   Database, 
   Shuffle, 
   Broadcast,
-  Eye
+  Eye,
+  BookOpen
 } from '@phosphor-icons/react';
 
 export const FinnApiGoSection: React.FC = () => {
@@ -24,10 +25,24 @@ export const FinnApiGoSection: React.FC = () => {
   const [activeLayer, setActiveLayer] = useState<number>(3); // Default to Service layer
 
   // Interactive Playground State
-  const [selectedEndpoint, setSelectedEndpoint] = useState<'login' | 'totp' | 'metrics'>('login');
+  const [activeTab, setActiveTab] = useState<'register' | 'login' | 'totp' | 'metrics'>('login');
+  const [regEmail, setRegEmail] = useState('anhquan.dev@gmail.com');
+  const [regPassword, setRegPassword] = useState('Quan#Secure2026');
+  
+  const [loginEmail, setLoginEmail] = useState('anhquan.dev@gmail.com');
+  const [loginPassword, setLoginPassword] = useState('Quan#Secure2026');
+  
+  const [sessionId, setSessionId] = useState('sess_01J8ZX9V4N2Q88');
+  const [totpCode, setTotpCode] = useState('839201');
+
   const [copiedCurl, setCopiedCurl] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [simulatedTimestamp, setSimulatedTimestamp] = useState<string>(new Date().toISOString());
+  const [simulatedResponse, setSimulatedResponse] = useState<any>(null);
+  const [responseStatus, setResponseStatus] = useState<number>(200);
+  const [responseLatency, setResponseLatency] = useState<string>('14.2ms');
+
+  const liveRenderUrl = 'https://finnapigo.onrender.com';
+  const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html';
 
   const layers = [
     {
@@ -68,93 +83,135 @@ export const FinnApiGoSection: React.FC = () => {
     },
   ];
 
-  const endpoints = {
-    login: {
-      method: 'POST',
-      path: '/api/v1/auth/login',
-      status: 200,
-      latency: '14.2ms',
-      reqBody: JSON.stringify({
-        email: "engineer.candidate@finnapi.dev",
-        password: "••••••••••••••••"
-      }, null, 2),
-      headers: {
-        "Content-Type": "application/json",
-        "X-Content-Type-Options": "nosniff",
-        "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
-        "RateLimit-Limit": "100",
-        "RateLimit-Remaining": "98",
-      },
-      resBody: {
-        success: true,
-        data: {
-          token_type: "Bearer",
-          access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey...",
-          expires_in: 900,
-          refresh_token_hash: "8f4b23c91d8a4f912e73...",
-          mfa_enforced: true,
-          mfa_types: ["totp", "webauthn_passkey"],
-          session_id: "sess_01HZX89J4V9N2Q"
+  // Execute Simulated or Real API request
+  const handleExecuteRequest = () => {
+    setIsSimulating(true);
+    setTimeout(() => {
+      setIsSimulating(false);
+      const timestamp = new Date().toISOString();
+
+      if (activeTab === 'register') {
+        if (!regEmail || !regPassword) {
+          setResponseStatus(400);
+          setResponseLatency('4.1ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "VALIDATION_FAILED",
+              message: "email and password are required fields"
+            }
+          });
+          return;
         }
-      },
-      curl: `curl -X POST https://api.finnapi.render.com/api/v1/auth/login \\\n  -H "Content-Type: application/json" \\\n  -d '{"email":"engineer.candidate@finnapi.dev","password":"••••••••"}'`
-    },
-    totp: {
-      method: 'POST',
-      path: '/api/v1/mfa/totp/verify',
-      status: 200,
-      latency: '9.8ms',
-      reqBody: JSON.stringify({
-        session_id: "sess_01HZX89J4V9N2Q",
-        totp_code: "839201"
-      }, null, 2),
-      headers: {
-        "Content-Type": "application/json",
-        "X-MFA-Verified": "true",
-        "X-Audit-Id": "audit_91823719"
-      },
-      resBody: {
-        success: true,
-        data: {
-          verified: true,
-          authenticated_at: simulatedTimestamp,
-          scope: ["read:profile", "write:keys", "admin:sessions"]
+        setResponseStatus(201);
+        setResponseLatency('18.5ms');
+        setSimulatedResponse({
+          success: true,
+          message: "User registered successfully. Please setup MFA or login.",
+          data: {
+            user_id: "usr_" + Math.random().toString(36).substring(2, 10),
+            email: regEmail,
+            mfa_enabled: false,
+            created_at: timestamp
+          }
+        });
+      } else if (activeTab === 'login') {
+        if (!loginEmail || !loginPassword) {
+          setResponseStatus(400);
+          setResponseLatency('3.8ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "INVALID_CREDENTIALS",
+              message: "Email and password cannot be blank."
+            }
+          });
+          return;
         }
-      },
-      curl: `curl -X POST https://api.finnapi.render.com/api/v1/mfa/totp/verify \\\n  -H "Content-Type: application/json" \\\n  -d '{"session_id":"sess_01HZX89J4V9N2Q","totp_code":"839201"}'`
-    },
-    metrics: {
-      method: 'GET',
-      path: '/metrics',
-      status: 200,
-      latency: '4.1ms',
-      reqBody: "(HTTP GET - No Body)",
-      headers: {
-        "Content-Type": "text/plain; version=0.0.4; charset=utf-8"
-      },
-      resBody: `# HELP http_requests_total Total number of HTTP requests
+        const newSessId = "sess_" + Math.random().toString(36).substring(2, 14);
+        setSessionId(newSessId);
+        setResponseStatus(200);
+        setResponseLatency('14.2ms');
+        setSimulatedResponse({
+          success: true,
+          data: {
+            token_type: "Bearer",
+            mfa_required: true,
+            session_id: newSessId,
+            mfa_types: ["totp", "webauthn_passkey"],
+            refresh_token_hash: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+            expires_in: 900
+          }
+        });
+      } else if (activeTab === 'totp') {
+        if (!totpCode || totpCode.trim().length !== 6) {
+          setResponseStatus(400);
+          setResponseLatency('5.2ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "MFA_CODE_INVALID",
+              message: "TOTP code must be exactly 6 numeric digits (RFC 6238)."
+            }
+          });
+          return;
+        }
+        setResponseStatus(200);
+        setResponseLatency('9.6ms');
+        setSimulatedResponse({
+          success: true,
+          data: {
+            authenticated: true,
+            session_id: sessionId,
+            access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfcXVhbjEzIiwiaXNzIjoiZmlubmFwaWdvIiwicm9sZXMiOlsidXNlciJdfQ.signed_token_hash",
+            scope: ["read:profile", "write:credentials", "auth:passkeys"],
+            authenticated_at: timestamp
+          }
+        });
+      } else if (activeTab === 'metrics') {
+        setResponseStatus(200);
+        setResponseLatency('3.9ms');
+        setSimulatedResponse(
+`# HELP http_requests_total Total number of HTTP requests processed
 # TYPE http_requests_total counter
-http_requests_total{code="200",handler="login",method="post"} 14892
-http_requests_total{code="401",handler="login",method="post"} 23
-# HELP http_request_duration_seconds Histogram of latencies
-http_request_duration_seconds_bucket{le="0.01"} 12840
-http_request_duration_seconds_bucket{le="0.05"} 14880`,
-      curl: `curl -X GET https://api.finnapi.render.com/metrics`
+http_requests_total{code="200",handler="login",method="POST"} 14892
+http_requests_total{code="201",handler="register",method="POST"} 4210
+http_requests_total{code="401",handler="totp_verify",method="POST"} 38
+http_requests_total{code="429",handler="rate_limit",method="POST"} 12
+
+# HELP http_request_duration_seconds Latency histogram in seconds
+# TYPE http_request_duration_seconds histogram
+http_request_duration_seconds_bucket{le="0.005"} 9840
+http_request_duration_seconds_bucket{le="0.010"} 13420
+http_request_duration_seconds_bucket{le="0.025"} 14892
+http_request_duration_seconds_count 14892
+
+# HELP go_goroutines Number of active goroutines
+# TYPE go_goroutines gauge
+go_goroutines 24`
+        );
+      }
+    }, 280);
+  };
+
+  // Get current cURL command string based on tab
+  const getCurlCommand = () => {
+    if (activeTab === 'register') {
+      return `curl -X POST https://finnapigo.onrender.com/api/v1/auth/register \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "email": "${regEmail}",\n    "password": "${regPassword}"\n  }'`;
     }
+    if (activeTab === 'login') {
+      return `curl -X POST https://finnapigo.onrender.com/api/v1/auth/login \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "email": "${loginEmail}",\n    "password": "${loginPassword}"\n  }'`;
+    }
+    if (activeTab === 'totp') {
+      return `curl -X POST https://finnapigo.onrender.com/api/v1/mfa/totp/verify \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "session_id": "${sessionId}",\n    "totp_code": "${totpCode}"\n  }'`;
+    }
+    return `curl -X GET https://finnapigo.onrender.com/metrics`;
   };
 
   const handleCopyCurl = () => {
-    navigator.clipboard.writeText(endpoints[selectedEndpoint].curl);
+    navigator.clipboard.writeText(getCurlCommand());
     setCopiedCurl(true);
     setTimeout(() => setCopiedCurl(false), 2000);
-  };
-
-  const handleSimulate = () => {
-    setIsSimulating(true);
-    setSimulatedTimestamp(new Date().toISOString());
-    setTimeout(() => {
-      setIsSimulating(false);
-    }, 350);
   };
 
   const securityPillars = [
@@ -196,8 +253,6 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
     },
   ];
 
-  const currentEp = endpoints[selectedEndpoint];
-
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border-subtle/80 bg-surface-950">
       <div className="max-w-6xl mx-auto space-y-16">
@@ -211,7 +266,7 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-100">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-normal text-zinc-100 leading-snug">
                 {t('project.finnapi.title')}
               </h2>
               <p className="text-accent-cyan font-mono text-sm mt-1">
@@ -220,7 +275,28 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
             </div>
 
             {/* Quick Links */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={liveRenderUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent-cyan text-surface-950 font-semibold text-xs transition-colors hover:bg-cyan-300 shadow-[0_0_15px_-4px_rgba(0,229,255,0.3)]"
+              >
+                <span>{t('project.links.live')}</span>
+                <ArrowSquareOut size={14} weight="bold" />
+              </a>
+
+              <a
+                href={liveSwaggerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono text-zinc-200 transition-colors"
+              >
+                <BookOpen size={14} className="text-amber-400" />
+                <span>{t('project.links.docs')}</span>
+                <ArrowSquareOut size={14} />
+              </a>
+
               <a
                 href="https://github.com/NguyenQuan121321"
                 target="_blank"
@@ -233,7 +309,7 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
             </div>
           </div>
 
-          <p className="text-zinc-300 max-w-3xl leading-relaxed text-sm sm:text-base">
+          <p className="text-zinc-300 max-w-3xl leading-relaxed text-sm sm:text-base font-normal">
             {t('project.finnapi.description')}
           </p>
         </div>
@@ -303,7 +379,7 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
                     Active Inspection
                   </span>
                 </div>
-                <p className="text-sm text-zinc-300 leading-relaxed font-sans">
+                <p className="text-sm text-zinc-300 leading-relaxed font-sans font-normal">
                   {currentLayer.desc}
                 </p>
                 {activeLayer === 3 && (
@@ -317,9 +393,9 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
           })()}
         </div>
 
-        {/* 2. Interactive API Simulator Playground */}
+        {/* 2. Interactive API Simulator Playground with Editable Inputs */}
         <div className="bg-surface-900 border border-border-subtle rounded-xl p-6 sm:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
             <div>
               <h3 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
                 <Key size={20} className="text-accent-cyan" />
@@ -330,43 +406,149 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
               </p>
             </div>
 
-            {/* Endpoint Tabs */}
-            <div className="flex items-center gap-1.5 bg-surface-950 p-1 rounded-lg border border-border-subtle">
-              {(['login', 'totp', 'metrics'] as const).map((ep) => (
-                <button
-                  key={ep}
-                  onClick={() => setSelectedEndpoint(ep)}
-                  className={`px-3 py-1 rounded text-xs font-mono transition-all ${
-                    selectedEndpoint === ep 
-                      ? 'bg-surface-850 text-accent-cyan border border-border-highlight' 
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  {ep === 'login' ? 'POST /login' : ep === 'totp' ? 'POST /totp' : 'GET /metrics'}
-                </button>
-              ))}
+            {/* Live API Server Status Indicator */}
+            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+              <span>{t('project.finnapi.sim.note_real_api')}</span>
+              <a 
+                href={liveRenderUrl} 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-accent-cyan hover:underline inline-flex items-center gap-1"
+              >
+                <span>finnapigo.onrender.com</span>
+                <ArrowSquareOut size={12} />
+              </a>
             </div>
           </div>
 
-          {/* Playground Console */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Request View */}
-            <div className="lg:col-span-5 bg-surface-950 border border-border-subtle rounded-lg p-4 space-y-3 font-mono text-xs">
-              <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle/80 pb-2">
-                <span className="text-zinc-300 font-semibold">REQUEST</span>
-                <span className="text-emerald-400 font-bold">{currentEp.method}</span>
+          {/* Endpoint Tabs */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'register', label: t('project.finnapi.sim.tab_register'), method: 'POST', path: '/api/v1/auth/register' },
+              { id: 'login', label: t('project.finnapi.sim.tab_login'), method: 'POST', path: '/api/v1/auth/login' },
+              { id: 'totp', label: t('project.finnapi.sim.tab_totp'), method: 'POST', path: '/api/v1/mfa/totp/verify' },
+              { id: 'metrics', label: t('project.finnapi.sim.tab_metrics'), method: 'GET', path: '/metrics' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  setSimulatedResponse(null);
+                }}
+                className={`px-3.5 py-2 rounded-lg text-xs font-mono transition-all flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? 'bg-surface-850 text-accent-cyan border border-accent-cyan shadow-[0_0_12px_-3px_rgba(0,229,255,0.25)]' 
+                    : 'bg-surface-950 text-zinc-400 hover:text-zinc-200 border border-border-subtle'
+                }`}
+              >
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${tab.method === 'POST' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/40' : 'bg-cyan-950 text-cyan-400 border border-cyan-800/40'}`}>
+                  {tab.method}
+                </span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Interactive Request & Response Split Console */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            {/* Request Parameter Inputs */}
+            <div className="lg:col-span-5 bg-surface-950 border border-border-subtle rounded-xl p-5 space-y-4 font-mono text-xs">
+              <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle pb-2.5">
+                <span className="text-zinc-200 font-semibold uppercase tracking-wider text-[11px]">REQUEST PARAMETERS</span>
+                <span className="text-accent-cyan font-bold">{activeTab.toUpperCase()}</span>
               </div>
-              <div className="text-zinc-200 text-[11px] break-all">
-                {currentEp.path}
-              </div>
-              <div className="bg-surface-900 p-3 rounded border border-border-subtle text-zinc-300 overflow-x-auto text-[11px] leading-relaxed">
-                {typeof currentEp.reqBody === 'string' ? currentEp.reqBody : JSON.stringify(currentEp.reqBody, null, 2)}
-              </div>
-              <div className="flex items-center gap-2 pt-2">
+
+              {/* Form Fields by Tab */}
+              {activeTab === 'register' && (
+                <div className="space-y-3 font-sans">
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_email')}</label>
+                    <input 
+                      type="email"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                      placeholder="user@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_password')}</label>
+                    <input 
+                      type="password"
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                      placeholder="••••••••••••"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'login' && (
+                <div className="space-y-3 font-sans">
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_email')}</label>
+                    <input 
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                      placeholder="user@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_password')}</label>
+                    <input 
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                      placeholder="••••••••••••"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'totp' && (
+                <div className="space-y-3 font-sans">
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_session')}</label>
+                    <input 
+                      type="text"
+                      value={sessionId}
+                      onChange={(e) => setSessionId(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                      placeholder="sess_..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_totp')}</label>
+                    <input 
+                      type="text"
+                      maxLength={6}
+                      value={totpCode}
+                      onChange={(e) => setTotpCode(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-accent-cyan font-mono text-sm tracking-widest text-center"
+                      placeholder="839201"
+                    />
+                    <span className="text-[10px] text-zinc-500 mt-1 block">Nhập mã 6 chữ số bất kỳ (VD: 839201) để kiểm thử xác thực 2FA.</span>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'metrics' && (
+                <div className="text-zinc-400 text-xs py-4 leading-relaxed font-sans">
+                  Endpoint <span className="font-mono text-zinc-200">GET /metrics</span> xuất ra các chỉ số Prometheus thời gian thực của server (Goroutines, số lượng request, độ trễ histogram).
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 pt-2 border-t border-border-subtle/60">
                 <button
-                  onClick={handleSimulate}
+                  onClick={handleExecuteRequest}
                   disabled={isSimulating}
-                  className="flex-1 py-2 rounded bg-accent-cyan hover:bg-cyan-300 text-surface-950 font-sans font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-lg bg-accent-cyan hover:bg-cyan-300 text-surface-950 font-sans font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_-4px_rgba(0,229,255,0.3)]"
                 >
                   {isSimulating ? (
                     <span className="animate-spin inline-block">↻</span>
@@ -376,7 +558,7 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
                 </button>
                 <button
                   onClick={handleCopyCurl}
-                  className="px-3 py-2 rounded bg-surface-900 hover:bg-surface-850 border border-border-subtle text-zinc-300 text-xs transition-colors flex items-center gap-1"
+                  className="px-3.5 py-2.5 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle text-zinc-300 text-xs transition-colors flex items-center gap-1.5"
                   title="Copy cURL"
                 >
                   {copiedCurl ? <Check size={14} className="text-accent-mint" /> : <Copy size={14} />}
@@ -385,36 +567,53 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
               </div>
             </div>
 
-            {/* Response View */}
-            <div className="lg:col-span-7 bg-surface-950 border border-border-subtle rounded-lg p-4 space-y-3 font-mono text-xs">
-              <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle/80 pb-2">
+            {/* Response Console */}
+            <div className="lg:col-span-7 bg-surface-950 border border-border-subtle rounded-xl p-5 space-y-3 font-mono text-xs">
+              <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle pb-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-zinc-300 font-semibold">RESPONSE</span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-950 border border-emerald-700/50 text-emerald-400 font-bold">
-                    {currentEp.status} OK
+                  <span className="text-zinc-200 font-semibold uppercase tracking-wider text-[11px]">RESPONSE OUTPUT</span>
+                  <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+                    responseStatus === 200 || responseStatus === 201 
+                      ? 'bg-emerald-950/70 border-emerald-700/50 text-emerald-400' 
+                      : 'bg-red-950/70 border-red-700/50 text-red-400'
+                  }`}>
+                    {responseStatus} {responseStatus === 200 ? 'OK' : responseStatus === 201 ? 'Created' : 'Bad Request'}
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-400">
-                  {t('project.finnapi.sim.response_latency')}: <span className="text-cyan-400 font-bold">{currentEp.latency}</span>
+                  {t('project.finnapi.sim.response_latency')}: <span className="text-cyan-400 font-bold">{responseLatency}</span>
                 </div>
               </div>
 
-              {/* Formatted Response Body */}
-              <div className="bg-surface-900 p-3 rounded border border-border-subtle text-cyan-200 overflow-x-auto text-[11px] leading-relaxed max-h-[220px]">
-                <pre>{typeof currentEp.resBody === 'string' ? currentEp.resBody : JSON.stringify(currentEp.resBody, null, 2)}</pre>
+              {/* Formatted Multi-line JSON Response View */}
+              <div className="bg-surface-900 p-4 rounded-lg border border-border-subtle text-zinc-200 overflow-x-auto text-[11px] leading-relaxed max-h-[250px]">
+                {simulatedResponse ? (
+                  typeof simulatedResponse === 'string' ? (
+                    <pre className="text-zinc-300 whitespace-pre font-mono">{simulatedResponse}</pre>
+                  ) : (
+                    <pre className="text-cyan-200 whitespace-pre font-mono">
+                      {JSON.stringify(simulatedResponse, null, 2)}
+                    </pre>
+                  )
+                ) : (
+                  <div className="text-zinc-500 py-6 text-center italic font-sans">
+                    Nhấn "Thực thi Request" để gửi yêu cầu và nhận kết quả phản hồi có định dạng.
+                  </div>
+                )}
               </div>
 
-              {/* Response Headers */}
-              <div className="text-[10px] text-zinc-400 space-y-1 pt-1">
+              {/* Security Headers Summary */}
+              <div className="text-[10px] text-zinc-400 space-y-1 pt-1 font-mono">
                 <div className="text-zinc-400 font-semibold">{t('project.finnapi.sim.response_headers')}:</div>
-                {Object.entries(currentEp.headers).map(([k, v]) => (
-                  <div key={k} className="flex gap-2">
-                    <span className="text-zinc-400">{k}:</span>
-                    <span className="text-zinc-300 truncate">{v}</span>
-                  </div>
-                ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10.5px]">
+                  <div><span className="text-zinc-500">X-Content-Type-Options:</span> <span className="text-zinc-300">nosniff</span></div>
+                  <div><span className="text-zinc-500">Strict-Transport-Security:</span> <span className="text-zinc-300">max-age=63072000</span></div>
+                  <div><span className="text-zinc-500">RateLimit-Remaining:</span> <span className="text-zinc-300">98 / 100</span></div>
+                  <div><span className="text-zinc-500">Content-Type:</span> <span className="text-zinc-300">application/json</span></div>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -447,7 +646,7 @@ http_request_duration_seconds_bucket{le="0.05"} 14880`,
                 <h4 className="font-semibold text-zinc-100 text-sm">
                   {pillar.title}
                 </h4>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed font-normal">
                   {pillar.desc}
                 </p>
               </div>

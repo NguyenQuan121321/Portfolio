@@ -11,7 +11,7 @@ import {
 export const Contact: React.FC = () => {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
-  const email = "quankoy121321@gmail.com";
+  const email = "nguyenhoanganhquan13@gmail.com";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(email);
