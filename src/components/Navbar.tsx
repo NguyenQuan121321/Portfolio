@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { GithubLogo, LinkedinLogo, FilePdf, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
@@ -7,19 +7,6 @@ export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [statusIndex, setStatusIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setStatusIndex((prev) => (prev === 0 ? 1 : 0));
-    }, 3500);
-    return () => clearInterval(timer);
-  }, []);
-
-  const statusTexts = [
-    t('nav.status_1'),
-    t('nav.status_2')
-  ];
 
   const toggleLanguage = () => {
     setLang(lang === 'en' ? 'vi' : 'en');
@@ -36,10 +23,10 @@ export const Navbar: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface-950/85 border-b border-border-subtle/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="relative flex items-center justify-between h-16">
           
-          {/* Brand & Live Status */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          {/* Left: Brand & 2-Line Live Status */}
+          <div className="flex items-center gap-3 sm:gap-3.5">
             <a 
               href="#" 
               className="flex items-center gap-2.5 font-mono text-lg font-bold text-zinc-100 group transition-colors select-none"
@@ -55,28 +42,28 @@ export const Navbar: React.FC = () => {
               <span>Finn<span className="text-accent-cyan">.dev</span></span>
             </a>
 
-            {/* Status Indicator: Sleek Modern Micro-Pill with Rotating Text */}
+            {/* Status Indicator: 2-Line Sleek Telemetry Widget */}
             <div 
-              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400 select-none cursor-default transition-all hover:bg-emerald-500/15 hover:border-emerald-500/40"
+              className="hidden lg:inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/25 text-emerald-400 select-none cursor-default transition-all hover:bg-emerald-500/[0.14] hover:border-emerald-500/40 shadow-[0_0_12px_-3px_rgba(16,185,129,0.25)]"
               title={t('nav.status_tooltip')}
             >
-              <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
               </span>
-              <div className="relative h-4 overflow-hidden flex items-center">
-                <span 
-                  key={statusIndex}
-                  className="font-medium tracking-tight whitespace-nowrap animate-fadeIn"
-                >
-                  {statusTexts[statusIndex]}
+              <div className="flex flex-col text-left leading-none font-mono">
+                <span className="text-[9px] uppercase tracking-wider text-emerald-400/85 font-semibold">
+                  {t('nav.status_line1')}
+                </span>
+                <span className="text-[11px] text-zinc-100 font-bold tracking-tight mt-0.5">
+                  {t('nav.status_line2')}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+          {/* Center: Desktop Navigation (Absolute True Centered) */}
+          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Main Navigation">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -206,16 +193,16 @@ export const Navbar: React.FC = () => {
 
             <div className="flex items-center justify-between px-3 pt-1 text-xs text-zinc-400">
               <div 
-                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400"
+                className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/25 text-emerald-400"
                 title={t('nav.status_tooltip')}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0"></span>
-                <div className="relative h-4 overflow-hidden flex items-center">
-                  <span 
-                    key={statusIndex}
-                    className="font-medium tracking-tight whitespace-nowrap animate-fadeIn"
-                  >
-                    {statusTexts[statusIndex]}
+                <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0"></span>
+                <div className="flex flex-col text-left leading-none font-mono">
+                  <span className="text-[9px] uppercase tracking-wider text-emerald-400/85 font-semibold">
+                    {t('nav.status_line1')}
+                  </span>
+                  <span className="text-[11px] text-zinc-100 font-bold tracking-tight mt-0.5">
+                    {t('nav.status_line2')}
                   </span>
                 </div>
               </div>

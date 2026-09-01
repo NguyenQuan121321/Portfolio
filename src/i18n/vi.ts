@@ -1,8 +1,8 @@
 const vi: Record<string, string> = {
   // Navigation
-  "nav.status": "Sẵn sàng nhận việc",
-  "nav.status_1": "Sẵn sàng nhận việc",
-  "nav.status_2": "Fresher / Intern Backend",
+  "nav.status": "Sẵn sàng nhận việc · Backend",
+  "nav.status_line1": "SẴN SÀNG NHẬN VIỆC",
+  "nav.status_line2": "Backend Developer",
   "nav.status_tooltip": "Sẵn sàng nhận việc Fresher / Intern Backend Developer (Go & Node.js)",
   "nav.home": "Trang chủ",
   "nav.projects": "Dự án",
