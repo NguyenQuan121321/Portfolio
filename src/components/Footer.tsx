@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="py-12 border-t border-border-subtle/80 bg-surface-950 text-xs font-mono text-zinc-400">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         
         {/* Left: Branding & Verification */}
         <div className="flex items-center gap-3 text-zinc-400 group">

@@ -1,9 +1,9 @@
 const en: Record<string, string> = {
   // Navigation
-  "nav.status": "Available for hire",
-  "nav.status_line1": "AVAILABLE FOR",
-  "nav.status_line2": "Hire · Backend Dev",
-  "nav.status_tooltip": "Available for Fresher / Intern Backend Developer roles (Go & Node.js)",
+  "nav.status": "Available for hire · Backend",
+  "nav.status_line1": "AVAILABLE FOR HIRE",
+  "nav.status_line2": "Backend Developer",
+  "nav.status_tooltip": "Click to connect: Available for Fresher / Intern Backend Developer roles (Go & Node.js)",
   "nav.home": "Home",
   "nav.projects": "Projects",
   "nav.writeups": "Blog & Write-ups",

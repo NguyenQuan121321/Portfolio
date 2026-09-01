@@ -54,7 +54,7 @@ export const Hero: React.FC = () => {
       />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-cyan-500/[0.03] rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto w-full space-y-10">
+      <div className="relative max-w-7xl mx-auto w-full space-y-10">
         
         {/* Top Eyebrow / Role Badge */}
         <div className="flex items-center gap-3">

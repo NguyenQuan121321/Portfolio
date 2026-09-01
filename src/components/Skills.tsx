@@ -55,7 +55,7 @@ export const Skills: React.FC = () => {
 
   return (
     <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border-subtle/80 bg-surface-950">
-      <div className="max-w-6xl mx-auto space-y-12">
+      <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Section Header */}
         <div className="space-y-2">

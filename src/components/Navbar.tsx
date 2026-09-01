@@ -22,61 +22,65 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface-950/85 border-b border-border-subtle/80 transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative flex items-center justify-between h-16">
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-18">
           
           {/* Left: Brand & 2-Line Live Status */}
-          <div className="flex items-center gap-3 sm:gap-3.5">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             <a 
               href="#" 
               className="flex items-center gap-2.5 font-mono text-lg font-bold text-zinc-100 group transition-colors select-none"
               title="Finn.dev"
             >
-              <div className="w-8 h-8 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm">
                 <div 
                   className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150 transform group-hover:scale-105"
                   style={{ backgroundImage: `url('/img/finn.png')` }}
                   aria-label="Finn Avatar"
                 />
               </div>
-              <span>Finn<span className="text-accent-cyan">.dev</span></span>
+              <span className="text-base sm:text-lg">Finn<span className="text-accent-cyan">.dev</span></span>
             </a>
 
-            {/* Status Indicator: 2-Line Sleek Telemetry Widget */}
-            <div 
-              className="hidden lg:inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/25 text-emerald-400 select-none cursor-default transition-all hover:bg-emerald-500/[0.14] hover:border-emerald-500/40 shadow-[0_0_12px_-3px_rgba(16,185,129,0.25)]"
+            {/* Status Indicator: Alive & Refined 2-Line Telemetry Widget */}
+            <a 
+              href="#contact"
+              className="hidden lg:inline-flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500/[0.08] via-emerald-500/[0.04] to-cyan-500/[0.06] border border-emerald-500/25 hover:border-emerald-400/60 text-emerald-400 select-none cursor-pointer transition-all duration-300 shadow-[0_0_15px_-4px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_-3px_rgba(16,185,129,0.45)] hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden"
               title={t('nav.status_tooltip')}
             >
+              {/* Subtle ambient shimmer beam on hover */}
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent pointer-events-none" />
+
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
               </span>
               <div className="flex flex-col text-left leading-none font-mono">
-                <span className="text-[9px] uppercase tracking-wider text-emerald-400/85 font-semibold">
-                  {t('nav.status_line1')}
+                <span className="text-[9px] uppercase tracking-wider text-emerald-400/90 font-semibold flex items-center gap-1">
+                  <span>{t('nav.status_line1')}</span>
                 </span>
-                <span className="text-[11px] text-zinc-100 font-bold tracking-tight mt-0.5">
+                <span className="text-[11.5px] text-zinc-100 group-hover:text-emerald-300 transition-colors font-bold tracking-tight mt-0.5">
                   {t('nav.status_line2')}
                 </span>
               </div>
-            </div>
+            </a>
           </div>
 
-          {/* Center: Desktop Navigation (Absolute True Centered) */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Main Navigation">
+          {/* Center: Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="px-3.5 py-1.5 rounded-md text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 transition-all"
+                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 transition-all"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* Right Actions: Theme Toggle, GitHub & Language */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Right Actions: Theme Toggle, GitHub, LinkedIn, CV & Language */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Theme Toggle Button: Animated Sun & Moon Transition */}
             <button
               onClick={toggleTheme}
@@ -192,20 +196,22 @@ export const Navbar: React.FC = () => {
             </a>
 
             <div className="flex items-center justify-between px-3 pt-1 text-xs text-zinc-400">
-              <div 
-                className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/25 text-emerald-400"
+              <a 
+                href="#contact"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/25 text-emerald-400 active:scale-95 transition-transform"
                 title={t('nav.status_tooltip')}
               >
                 <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0"></span>
                 <div className="flex flex-col text-left leading-none font-mono">
-                  <span className="text-[9px] uppercase tracking-wider text-emerald-400/85 font-semibold">
+                  <span className="text-[9px] uppercase tracking-wider text-emerald-400/90 font-semibold">
                     {t('nav.status_line1')}
                   </span>
-                  <span className="text-[11px] text-zinc-100 font-bold tracking-tight mt-0.5">
+                  <span className="text-[11.5px] text-zinc-100 font-bold tracking-tight mt-0.5">
                     {t('nav.status_line2')}
                   </span>
                 </div>
-              </div>
+              </a>
               <div className="flex items-center gap-3">
                 <a 
                   href="https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/" 
