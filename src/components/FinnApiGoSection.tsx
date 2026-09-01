@@ -201,10 +201,10 @@ export const FinnApiGoSection: React.FC = () => {
   // Shows Register on the left -> Auto-fills -> Submits -> Hides left side -> Shows Login on the right -> Logs in -> Auto-closes!
   const handleStartQuickAuth = async () => {
     const rand = Math.floor(1000 + Math.random() * 9000);
-    const username = `finn_${rand}`;
-    const email = `finn_${rand}@gmail.com`;
-    const fullName = `Nguyen Hoang Anh Quan`;
-    const password = `Quan#Secure${rand}!`;
+    const username = `test_user_${rand}`;
+    const email = `test_${rand}@gmail.com`;
+    const fullName = `Demo Tester`;
+    const password = `Test#Secure${rand}!`;
 
     setQaUsername(username);
     setQaFullName(fullName);
