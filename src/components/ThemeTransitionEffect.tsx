@@ -11,12 +11,12 @@ export const ThemeTransitionEffect: React.FC = () => {
       aria-hidden="true"
       className="fixed inset-0 z-[9990] pointer-events-none overflow-hidden select-none"
     >
-      {/* ☀️ SUNRISE: Luồng ánh sáng bình minh lan toả cong từ dưới bên trái lên đỉnh rồi qua phải */}
+      {/* ☀️ SUNRISE: Golden sunrise light sweep expanding from bottom-left across the screen */}
       {transitionType === 'sunrise' && (
         <div className="absolute inset-0 bg-gradient-to-tr from-amber-300/40 via-orange-100/25 to-sky-100/20 animate-sunrise-sweep" />
       )}
 
-      {/* 🌙 SUNSET: Luồng bóng tối hoàng hôn lan toả cong từ dưới bên phải lên đỉnh rồi qua trái */}
+      {/* 🌙 SUNSET: Twilight darkness sweep expanding from bottom-right across the screen */}
       {transitionType === 'sunset' && (
         <div className="absolute inset-0 bg-gradient-to-tl from-orange-600/35 via-purple-950/50 to-surface-950 animate-sunset-sweep" />
       )}

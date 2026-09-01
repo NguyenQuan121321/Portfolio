@@ -5,7 +5,8 @@ import {
   PaperPlaneRight, 
   Trash, 
   User, 
-  Broadcast
+  Broadcast,
+  GithubLogo
 } from '@phosphor-icons/react';
 
 interface ChatMessage {
@@ -70,7 +71,7 @@ export const ChatbotAiFab: React.FC = () => {
     t('chatbot.suggest_4'),
   ];
 
-  // Knowledge fallback generator if backend is cold-starting on Render
+  // Knowledge fallback generator if backend is deploying or cold-starting
   const getKnowledgeResponse = (query: string, currentLang: string): string => {
     const q = query.toLowerCase();
 
@@ -99,8 +100,8 @@ export const ChatbotAiFab: React.FC = () => {
     }
 
     return currentLang === 'vi'
-      ? `Gâu gâu! Cảm ơn bạn đã hỏi! Mình là Jake AI — Trợ lý của Quân. Bạn có thể hỏi mình thêm về kỹ năng Go/Node.js, kiến trúc FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!`
-      : `Woof woof! Thanks for asking! I'm Jake AI — Quan's Assistant. Feel free to ask about his Go/Node.js backend stack, live FinnApiGo project, or interview scheduling!`;
+      ? `Gâu gâu! Cảm ơn bạn đã hỏi! Mình là Jake AI — Trợ lý AI độc lập của Quân (được xây dựng trên backend Golang riêng biệt tại github.com/NguyenQuan121321/JakeAI). Bạn có thể hỏi mình thêm về kỹ năng Go/Node.js, kiến trúc FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!`
+      : `Woof woof! Thanks for asking! I'm Jake AI — Quan's standalone AI Assistant (powered by a dedicated Golang backend at github.com/NguyenQuan121321/JakeAI). Feel free to ask about his Go/Node.js backend stack, live FinnApiGo project, or interview scheduling!`;
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -120,20 +121,20 @@ export const ChatbotAiFab: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // 1. Call Backend AI Endpoint via proxy (/chat-api or /render-api/api/v1/chat)
+      // 1. Call Dedicated JakeAI Go Backend Endpoint via reverse proxy (/jake-ai-api/api/v1/chat or /jake-ai-api/chat)
       let backendReply: string | null = null;
       try {
-        const res = await fetch('/chat-api/api/v1/chat', {
+        const res = await fetch('/jake-ai-api/api/v1/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: text, lang })
         });
         if (res.ok) {
           const data = await res.json();
-          backendReply = data?.reply || data?.message || data?.data?.reply || null;
+          backendReply = data?.reply || data?.data?.reply || data?.message || null;
         }
       } catch {
-        // Backend cold-starting or endpoint handled via fallback knowledge
+        // Backend cold-starting, deploying or falling back to smart local knowledge
       }
 
       // Simulate micro typing delay for natural feel
@@ -207,7 +208,7 @@ export const ChatbotAiFab: React.FC = () => {
                     {t('chatbot.title')}
                   </h3>
                   <span className="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-amber-400/10 text-amber-500 border border-amber-400/30">
-                    AI Backend
+                    Go Backend
                   </span>
                 </div>
                 <p className="text-[10.5px] text-zinc-400 font-mono truncate max-w-[220px]">
@@ -217,6 +218,16 @@ export const ChatbotAiFab: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-1.5">
+              <a
+                href="https://github.com/NguyenQuan121321/JakeAI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-surface-850 transition-colors flex items-center gap-1"
+                title={t('chatbot.view_github')}
+                aria-label={t('chatbot.view_github')}
+              >
+                <GithubLogo size={17} weight="bold" />
+              </a>
               <button
                 type="button"
                 onClick={handleClearChat}
@@ -336,10 +347,15 @@ export const ChatbotAiFab: React.FC = () => {
               </button>
             </form>
             <div className="mt-1.5 flex items-center justify-between text-[9.5px] font-mono text-zinc-400">
-              <span className="flex items-center gap-1">
+              <a
+                href="https://github.com/NguyenQuan121321/JakeAI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 hover:text-amber-400 transition-colors"
+              >
                 <Broadcast size={11} className="text-emerald-400" />
                 <span>{t('chatbot.backend_notice')}</span>
-              </span>
+              </a>
               <span>ESC to close</span>
             </div>
           </div>
@@ -347,7 +363,7 @@ export const ChatbotAiFab: React.FC = () => {
         </div>
       )}
 
-      {/* Floating Action Button for Jake AI (Hình tròn, ảnh Jake phủ kín 100% button) */}
+      {/* Floating Action Button for Jake AI (Circular with 100% avatar fill) */}
       <div className="relative group">
         {/* Glow Active Online Dot (Unclipped outside the button circle) */}
         <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 z-30 pointer-events-none">

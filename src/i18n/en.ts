@@ -214,20 +214,21 @@ const en: Record<string, string> = {
   "contact.modal.close": "Close (ESC)",
 
   // Chatbot AI
-  "chatbot.button_tooltip": "Chat with Jake AI Assistant",
+  "chatbot.button_tooltip": "Chat with Jake AI (Go Microservice)",
   "chatbot.title": "Jake AI",
-  "chatbot.subtitle": "AI Assistant for Quan's skills, projects & background",
-  "chatbot.status_online": "Backend AI Online",
-  "chatbot.welcome_msg": "Woof woof! Hello, I am Jake AI — Quan's AI Assistant! Feel free to ask me anything about his Golang/Node.js skills, Clean Architecture in FinnApiGo, or how to schedule an interview with Quan!",
-  "chatbot.input_placeholder": "Ask AI anything (e.g. What are Quan's core backend skills?)...",
+  "chatbot.subtitle": "Dedicated Golang AI Assistant Microservice",
+  "chatbot.status_online": "JakeAI Go Backend",
+  "chatbot.welcome_msg": "Woof woof! Hello, I am Jake AI — Quan's standalone AI Assistant (powered by a dedicated Golang backend at github.com/NguyenQuan121321/JakeAI)! Feel free to ask me anything about his Go/Node.js backend stack, Clean Architecture in FinnApiGo, or interview scheduling!",
+  "chatbot.input_placeholder": "Ask Jake AI anything (e.g. What are Quan's core backend skills?)...",
   "chatbot.suggest_title": "Quick suggestions:",
   "chatbot.suggest_1": "What are Quan's core technical skills?",
   "chatbot.suggest_2": "What problem does FinnApiGo solve?",
   "chatbot.suggest_3": "What career role is Quan targeting?",
   "chatbot.suggest_4": "How can I schedule an interview with Quan?",
-  "chatbot.thinking": "AI is thinking and responding...",
+  "chatbot.thinking": "Jake AI is thinking and responding...",
   "chatbot.clear_chat": "Clear chat",
-  "chatbot.backend_notice": "Connected to Secure Backend AI API (Server-side architecture)",
+  "chatbot.backend_notice": "Connected to JakeAI Go Microservice (github.com/NguyenQuan121321/JakeAI)",
+  "chatbot.view_github": "View JakeAI Go Backend Source",
 
   // Footer
   "footer.text": "Nguyen Hoang Anh Quan — Backend Developer Portfolio.",

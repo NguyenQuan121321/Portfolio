@@ -211,20 +211,21 @@ const vi: Record<string, string> = {
   "contact.modal.close": "Đóng (ESC)",
 
   // Chatbot AI
-  "chatbot.button_tooltip": "Chat với Jake AI Assistant của Quân",
+  "chatbot.button_tooltip": "Chat với Jake AI (Go Microservice)",
   "chatbot.title": "Jake AI",
-  "chatbot.subtitle": "Trợ lý AI trả lời về kỹ năng, dự án & kinh nghiệm của Quân",
-  "chatbot.status_online": "Backend AI Online",
-  "chatbot.welcome_msg": "Gâu gâu! Xin chào, mình là Jake AI — Trợ lý AI của Quân! Bạn có thể hỏi mình bất cứ điều gì về kinh nghiệm lập trình Go/Node.js, kiến trúc Clean Architecture của FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!",
-  "chatbot.input_placeholder": "Nhập câu hỏi cho AI (ví dụ: Kỹ năng chính của Quân là gì?)...",
+  "chatbot.subtitle": "Trợ lý AI độc lập xây dựng bằng Golang Backend riêng biệt",
+  "chatbot.status_online": "JakeAI Go Backend",
+  "chatbot.welcome_msg": "Gâu gâu! Xin chào, mình là Jake AI — Trợ lý AI độc lập của Quân (được xây dựng trên backend Golang riêng biệt tại github.com/NguyenQuan121321/JakeAI)! Bạn có thể hỏi mình bất cứ điều gì về kỹ năng Go/Node.js, kiến trúc Clean Architecture của FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!",
+  "chatbot.input_placeholder": "Nhập câu hỏi cho Jake AI (ví dụ: Kỹ năng chính của Quân là gì?)...",
   "chatbot.suggest_title": "Gợi ý câu hỏi nhanh:",
   "chatbot.suggest_1": "Kỹ năng chính của Quân là gì?",
   "chatbot.suggest_2": "Dự án FinnApiGo giải quyết bài toán gì?",
   "chatbot.suggest_3": "Quân định hướng làm vị trí nào?",
   "chatbot.suggest_4": "Làm sao để liên hệ phỏng vấn Quân?",
-  "chatbot.thinking": "AI đang suy nghĩ và phản hồi...",
+  "chatbot.thinking": "Jake AI đang suy nghĩ và phản hồi...",
   "chatbot.clear_chat": "Xóa đoạn chat",
-  "chatbot.backend_notice": "Kết nối Backend AI API bảo mật (Server-side architecture)",
+  "chatbot.backend_notice": "Kết nối JakeAI Go Microservice (github.com/NguyenQuan121321/JakeAI)",
+  "chatbot.view_github": "Xem mã nguồn Go Backend JakeAI",
 
   // Footer
   "footer.text": "Nguyễn Hoàng Anh Quân — Backend Developer Portfolio.",

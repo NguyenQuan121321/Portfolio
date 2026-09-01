@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
               aria-label={theme === 'dark' ? t('theme.toggle_light') : t('theme.toggle_dark')}
             >
               <div className="relative w-5 h-5 flex items-center justify-center">
-                {/* Sun (Mặt trời mọc/lặn) */}
+                {/* Sun (Light mode toggle) */}
                 <div 
                   className={`absolute inset-0 flex items-center justify-center transition-all duration-500 transform ${
                     theme === 'dark' 
@@ -85,7 +85,7 @@ export const Navbar: React.FC = () => {
                   <Sun size={19} weight="bold" />
                 </div>
 
-                {/* Moon (Mặt trăng mọc/lặn) */}
+                {/* Moon (Dark mode toggle) */}
                 <div 
                   className={`absolute inset-0 flex items-center justify-center transition-all duration-500 transform ${
                     theme === 'light' 

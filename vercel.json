@@ -5,8 +5,8 @@
       "destination": "https://finnapigo.onrender.com/:path*"
     },
     {
-      "source": "/chat-api/:path*",
-      "destination": "https://finnapigo.onrender.com/:path*"
+      "source": "/jake-ai-api/:path*",
+      "destination": "https://jakeai.onrender.com/:path*"
     },
     {
       "source": "/(.*)",

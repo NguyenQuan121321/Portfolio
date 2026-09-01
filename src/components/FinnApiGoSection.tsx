@@ -782,7 +782,7 @@ export const FinnApiGoSection: React.FC = () => {
           </div>
 
           {/* ========================================================================= */}
-          {/* 1. QUICK AUTH ANIMATED POPUP MODAL (Đăng ký bên trái -> Đăng nhập bên phải) */}
+          {/* 1. QUICK AUTH ANIMATED POPUP MODAL (Register on left -> Login on right)   */}
           {/* ========================================================================= */}
           {isQuickAuthModalOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-surface-950/85 animate-fadeIn">

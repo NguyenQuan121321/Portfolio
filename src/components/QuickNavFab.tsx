@@ -65,7 +65,7 @@ export const QuickNavFab: React.FC = () => {
 
   return (
     <aside aria-label="Quick Floating Navigation" className="fixed bottom-6 left-6 z-40" ref={containerRef}>
-      {/* Floating Vertical Navigation Menu (Hàng dọc khi bấm mở) */}
+      {/* Floating Vertical Navigation Menu */}
       {isOpen && (
         <div 
           className="absolute bottom-16 left-0 mb-2 w-56 sm:w-60 bg-surface-900/95 backdrop-blur-xl border border-border-highlight rounded-2xl shadow-[0_10px_35px_-5px_rgba(0,0,0,0.6)] p-2 space-y-1 animate-scaleUp origin-bottom-left"
@@ -101,7 +101,7 @@ export const QuickNavFab: React.FC = () => {
         </div>
       )}
 
-      {/* Round FAB Button with 3 Horizontal Lines (3 dấu gạch ngang) */}
+      {/* Round FAB Button with 3 Horizontal Lines */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
