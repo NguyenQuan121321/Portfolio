@@ -175,21 +175,21 @@ export const ChatbotAiFab: React.FC = () => {
   };
 
   return (
-    <aside aria-label="Jake AI Assistant" className="fixed bottom-6 right-6 z-40">
+    <aside aria-label="Jake AI Assistant" className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
       
       {/* Floating Chatbot Window */}
       {isOpen && (
         <div 
-          className="absolute bottom-16 right-0 mb-2 w-[92vw] sm:w-[390px] md:w-[420px] h-[520px] max-h-[82vh] bg-surface-900/98 backdrop-blur-2xl border border-accent-cyan/40 rounded-2xl shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-scaleUp origin-bottom-right"
+          className="fixed inset-x-3.5 bottom-20 sm:absolute sm:inset-auto sm:bottom-16 sm:right-0 mb-2 sm:w-[390px] md:w-[420px] h-[520px] max-h-[75dvh] sm:max-h-[82vh] bg-surface-900/98 backdrop-blur-2xl border border-accent-cyan/40 rounded-2xl shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-scaleUp origin-bottom-right"
           role="dialog"
           aria-modal="true"
         >
           {/* Header */}
-          <div className="p-3.5 sm:p-4 border-b border-border-subtle bg-surface-950 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="relative">
+          <div className="p-3 sm:p-4 border-b border-border-subtle bg-surface-950 flex items-center justify-between shrink-0 gap-2">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className="relative shrink-0">
                 {/* Jake Avatar */}
-                <div className="w-9 h-9 rounded-xl bg-amber-400/15 border border-amber-400/40 p-0.5 flex items-center justify-center overflow-hidden shadow-sm">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400/15 border border-amber-400/40 p-0.5 flex items-center justify-center overflow-hidden shadow-sm">
                   <img 
                     src="/jake.png" 
                     alt="Jake AI" 
@@ -202,49 +202,49 @@ export const ChatbotAiFab: React.FC = () => {
                 </span>
               </div>
 
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-xs sm:text-sm text-zinc-100 font-sans">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h3 className="font-bold text-xs sm:text-sm text-zinc-100 font-sans truncate">
                     {t('chatbot.title')}
                   </h3>
-                  <span className="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-amber-400/10 text-amber-500 border border-amber-400/30">
+                  <span className="text-[9px] sm:text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-amber-400/10 text-amber-500 border border-amber-400/30 shrink-0">
                     Go Backend
                   </span>
                 </div>
-                <p className="text-[10.5px] text-zinc-400 font-mono truncate max-w-[220px]">
+                <p className="text-[10px] sm:text-[10.5px] text-zinc-400 font-mono truncate max-w-full">
                   {t('chatbot.subtitle')}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 shrink-0">
               <a
                 href="https://github.com/NguyenQuan121321/JakeAI"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-surface-850 transition-colors flex items-center gap-1"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-surface-850 transition-colors flex items-center justify-center"
                 title={t('chatbot.view_github')}
                 aria-label={t('chatbot.view_github')}
               >
-                <GithubLogo size={17} weight="bold" />
+                <GithubLogo size={16} weight="bold" />
               </a>
               <button
                 type="button"
                 onClick={handleClearChat}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-surface-850 transition-colors"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-surface-850 transition-colors flex items-center justify-center"
                 title={t('chatbot.clear_chat')}
                 aria-label={t('chatbot.clear_chat')}
               >
-                <Trash size={16} />
+                <Trash size={15} />
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-surface-850 transition-colors"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-surface-850 transition-colors flex items-center justify-center"
                 title="Close Chat"
                 aria-label="Close Chat"
               >
-                <X size={18} weight="bold" />
+                <X size={17} weight="bold" />
               </button>
             </div>
           </div>
@@ -320,7 +320,7 @@ export const ChatbotAiFab: React.FC = () => {
           </div>
 
           {/* Input Box */}
-          <div className="p-3 border-t border-border-subtle bg-surface-950 shrink-0">
+          <div className="p-2.5 sm:p-3 border-t border-border-subtle bg-surface-950 shrink-0">
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
@@ -335,7 +335,7 @@ export const ChatbotAiFab: React.FC = () => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={t('chatbot.input_placeholder')}
                 disabled={isLoading}
-                className="flex-1 py-2 px-3 rounded-xl bg-surface-900 border border-border-subtle focus:border-accent-cyan text-xs text-zinc-100 placeholder:text-zinc-500 font-sans focus:outline-none focus:ring-1 focus:ring-accent-cyan/40 transition-colors"
+                className="min-w-0 flex-1 py-2 px-3 rounded-xl bg-surface-900 border border-border-subtle focus:border-accent-cyan text-xs text-zinc-100 placeholder:text-zinc-500 font-sans focus:outline-none focus:ring-1 focus:ring-accent-cyan/40 transition-colors"
               />
               <button
                 type="submit"
@@ -351,12 +351,12 @@ export const ChatbotAiFab: React.FC = () => {
                 href="https://github.com/NguyenQuan121321/JakeAI"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 hover:text-amber-400 transition-colors"
+                className="flex items-center gap-1 hover:text-amber-400 transition-colors truncate max-w-[200px]"
               >
-                <Broadcast size={11} className="text-emerald-400" />
-                <span>{t('chatbot.backend_notice')}</span>
+                <Broadcast size={11} className="text-emerald-400 shrink-0" />
+                <span className="truncate">{t('chatbot.backend_notice')}</span>
               </a>
-              <span>ESC to close</span>
+              <span className="shrink-0 ml-2">ESC to close</span>
             </div>
           </div>
 
