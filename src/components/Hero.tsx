@@ -64,15 +64,24 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Headline & Value Proposition */}
-        <div className="space-y-5 max-w-4xl">
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-normal text-zinc-100 leading-snug sm:leading-tight">
-            <span>{t('hero.greeting')} </span>
-            <span className="text-accent-cyan">{t('hero.name')}. </span>
+        <div className="space-y-4 max-w-4xl">
+          {/* Subtle Elegance Greeting & Candidate Identity */}
+          <div className="flex items-center gap-2 font-mono text-sm sm:text-base text-zinc-400">
+            <span className="text-accent-cyan font-bold">&gt;</span>
+            <span>{t('hero.greeting')}</span>
+            <span className="font-semibold text-zinc-100">{t('hero.name')}</span>
+          </div>
+
+          {/* Main Powerful Engineering Slogan Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-100 leading-tight sm:leading-tight">
+            <span>{t('hero.headline_prefix')} </span>
             <br className="hidden sm:inline" />
-            <span className="text-zinc-200 mt-2 block sm:inline">{t('hero.headline')}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-accent-cyan to-emerald-400">
+              {t('hero.headline_highlight')}
+            </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed font-normal">
+          <p className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed font-normal pt-1">
             {t('hero.description')}
           </p>
         </div>
@@ -81,7 +90,7 @@ export const Hero: React.FC = () => {
         <div className="flex flex-wrap items-center gap-4 pt-2">
           <a
             href="#projects"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent-cyan text-surface-950 font-semibold text-sm hover:bg-cyan-300 transition-all shadow-[0_0_20px_-5px_rgba(0,229,255,0.4)]"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent-cyan text-white dark:text-surface-950 font-bold text-sm hover:bg-cyan-400 dark:hover:bg-cyan-300 transition-all shadow-[0_0_20px_-5px_rgba(0,229,255,0.4)] active:scale-95"
           >
             <span>{t('hero.cta.projects')}</span>
             <ArrowDown size={16} weight="bold" />
@@ -91,7 +100,7 @@ export const Hero: React.FC = () => {
             href="https://github.com/NguyenQuan121321"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-sm transition-all"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-sm transition-all active:scale-95"
           >
             <GithubLogo size={18} weight="bold" />
             <span>{t('hero.cta.github')}</span>

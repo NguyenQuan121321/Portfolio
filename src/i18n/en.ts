@@ -13,9 +13,10 @@ const en: Record<string, string> = {
 
   // Hero
   "hero.badge": "Backend Developer · Go & Node.js",
-  "hero.greeting": "Hello, I am",
+  "hero.greeting": "Hi, I am",
   "hero.name": "Nguyen Hoang Anh Quan",
-  "hero.headline": "Building Robust Backend Systems, Multi-Factor Auth & Scalable APIs.",
+  "hero.headline_prefix": "Building Robust Backend Systems &",
+  "hero.headline_highlight": "High-Performance API Architectures.",
   "hero.description": "Final-year student specializing in Go and Node.js backend development. Focused on Clean Architecture, multi-factor security mechanisms (JWT rotation, TOTP, Passkeys), and automated testing.",
   "hero.cta.projects": "Explore Project & Try API",
   "hero.cta.github": "GitHub Profile",
