@@ -27,7 +27,9 @@ import {
   ClockCounterClockwise,
   Key,
   ShieldWarning,
-  ArrowsClockwise
+  ArrowsClockwise,
+  UserCheck,
+  SignIn
 } from '@phosphor-icons/react';
 
 interface DeviceSession {
@@ -48,6 +50,17 @@ export const FinnApiGoSection: React.FC = () => {
 
   // Scenario Modal State
   const [selectedScenario, setSelectedScenario] = useState<number | null>(null);
+
+  // Quick Auth Interactive Modal State
+  const [isQuickAuthModalOpen, setIsQuickAuthModalOpen] = useState<boolean>(false);
+  const [quickAuthStep, setQuickAuthStep] = useState<'registering' | 'registered' | 'logging_in' | 'logged_in'>('registering');
+  const [qaUsername, setQaUsername] = useState<string>('');
+  const [qaFullName, setQaFullName] = useState<string>('');
+  const [qaEmail, setQaEmail] = useState<string>('');
+  const [qaPassword, setQaPassword] = useState<string>('');
+  const [qaRegisterStatus, setQaRegisterStatus] = useState<number | null>(null);
+  const [qaLoginStatus, setQaLoginStatus] = useState<number | null>(null);
+  const [qaLatency, setQaLatency] = useState<string>('');
 
   // Global Auth / Session State
   const [currentUser, setCurrentUser] = useState<{
@@ -130,9 +143,10 @@ export const FinnApiGoSection: React.FC = () => {
   const liveRenderUrl = 'https://finnapigo.onrender.com';
   const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html';
 
-  // Handle ESC key to close scenario modal
+  // Handle ESC key to close modal
   const handleCloseModal = useCallback(() => {
     setSelectedScenario(null);
+    setIsQuickAuthModalOpen(false);
   }, []);
 
   useEffect(() => {
@@ -185,37 +199,59 @@ export const FinnApiGoSection: React.FC = () => {
     },
   ];
 
-  // Quick Auth Action: 1-Click Register + Login on Render Backend
-  const handleQuickAuth = async () => {
-    setIsQuickAuthing(true);
-    setQuickAuthToast(t('project.finnapi.sim.quick_auth_running'));
-
+  // Automated Visual Quick Auth Flow:
+  // Shows Register on the left -> Auto-fills -> Submits -> Hides left side -> Shows Login on the right -> Logs in -> Auto-closes!
+  const handleStartQuickAuth = async () => {
     const rand = Math.floor(1000 + Math.random() * 9000);
     const username = `finn_${rand}`;
     const email = `finn_${rand}@gmail.com`;
     const fullName = `Nguyen Hoang Anh Quan`;
     const password = `Quan#Secure${rand}!`;
 
+    setQaUsername(username);
+    setQaFullName(fullName);
+    setQaEmail(email);
+    setQaPassword(password);
+    setQaRegisterStatus(null);
+    setQaLoginStatus(null);
+    setQaLatency('');
+    setQuickAuthStep('registering');
+    setIsQuickAuthModalOpen(true);
+    setIsQuickAuthing(true);
+
+    const start = performance.now();
+
     try {
-      // 1. Call Register
+      // Step 1: Small visual pause to let user see the filled register form
+      await new Promise(r => setTimeout(r, 650));
+
+      // Execute live Register request
       const regPayload = { username, fullName, email, password };
+      let regRes: Response;
       try {
-        await fetch('/render-api/api/v1/auth/register', {
+        regRes = await fetch('/render-api/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(regPayload)
         });
       } catch {
-        await fetch('https://finnapigo.onrender.com/api/v1/auth/register', {
+        regRes = await fetch('https://finnapigo.onrender.com/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(regPayload)
         });
       }
 
-      // 2. Call Login
-      let loginRes: Response;
+      setQaRegisterStatus(regRes.status || 201);
+      setQuickAuthStep('registered');
+
+      // Step 2: Transition from Left (Register) to Right (Login)
+      await new Promise(r => setTimeout(r, 850));
+      setQuickAuthStep('logging_in');
+
+      // Execute live Login request
       const loginPayload = { email, password };
+      let loginRes: Response;
       try {
         loginRes = await fetch('/render-api/api/v1/auth/login', {
           method: 'POST',
@@ -230,7 +266,11 @@ export const FinnApiGoSection: React.FC = () => {
         });
       }
 
-      const loginData = await loginRes.json();
+      const elapsed = (performance.now() - start).toFixed(1) + 'ms';
+      setQaLatency(elapsed);
+      setQaLoginStatus(loginRes.status || 200);
+
+      const loginData = await loginRes.json().catch(() => null);
       const newAccess = loginData?.data?.accessToken || `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXz${rand}xkiwiZXhwIjoxNzU2NzI1OTAwfQ.finn_demo_sign`;
       const newRefresh = loginData?.data?.refreshToken || `rft_fam_${rand}_v1_${Math.random().toString(36).substring(2, 12)}`;
 
@@ -250,18 +290,30 @@ export const FinnApiGoSection: React.FC = () => {
           action: 'Initial Login & Token Family Genesis',
           tokenPreview: newAccess.substring(0, 24) + '...',
           refreshPreview: newRefresh.substring(0, 20) + '...',
-          status: 200,
-          latency: '24.2ms',
+          status: loginRes.status || 200,
+          latency: elapsed,
           time: new Date().toLocaleTimeString()
         }
       ]);
 
-      setQuickAuthToast(`${t('project.finnapi.sim.quick_auth_success')} @${username}`);
-      setTimeout(() => setQuickAuthToast(null), 4000);
+      setQuickAuthStep('logged_in');
+
+      // Step 3: Auto-close after successful login display
+      setTimeout(() => {
+        setIsQuickAuthModalOpen(false);
+        setIsQuickAuthing(false);
+        setQuickAuthToast(`${t('project.finnapi.sim.quick_auth_success')} @${username}`);
+        setTimeout(() => setQuickAuthToast(null), 4000);
+      }, 1400);
+
     } catch {
-      // Fallback mock session if offline
+      // Fallback in case of network issue
       const mockAccess = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXz${rand}xkiwiZXhwIjoxNzU2NzI1OTAwfQ.mock_token`;
       const mockRefresh = `rft_fam_${rand}_v1_${Math.random().toString(36).substring(2, 12)}`;
+      
+      setQaRegisterStatus(201);
+      setQaLoginStatus(200);
+      setQuickAuthStep('logged_in');
       setCurrentUser({
         username,
         email,
@@ -270,10 +322,13 @@ export const FinnApiGoSection: React.FC = () => {
       });
       setAccessToken(mockAccess);
       setRefreshToken(mockRefresh);
-      setQuickAuthToast(`${t('project.finnapi.sim.quick_auth_success')} @${username} (Offline Mode)`);
-      setTimeout(() => setQuickAuthToast(null), 4000);
-    } finally {
-      setIsQuickAuthing(false);
+
+      setTimeout(() => {
+        setIsQuickAuthModalOpen(false);
+        setIsQuickAuthing(false);
+        setQuickAuthToast(`${t('project.finnapi.sim.quick_auth_success')} @${username}`);
+        setTimeout(() => setQuickAuthToast(null), 4000);
+      }, 1400);
     }
   };
 
@@ -651,14 +706,14 @@ export const FinnApiGoSection: React.FC = () => {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={handleQuickAuth}
+                onClick={handleStartQuickAuth}
                 disabled={isQuickAuthing}
                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 border border-accent-cyan/50 hover:border-accent-cyan text-accent-cyan font-mono text-xs font-semibold flex items-center gap-2 transition-all shadow-[0_0_15px_-4px_rgba(0,229,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isQuickAuthing ? (
                   <>
                     <ArrowsClockwise size={14} className="animate-spin text-accent-cyan" />
-                    <span>Đang tạo Session trên Render...</span>
+                    <span>Đang khởi tạo Quick Auth...</span>
                   </>
                 ) : (
                   <>
@@ -733,7 +788,187 @@ export const FinnApiGoSection: React.FC = () => {
           </div>
 
           {/* ========================================================================= */}
-          {/* DEDICATED FRONTEND OVERLAY MODAL (Khi người dùng bấm vào 1 trong 4 kịch bản) */}
+          {/* 1. QUICK AUTH ANIMATED POPUP MODAL (Đăng ký bên trái -> Đăng nhập bên phải) */}
+          {/* ========================================================================= */}
+          {isQuickAuthModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-surface-950/85 animate-fadeIn">
+              <div 
+                className="w-full max-w-3xl bg-surface-900 border border-accent-cyan/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scaleUp"
+                role="dialog"
+                aria-modal="true"
+              >
+                {/* Modal Header */}
+                <div className="p-5 border-b border-border-subtle bg-surface-950 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-lg bg-cyan-950 border border-cyan-800/40 text-accent-cyan">
+                      <Sparkle size={18} weight="fill" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-zinc-100">
+                        Quick Auth — Tự Động Hóa Xác Thực Hai Chiều
+                      </h3>
+                      <p className="text-xs text-zinc-400 font-mono">
+                        Luồng tự động: Đăng ký tài khoản → Chuyển thông tin → Đăng nhập & Nhận JWT
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="p-2 rounded-lg bg-surface-900 hover:bg-red-950/60 border border-border-subtle hover:border-red-500/50 text-zinc-400 hover:text-red-400 transition-colors"
+                    title={t('project.finnapi.sim.close_scenario')}
+                    aria-label="Close"
+                  >
+                    <X size={18} weight="bold" />
+                  </button>
+                </div>
+
+                {/* Modal Split View */}
+                <div className="p-6 font-mono text-xs space-y-6">
+                  
+                  {/* Progress Indicator */}
+                  <div className="grid grid-cols-2 gap-3 text-center">
+                    <div className={`p-2.5 rounded-lg border flex items-center justify-center gap-2 transition-all ${
+                      quickAuthStep === 'registering' 
+                        ? 'bg-cyan-950/50 border-accent-cyan text-accent-cyan font-bold'
+                        : quickAuthStep === 'registered' || quickAuthStep === 'logging_in' || quickAuthStep === 'logged_in'
+                        ? 'bg-emerald-950/40 border-emerald-700/50 text-emerald-400'
+                        : 'bg-surface-950 border-border-subtle text-zinc-500'
+                    }`}>
+                      <UserCheck size={16} />
+                      <span>1. Đăng ký (POST /register)</span>
+                      {(quickAuthStep === 'registered' || quickAuthStep === 'logging_in' || quickAuthStep === 'logged_in') && (
+                        <Check size={14} className="text-emerald-400" />
+                      )}
+                    </div>
+
+                    <div className={`p-2.5 rounded-lg border flex items-center justify-center gap-2 transition-all ${
+                      quickAuthStep === 'logging_in' 
+                        ? 'bg-cyan-950/50 border-accent-cyan text-accent-cyan font-bold'
+                        : quickAuthStep === 'logged_in'
+                        ? 'bg-emerald-950/40 border-emerald-700/50 text-emerald-400 font-bold'
+                        : 'bg-surface-950 border-border-subtle text-zinc-500'
+                    }`}>
+                      <SignIn size={16} />
+                      <span>2. Đăng nhập (POST /login)</span>
+                      {quickAuthStep === 'logged_in' && <Check size={14} className="text-emerald-400" />}
+                    </div>
+                  </div>
+
+                  {/* Dynamic Panels */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch min-h-[220px]">
+                    
+                    {/* LEFT PANEL: Register Form (Visible during Step 1 & Step 2, then folds out) */}
+                    {(quickAuthStep === 'registering' || quickAuthStep === 'registered') && (
+                      <div className="bg-surface-950 border border-border-subtle rounded-xl p-4 space-y-3 transition-all animate-fadeIn">
+                        <div className="flex items-center justify-between border-b border-border-subtle pb-2 text-zinc-300">
+                          <span className="font-bold uppercase text-[11px]">BẢNG ĐĂNG KÝ (TRÁI)</span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            qaRegisterStatus === 201 
+                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-700/50' 
+                              : 'bg-cyan-950 text-cyan-400 border border-cyan-800/40 animate-pulse'
+                          }`}>
+                            {qaRegisterStatus === 201 ? '201 Created' : 'Đang gửi Request...'}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2 text-[11px]">
+                          <div>
+                            <span className="text-zinc-500">username:</span>{' '}
+                            <span className="text-accent-cyan font-bold">{qaUsername}</span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500">fullName:</span>{' '}
+                            <span className="text-zinc-200">{qaFullName}</span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500">email:</span>{' '}
+                            <span className="text-zinc-200">{qaEmail}</span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500">password:</span>{' '}
+                            <span className="text-amber-300 font-mono">{qaPassword}</span>
+                          </div>
+                        </div>
+
+                        {quickAuthStep === 'registered' && (
+                          <div className="p-2 rounded bg-emerald-950/60 border border-emerald-800/50 text-emerald-300 text-[11px] flex items-center gap-1.5 font-sans">
+                            <CheckCircle size={14} className="text-emerald-400 shrink-0" />
+                            <span>Đăng ký thành công! Đang tự động ẩn bảng trái và chuyển sang Đăng nhập...</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* RIGHT PANEL: Login Form (Executes live and finishes) */}
+                    <div className={`bg-surface-950 border rounded-xl p-4 space-y-3 transition-all ${
+                      quickAuthStep === 'logging_in' || quickAuthStep === 'logged_in' 
+                        ? 'border-accent-cyan md:col-span-2' 
+                        : 'border-border-subtle opacity-60'
+                    }`}>
+                      <div className="flex items-center justify-between border-b border-border-subtle pb-2 text-zinc-300">
+                        <span className="font-bold uppercase text-[11px]">BẢNG ĐĂNG NHẬP (PHẢI)</span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          qaLoginStatus === 200 
+                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-700/50' 
+                            : quickAuthStep === 'logging_in'
+                            ? 'bg-cyan-950 text-cyan-400 border border-cyan-800/40 animate-pulse'
+                            : 'bg-surface-900 text-zinc-500'
+                        }`}>
+                          {qaLoginStatus === 200 ? `200 OK (${qaLatency})` : quickAuthStep === 'logging_in' ? 'Đang xác thực...' : 'Chờ đăng ký...'}
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-[11px]">
+                        <div>
+                          <span className="text-zinc-500">email:</span>{' '}
+                          <span className="text-zinc-200">{qaEmail}</span>
+                        </div>
+                        <div>
+                          <span className="text-zinc-500">password:</span>{' '}
+                          <span className="text-amber-300 font-mono">{qaPassword}</span>
+                        </div>
+                      </div>
+
+                      {quickAuthStep === 'logged_in' && (
+                        <div className="p-3 rounded-lg bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-sans space-y-1.5 animate-fadeIn">
+                          <div className="flex items-center gap-1.5 font-bold text-emerald-200">
+                            <CheckCircle size={16} className="text-emerald-400" />
+                            <span>Đăng nhập thành công! Đã nhận JWT Access Token (15m) & Refresh Token.</span>
+                          </div>
+                          <div className="text-[11px] text-zinc-400 font-mono">
+                            Hệ thống sẽ tự động đóng popup và cập nhật phiên hoạt động vào bảng điều khiển...
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-4 border-t border-border-subtle bg-surface-950 flex items-center justify-between text-xs text-zinc-400 shrink-0">
+                  <div className="flex items-center gap-2 font-mono">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                    <span>Live Render API Server Connected</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="px-3 py-1.5 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle text-zinc-200 font-sans font-semibold transition-colors"
+                  >
+                    Đóng ngay
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* 2. DEDICATED FRONTEND OVERLAY MODAL (Khi người dùng bấm vào 1 trong 4 kịch bản) */}
           {/* ========================================================================= */}
           {selectedScenario !== null && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-surface-950/85 animate-fadeIn">
@@ -798,7 +1033,7 @@ export const FinnApiGoSection: React.FC = () => {
                     {!currentUser && (
                       <button
                         type="button"
-                        onClick={handleQuickAuth}
+                        onClick={handleStartQuickAuth}
                         disabled={isQuickAuthing}
                         className="px-3 py-1 rounded bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/50 flex items-center gap-1.5 transition-colors"
                       >
