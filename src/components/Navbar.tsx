@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { GithubLogo, LinkedinLogo, FilePdf, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
@@ -7,6 +7,19 @@ export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStatusIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
+
+  const statusTexts = [
+    t('nav.status_1'),
+    t('nav.status_2')
+  ];
 
   const toggleLanguage = () => {
     setLang(lang === 'en' ? 'vi' : 'en');
@@ -26,7 +39,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           
           {/* Brand & Live Status */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <a 
               href="#" 
               className="flex items-center gap-2.5 font-mono text-lg font-bold text-zinc-100 group transition-colors select-none"
@@ -42,16 +55,23 @@ export const Navbar: React.FC = () => {
               <span>Finn<span className="text-accent-cyan">.dev</span></span>
             </a>
 
-            {/* Status Indicator: Sleek Modern Micro-Pill */}
+            {/* Status Indicator: Sleek Modern Micro-Pill with Rotating Text */}
             <div 
               className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400 select-none cursor-default transition-all hover:bg-emerald-500/15 hover:border-emerald-500/40"
               title={t('nav.status_tooltip')}
             >
-              <span className="relative flex h-1.5 w-1.5">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
               </span>
-              <span className="font-medium tracking-tight">{t('nav.status')}</span>
+              <div className="relative h-4 overflow-hidden flex items-center">
+                <span 
+                  key={statusIndex}
+                  className="font-medium tracking-tight whitespace-nowrap animate-fadeIn"
+                >
+                  {statusTexts[statusIndex]}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -189,8 +209,15 @@ export const Navbar: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400"
                 title={t('nav.status_tooltip')}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-                <span>{t('nav.status')}</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0"></span>
+                <div className="relative h-4 overflow-hidden flex items-center">
+                  <span 
+                    key={statusIndex}
+                    className="font-medium tracking-tight whitespace-nowrap animate-fadeIn"
+                  >
+                    {statusTexts[statusIndex]}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <a 
