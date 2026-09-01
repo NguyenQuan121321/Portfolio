@@ -6,14 +6,28 @@ interface IntroPreloaderProps {
 }
 
 export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) => {
+  // Check if user already saw the intro during this browser tab session
+  const [isVisible, setIsVisible] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('finn_intro_seen') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+
   const [progress, setProgress] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
 
-  // High-precision smooth boot progression over ~4.8 seconds
+  // High-performance snappy boot progression over ~1.1s
+  // Creates a fast, exhilarating "High-Throughput Go Engine" feel without delaying recruiters
   useEffect(() => {
-    const totalDuration = 4800; // 4.8s
-    const intervalTime = 35;
+    if (!isVisible) {
+      onComplete?.();
+      return;
+    }
+
+    const totalDuration = 1100; // 1.1s loading
+    const intervalTime = 16; // ~60fps
     const increment = 100 / (totalDuration / intervalTime);
 
     const timer = setInterval(() => {
@@ -21,13 +35,18 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         const next = prev + increment;
         if (next >= 100) {
           clearInterval(timer);
+          try {
+            sessionStorage.setItem('finn_intro_seen', 'true');
+          } catch {
+            // ignore storage quota error
+          }
           setTimeout(() => {
             setIsFadingOut(true);
             setTimeout(() => {
               setIsVisible(false);
               onComplete?.();
-            }, 700);
-          }, 350);
+            }, 350);
+          }, 120);
           return 100;
         }
         return next;
@@ -35,15 +54,20 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [onComplete]);
+  }, [isVisible, onComplete]);
 
   // Support ESC or Skip button
   const handleSkip = useCallback(() => {
+    try {
+      sessionStorage.setItem('finn_intro_seen', 'true');
+    } catch {
+      // ignore
+    }
     setIsFadingOut(true);
     setTimeout(() => {
       setIsVisible(false);
       onComplete?.();
-    }, 400);
+    }, 250);
   }, [onComplete]);
 
   useEffect(() => {
@@ -58,20 +82,18 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
 
   if (!isVisible) return null;
 
-  // Dynamic engineering boot logs
+  // Ultra-fast readable boot logs
   const getBootLog = (p: number) => {
-    if (p < 20) return "Initializing Go 1.26 Engine & Clean Architecture Domain Core...";
-    if (p < 40) return "Connecting Distributed Data Layer (MySQL 8 Pools & Redis 7 Caching)...";
-    if (p < 65) return "Hardening Security Subsystems: SHA-256 Rotation & Sliding-Window Limiter...";
-    if (p < 85) return "Verifying Live Reverse Proxy Handshake with finnapigo.onrender.com...";
-    return "All Systems Operational (HTTP 200 OK). Launching Finn Portfolio Experience...";
+    if (p < 35) return "Initializing Go 1.26 Core & Goroutine Scheduler...";
+    if (p < 75) return "Verifying Redis 7 Token Rotation & Security Subsystems...";
+    return "Render Live API Verified (HTTP 200 OK). Launching Portfolio...";
   };
 
   return (
     <aside 
       aria-label="Welcome Introduction Loader"
-      className={`fixed inset-0 z-[9999] bg-surface-950 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden transition-all duration-700 ease-out select-none ${
-        isFadingOut ? 'opacity-0 scale-[1.03] blur-sm pointer-events-none' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-[9999] bg-surface-950 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden transition-all duration-350 ease-out select-none ${
+        isFadingOut ? 'opacity-0 scale-[1.02] blur-sm pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
       {/* Background Architectural Grid & Ambient Glows */}
@@ -86,25 +108,25 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
       <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Content Container */}
-      <div className="relative z-10 max-w-2xl w-full text-center space-y-8 px-4">
+      <div className="relative z-10 max-w-2xl w-full text-center space-y-7 px-4">
         
         {/* Holographic Avatar Core with Dual Rotating Tech Rings */}
-        <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+        <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
           {/* Outer Spin Ring */}
-          <div className="absolute inset-0 rounded-full border border-cyan-500/30 border-t-accent-cyan animate-spin [animation-duration:3s]"></div>
+          <div className="absolute inset-0 rounded-full border border-cyan-500/40 border-t-accent-cyan animate-spin [animation-duration:2s]"></div>
           {/* Inner Reverse Spin Ring */}
-          <div className="absolute -inset-2 rounded-full border border-dashed border-emerald-500/20 border-r-emerald-400 animate-spin [animation-duration:6s] [animation-direction:reverse]"></div>
+          <div className="absolute -inset-1.5 rounded-full border border-dashed border-emerald-500/30 border-r-emerald-400 animate-spin [animation-duration:4s] [animation-direction:reverse]"></div>
           {/* Ambient Glow */}
           <div className="absolute inset-0 rounded-full bg-cyan-500/15 blur-xl animate-pulse"></div>
 
           {/* 2-Frame Sprite Avatar */}
           <div 
-            className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-accent-cyan bg-surface-900 bg-[url('/finn.png')] bg-[length:200%_100%] bg-[position:0%_center] hover:bg-[position:100%_center] transition-all duration-300 shadow-[0_0_30px_-4px_rgba(0,229,255,0.5)]"
+            className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-accent-cyan bg-surface-900 bg-[url('/finn.png')] bg-[length:200%_100%] bg-[position:0%_center] hover:bg-[position:100%_center] transition-all duration-300 shadow-[0_0_25px_-4px_rgba(0,229,255,0.6)]"
           />
         </div>
 
         {/* Eyebrow / Security Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-[11px] font-mono text-cyan-300 shadow-[0_0_15px_-3px_rgba(0,229,255,0.3)]">
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-[10.5px] font-mono text-cyan-300 shadow-[0_0_15px_-3px_rgba(0,229,255,0.3)]">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-cyan opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-cyan"></span>
@@ -113,7 +135,7 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         </div>
 
         {/* Requested Welcome Headline */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-normal text-zinc-100 drop-shadow-[0_0_35px_rgba(0,229,255,0.4)] leading-snug">
             <span>Welcome to </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-accent-cyan to-emerald-300">
@@ -127,13 +149,13 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         </div>
 
         {/* Progress & Live Boot Telemetry */}
-        <div className="w-full max-w-md mx-auto space-y-3.5 pt-2">
+        <div className="w-full max-w-md mx-auto space-y-3 pt-1">
           
           {/* Status Header */}
           <div className="flex items-center justify-between font-mono text-xs text-zinc-400 px-1">
             <div className="flex items-center gap-2">
-              <TerminalWindow size={16} className="text-accent-cyan animate-pulse" />
-              <span className="text-zinc-300 font-semibold tracking-wider">BOOTSTRAP KERNEL</span>
+              <TerminalWindow size={15} className="text-accent-cyan animate-pulse" />
+              <span className="text-zinc-300 font-semibold tracking-wider text-[11px]">WARP BOOT KERNEL</span>
             </div>
             <span className="text-accent-cyan font-bold text-sm font-mono tracking-widest">
               {Math.min(100, Math.floor(progress)).toString().padStart(2, '0')}%
@@ -151,9 +173,9 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
           </div>
 
           {/* Dynamic Boot Step Log */}
-          <div className="h-6 flex items-center justify-center font-mono text-[11px] text-zinc-400 px-2">
+          <div className="h-5 flex items-center justify-center font-mono text-[11px] text-zinc-400 px-2">
             <span className="text-accent-cyan mr-1.5 font-bold">&gt;</span>
-            <span className="text-zinc-300 truncate transition-all duration-200">
+            <span className="text-zinc-300 truncate transition-all duration-150">
               {getBootLog(progress)}
             </span>
           </div>
@@ -167,7 +189,7 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         <button
           type="button"
           onClick={handleSkip}
-          className="px-3.5 py-1.5 rounded-lg bg-surface-900/80 hover:bg-surface-850 border border-border-subtle hover:border-accent-cyan/50 text-zinc-400 hover:text-zinc-200 text-xs font-mono transition-all flex items-center gap-1.5 backdrop-blur-sm shadow-lg hover:scale-105 active:scale-95"
+          className="px-3 py-1 rounded-lg bg-surface-900/80 hover:bg-surface-850 border border-border-subtle hover:border-accent-cyan/50 text-zinc-400 hover:text-zinc-200 text-xs font-mono transition-all flex items-center gap-1.5 backdrop-blur-sm shadow-lg hover:scale-105 active:scale-95"
         >
           <span>Bỏ qua</span>
           <span className="text-zinc-500 text-[10px]">(ESC / Skip)</span>
