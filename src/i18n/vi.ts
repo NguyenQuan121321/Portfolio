@@ -1,7 +1,7 @@
 const vi: Record<string, string> = {
   // Navigation
   "nav.status": "Sẵn sàng nhận việc Fresher / Intern Backend",
-  "nav.projects": "Dự án FinnApiGo",
+  "nav.projects": "Dự án",
   "nav.skills": "Kỹ năng & Công nghệ",
   "nav.about": "Về tôi",
   "nav.contact": "Liên hệ",
@@ -60,7 +60,7 @@ const vi: Record<string, string> = {
   "project.finnapi.sim.tab_metrics": "4. Prometheus Metrics",
   "project.finnapi.sim.input_email": "Địa chỉ Email",
   "project.finnapi.sim.input_password": "Mật khẩu",
-  "project.finnapi.sim.input_totp": "Mã OTP (6 chữ số)",
+  "project.finnapi.sim.input_totp": "Mã xác thực 2 bước (Google Authenticator)",
   "project.finnapi.sim.input_session": "Session ID từ bước Login",
   "project.finnapi.sim.use_demo": "Điền mẫu nhanh",
   "project.finnapi.sim.send_btn": "Thực thi Request",

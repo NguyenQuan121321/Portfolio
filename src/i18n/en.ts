@@ -1,7 +1,7 @@
 const en: Record<string, string> = {
   // Navigation
   "nav.status": "Available for Fresher / Intern Backend Roles",
-  "nav.projects": "FinnApiGo Project",
+  "nav.projects": "Projects",
   "nav.skills": "Skills & Technologies",
   "nav.about": "About Me",
   "nav.contact": "Contact",
@@ -60,7 +60,7 @@ const en: Record<string, string> = {
   "project.finnapi.sim.tab_metrics": "4. Prometheus Metrics",
   "project.finnapi.sim.input_email": "Email Address",
   "project.finnapi.sim.input_password": "Password",
-  "project.finnapi.sim.input_totp": "OTP Code (6 digits)",
+  "project.finnapi.sim.input_totp": "2-Step Verification Code (Google Authenticator)",
   "project.finnapi.sim.input_session": "Session ID from Login step",
   "project.finnapi.sim.use_demo": "Fill Demo Data",
   "project.finnapi.sim.send_btn": "Execute Request",

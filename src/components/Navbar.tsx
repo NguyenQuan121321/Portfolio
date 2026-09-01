@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
               <div className="w-8 h-8 rounded-lg bg-surface-900 border border-border-highlight flex items-center justify-center text-accent-cyan group-hover:border-accent-cyan transition-colors">
                 <TerminalWindow size={18} weight="bold" />
               </div>
-              <span>NQ<span className="text-accent-cyan">.dev</span></span>
+              <span>Finn<span className="text-accent-cyan">.dev</span></span>
             </a>
 
             {/* Status Indicator */}

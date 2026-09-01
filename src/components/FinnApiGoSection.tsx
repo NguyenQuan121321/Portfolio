@@ -15,7 +15,9 @@ import {
   Shuffle, 
   Broadcast,
   Eye,
-  BookOpen
+  EyeSlash,
+  BookOpen,
+  ArrowRight
 } from '@phosphor-icons/react';
 
 export const FinnApiGoSection: React.FC = () => {
@@ -25,21 +27,25 @@ export const FinnApiGoSection: React.FC = () => {
   const [activeLayer, setActiveLayer] = useState<number>(3); // Default to Service layer
 
   // Interactive Playground State
-  const [activeTab, setActiveTab] = useState<'register' | 'login' | 'totp' | 'metrics'>('login');
+  const [activeTab, setActiveTab] = useState<'register' | 'login' | 'totp' | 'metrics'>('register');
   const [regEmail, setRegEmail] = useState('anhquan.dev@gmail.com');
   const [regPassword, setRegPassword] = useState('Quan#Secure2026');
+  const [showRegPassword, setShowRegPassword] = useState(false);
   
   const [loginEmail, setLoginEmail] = useState('anhquan.dev@gmail.com');
   const [loginPassword, setLoginPassword] = useState('Quan#Secure2026');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   
-  const [sessionId, setSessionId] = useState('sess_01J8ZX9V4N2Q88');
-  const [totpCode, setTotpCode] = useState('839201');
+  const [sessionId, setSessionId] = useState('');
+  const [totpCode, setTotpCode] = useState('');
 
   const [copiedCurl, setCopiedCurl] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulatedResponse, setSimulatedResponse] = useState<any>(null);
   const [responseStatus, setResponseStatus] = useState<number>(200);
   const [responseLatency, setResponseLatency] = useState<string>('14.2ms');
+
+  const DEMO_VALID_TOTP = '839201';
 
   const liveRenderUrl = 'https://finnapigo.onrender.com';
   const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html';
@@ -98,20 +104,23 @@ export const FinnApiGoSection: React.FC = () => {
             success: false,
             error: {
               code: "VALIDATION_FAILED",
-              message: "email and password are required fields"
+              message: "Email và mật khẩu không được để trống."
             }
           });
           return;
         }
+        // Auto transfer to Login form
+        setLoginEmail(regEmail);
+        setLoginPassword(regPassword);
         setResponseStatus(201);
         setResponseLatency('18.5ms');
         setSimulatedResponse({
           success: true,
-          message: "User registered successfully. Please setup MFA or login.",
+          message: "Tài khoản đã được đăng ký thành công. Thông tin đã tự động đồng bộ sang bước Đăng nhập.",
           data: {
             user_id: "usr_" + Math.random().toString(36).substring(2, 10),
             email: regEmail,
-            mfa_enabled: false,
+            mfa_enabled: true,
             created_at: timestamp
           }
         });
@@ -123,13 +132,14 @@ export const FinnApiGoSection: React.FC = () => {
             success: false,
             error: {
               code: "INVALID_CREDENTIALS",
-              message: "Email and password cannot be blank."
+              message: "Email hoặc mật khẩu không được để trống."
             }
           });
           return;
         }
         const newSessId = "sess_" + Math.random().toString(36).substring(2, 14);
         setSessionId(newSessId);
+        setTotpCode(''); // Initially empty for user to type
         setResponseStatus(200);
         setResponseLatency('14.2ms');
         setSimulatedResponse({
@@ -138,20 +148,58 @@ export const FinnApiGoSection: React.FC = () => {
             token_type: "Bearer",
             mfa_required: true,
             session_id: newSessId,
-            mfa_types: ["totp", "webauthn_passkey"],
+            mfa_types: ["totp_authenticator", "webauthn_passkey"],
             refresh_token_hash: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
             expires_in: 900
           }
         });
       } else if (activeTab === 'totp') {
-        if (!totpCode || totpCode.trim().length !== 6) {
+        const trimmed = totpCode.trim();
+        if (!sessionId) {
           setResponseStatus(400);
-          setResponseLatency('5.2ms');
+          setResponseLatency('3.5ms');
           setSimulatedResponse({
             success: false,
             error: {
-              code: "MFA_CODE_INVALID",
-              message: "TOTP code must be exactly 6 numeric digits (RFC 6238)."
+              code: "SESSION_MISSING",
+              message: "Thiếu session_id. Vui lòng thực hiện bước Đăng nhập trước để nhận session_id hợp lệ."
+            }
+          });
+          return;
+        }
+        if (!trimmed) {
+          setResponseStatus(400);
+          setResponseLatency('4.0ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "TOTP_CODE_EMPTY",
+              message: "Vui lòng nhập mã xác thực 2 bước (6 chữ số) từ ứng dụng Google Authenticator."
+            }
+          });
+          return;
+        }
+        if (trimmed.length !== 6 || !/^\d{6}$/.test(trimmed)) {
+          setResponseStatus(400);
+          setResponseLatency('4.8ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "INVALID_FORMAT",
+              message: "Mã OTP phải là dãy chính xác 6 chữ số."
+            }
+          });
+          return;
+        }
+        // Strict RFC 6238 check
+        if (trimmed !== DEMO_VALID_TOTP) {
+          setResponseStatus(401);
+          setResponseLatency('8.4ms');
+          setSimulatedResponse({
+            success: false,
+            error: {
+              code: "MFA_TOTP_MISMATCH",
+              message: `Mã xác thực 2 bước (${trimmed}) không khớp với thuật toán RFC 6238 HMAC-SHA1 trong cửa sổ 30s. Mã OTP mẫu hợp lệ hiện tại là: ${DEMO_VALID_TOTP}`
             }
           });
           return;
@@ -163,7 +211,11 @@ export const FinnApiGoSection: React.FC = () => {
           data: {
             authenticated: true,
             session_id: sessionId,
-            access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfcXVhbjEzIiwiaXNzIjoiZmlubmFwaWdvIiwicm9sZXMiOlsidXNlciJdfQ.signed_token_hash",
+            user: {
+              email: loginEmail || "anhquan.dev@gmail.com",
+              mfa_verified: true
+            },
+            access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfcXVhbjEzIiwiZXhwIjoxNzI1MTk4NDAwLCJzY29wZXMiOlsicmVhZDpwcm9maWxlIiwid3JpdGU6Y3JlZGVudGlhbHMiXX0.valid_jwt_signature",
             scope: ["read:profile", "write:credentials", "auth:passkeys"],
             authenticated_at: timestamp
           }
@@ -393,7 +445,7 @@ go_goroutines 24`
           })()}
         </div>
 
-        {/* 2. Interactive API Simulator Playground with Editable Inputs */}
+        {/* 2. Interactive API Simulator Playground with Editable Inputs & Eye Toggle */}
         <div className="bg-surface-900 border border-border-subtle rounded-xl p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
             <div>
@@ -467,20 +519,37 @@ go_goroutines 24`
                     <input 
                       type="email"
                       value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
+                      onChange={(e) => {
+                        setRegEmail(e.target.value);
+                        setLoginEmail(e.target.value);
+                      }}
                       className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
                       placeholder="user@example.com"
                     />
                   </div>
                   <div>
                     <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_password')}</label>
-                    <input 
-                      type="password"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
-                      placeholder="••••••••••••"
-                    />
+                    <div className="relative">
+                      <input 
+                        type={showRegPassword ? "text" : "password"}
+                        value={regPassword}
+                        onChange={(e) => {
+                          setRegPassword(e.target.value);
+                          setLoginPassword(e.target.value);
+                        }}
+                        className="w-full pl-3 pr-10 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                        placeholder="••••••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowRegPassword(!showRegPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 p-1"
+                        title={showRegPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        aria-label="Toggle password visibility"
+                      >
+                        {showRegPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -499,13 +568,24 @@ go_goroutines 24`
                   </div>
                   <div>
                     <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_password')}</label>
-                    <input 
-                      type="password"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
-                      placeholder="••••••••••••"
-                    />
+                    <div className="relative">
+                      <input 
+                        type={showLoginPassword ? "text" : "password"}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        className="w-full pl-3 pr-10 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                        placeholder="••••••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 p-1"
+                        title={showLoginPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        aria-label="Toggle password visibility"
+                      >
+                        {showLoginPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -519,20 +599,31 @@ go_goroutines 24`
                       value={sessionId}
                       onChange={(e) => setSessionId(e.target.value)}
                       className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
-                      placeholder="sess_..."
+                      placeholder={sessionId ? sessionId : "sess_..."}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_totp')}</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-mono text-zinc-400">{t('project.finnapi.sim.input_totp')}</label>
+                      <button
+                        type="button"
+                        onClick={() => setTotpCode(DEMO_VALID_TOTP)}
+                        className="text-[10px] font-mono text-accent-cyan hover:underline bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/40"
+                      >
+                        Dán mã mẫu: {DEMO_VALID_TOTP}
+                      </button>
+                    </div>
                     <input 
                       type="text"
                       maxLength={6}
                       value={totpCode}
                       onChange={(e) => setTotpCode(e.target.value)}
                       className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-accent-cyan font-mono text-sm tracking-widest text-center"
-                      placeholder="839201"
+                      placeholder="Nhập 6 số (VD: 839201)"
                     />
-                    <span className="text-[10px] text-zinc-500 mt-1 block">Nhập mã 6 chữ số bất kỳ (VD: 839201) để kiểm thử xác thực 2FA.</span>
+                    <span className="text-[10.5px] text-zinc-500 mt-1 block">
+                      Thử nhập mã đúng <span className="text-accent-cyan font-mono">{DEMO_VALID_TOTP}</span> để thành công, hoặc nhập mã khác để xem hệ thống từ chối theo chuẩn RFC 6238.
+                    </span>
                   </div>
                 </div>
               )}
@@ -577,7 +668,7 @@ go_goroutines 24`
                       ? 'bg-emerald-950/70 border-emerald-700/50 text-emerald-400' 
                       : 'bg-red-950/70 border-red-700/50 text-red-400'
                   }`}>
-                    {responseStatus} {responseStatus === 200 ? 'OK' : responseStatus === 201 ? 'Created' : 'Bad Request'}
+                    {responseStatus} {responseStatus === 200 ? 'OK' : responseStatus === 201 ? 'Created' : responseStatus === 401 ? 'Unauthorized' : 'Bad Request'}
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-400">
@@ -601,6 +692,36 @@ go_goroutines 24`
                   </div>
                 )}
               </div>
+
+              {/* Flow Transition Quick Action Buttons */}
+              {simulatedResponse && (
+                <div className="pt-2">
+                  {activeTab === 'register' && responseStatus === 201 && (
+                    <button
+                      onClick={() => {
+                        setActiveTab('login');
+                        setSimulatedResponse(null);
+                      }}
+                      className="w-full py-2 px-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-accent-cyan/40 text-accent-cyan text-xs font-mono flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <span>Thông tin đã đồng bộ → Chuyển sang bước Đăng nhập</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  )}
+                  {activeTab === 'login' && responseStatus === 200 && (
+                    <button
+                      onClick={() => {
+                        setActiveTab('totp');
+                        setSimulatedResponse(null);
+                      }}
+                      className="w-full py-2 px-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-emerald-500/40 text-emerald-400 text-xs font-mono flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <span>Đã nhận session_id → Chuyển sang Xác thực 2 bước (Google Authenticator)</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
+              )}
 
               {/* Security Headers Summary */}
               <div className="text-[10px] text-zinc-400 space-y-1 pt-1 font-mono">
