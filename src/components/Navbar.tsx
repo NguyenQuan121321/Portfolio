@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { GithubLogo, List, X, TerminalWindow, Globe } from '@phosphor-icons/react';
+import { GithubLogo, List, X, Globe } from '@phosphor-icons/react';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
@@ -26,10 +26,15 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             <a 
               href="#" 
-              className="flex items-center gap-2 font-mono text-lg font-bold text-zinc-100 group transition-colors"
+              className="flex items-center gap-2.5 font-mono text-lg font-bold text-zinc-100 group transition-colors select-none"
+              title="Finn.dev"
             >
-              <div className="w-8 h-8 rounded-lg bg-surface-900 border border-border-highlight flex items-center justify-center text-accent-cyan group-hover:border-accent-cyan transition-colors">
-                <TerminalWindow size={18} weight="bold" />
+              <div className="w-8 h-8 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm">
+                <div 
+                  className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150 transform group-hover:scale-105"
+                  style={{ backgroundImage: `url('/finn.png')` }}
+                  aria-label="Finn Avatar"
+                />
               </div>
               <span>Finn<span className="text-accent-cyan">.dev</span></span>
             </a>

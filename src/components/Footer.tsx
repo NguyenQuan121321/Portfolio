@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { ArrowUp, TerminalWindow } from '@phosphor-icons/react';
+import { ArrowUp } from '@phosphor-icons/react';
 
 export const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -15,9 +15,13 @@ export const Footer: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         
         {/* Left: Branding & Verification */}
-        <div className="flex items-center gap-3 text-zinc-400">
-          <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle flex items-center justify-center text-accent-cyan">
-            <TerminalWindow size={14} weight="bold" />
+        <div className="flex items-center gap-3 text-zinc-400 group">
+          <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle group-hover:border-accent-cyan overflow-hidden flex items-center justify-center transition-colors shrink-0 shadow-sm">
+            <div 
+              className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150"
+              style={{ backgroundImage: `url('/finn.png')` }}
+              aria-hidden="true"
+            />
           </div>
           <span>&copy; {year} Nguyễn Hoàng Anh Quân. {t('footer.text')}</span>
         </div>
