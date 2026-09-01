@@ -6,28 +6,14 @@ interface IntroPreloaderProps {
 }
 
 export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) => {
-  // Check if user already saw the intro during this browser tab session
-  const [isVisible, setIsVisible] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem('finn_intro_seen') !== 'true';
-    } catch {
-      return true;
-    }
-  });
-
+  const [isVisible, setIsVisible] = useState<boolean>(true);
   const [progress, setProgress] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
-  // High-performance snappy boot progression over ~1.1s
-  // Creates a fast, exhilarating "High-Throughput Go Engine" feel without delaying recruiters
+  // Smooth boot progression over 2.0 seconds
   useEffect(() => {
-    if (!isVisible) {
-      onComplete?.();
-      return;
-    }
-
-    const totalDuration = 1100; // 1.1s loading
-    const intervalTime = 16; // ~60fps
+    const totalDuration = 1800; // 1.8s loading + ~0.35s transition = 2s total
+    const intervalTime = 20;
     const increment = 100 / (totalDuration / intervalTime);
 
     const timer = setInterval(() => {
@@ -35,11 +21,6 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         const next = prev + increment;
         if (next >= 100) {
           clearInterval(timer);
-          try {
-            sessionStorage.setItem('finn_intro_seen', 'true');
-          } catch {
-            // ignore storage quota error
-          }
           setTimeout(() => {
             setIsFadingOut(true);
             setTimeout(() => {
@@ -54,15 +35,10 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [isVisible, onComplete]);
+  }, [onComplete]);
 
   // Support ESC or Skip button
   const handleSkip = useCallback(() => {
-    try {
-      sessionStorage.setItem('finn_intro_seen', 'true');
-    } catch {
-      // ignore
-    }
     setIsFadingOut(true);
     setTimeout(() => {
       setIsVisible(false);
