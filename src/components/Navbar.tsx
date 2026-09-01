@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
               <div className="w-8 h-8 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm">
                 <div 
                   className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150 transform group-hover:scale-105"
-                  style={{ backgroundImage: `url('/finn.png')` }}
+                  style={{ backgroundImage: `url('/img/finn.png')` }}
                   aria-label="Finn Avatar"
                 />
               </div>

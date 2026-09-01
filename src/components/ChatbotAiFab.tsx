@@ -197,7 +197,7 @@ export const ChatbotAiFab: React.FC = () => {
                 {/* Jake Avatar */}
                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400/15 border border-amber-400/40 p-0.5 flex items-center justify-center overflow-hidden shadow-sm">
                   <img 
-                    src="/jake.png" 
+                    src="/img/jake.png" 
                     alt="Jake AI" 
                     className="w-full h-full object-contain transform hover:scale-110 transition-transform" 
                   />
@@ -264,7 +264,7 @@ export const ChatbotAiFab: React.FC = () => {
               >
                 {msg.sender === 'assistant' && (
                   <div className="w-7 h-7 rounded-lg bg-amber-400/15 border border-amber-400/30 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
-                    <img src="/jake.png" alt="Jake" className="w-full h-full object-contain" />
+                    <img src="/img/jake.png" alt="Jake" className="w-full h-full object-contain" />
                   </div>
                 )}
 
@@ -291,7 +291,7 @@ export const ChatbotAiFab: React.FC = () => {
             {isLoading && (
               <div className="flex gap-2.5 justify-start animate-fadeIn">
                 <div className="w-7 h-7 rounded-lg bg-amber-400/15 border border-amber-400/30 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
-                  <img src="/jake.png" alt="Jake" className="w-full h-full object-contain animate-pulse" />
+                  <img src="/img/jake.png" alt="Jake" className="w-full h-full object-contain animate-pulse" />
                 </div>
                 <div className="bg-surface-950 border border-border-subtle rounded-xl px-3.5 py-2.5 flex items-center gap-1.5 text-zinc-400 font-mono text-[11px]">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-bounce [animation-delay:0ms]"></span>
@@ -392,7 +392,7 @@ export const ChatbotAiFab: React.FC = () => {
             </div>
           ) : (
             <img 
-              src="/jake.png" 
+              src="/img/jake.png" 
               alt="Jake AI" 
               className="w-full h-full object-cover scale-[1.15] group-hover:scale-[1.25] group-hover:rotate-6 transition-all duration-300 pointer-events-none" 
             />

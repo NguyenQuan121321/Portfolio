@@ -117,7 +117,7 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
 
           {/* 2-Frame Sprite Avatar */}
           <div 
-            className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-accent-cyan bg-surface-900 bg-[url('/finn.png')] bg-[length:200%_100%] bg-[position:0%_center] hover:bg-[position:100%_center] transition-all duration-300 shadow-[0_0_25px_-4px_rgba(0,229,255,0.6)]"
+            className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-accent-cyan bg-surface-900 bg-[url('/img/finn.png')] bg-[length:200%_100%] bg-[position:0%_center] hover:bg-[position:100%_center] transition-all duration-300 shadow-[0_0_25px_-4px_rgba(0,229,255,0.6)]"
           />
         </div>
 

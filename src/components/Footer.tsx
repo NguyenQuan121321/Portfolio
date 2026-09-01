@@ -19,7 +19,7 @@ export const Footer: React.FC = () => {
           <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle group-hover:border-accent-cyan overflow-hidden flex items-center justify-center transition-colors shrink-0 shadow-sm">
             <div 
               className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150"
-              style={{ backgroundImage: `url('/finn.png')` }}
+              style={{ backgroundImage: `url('/img/finn.png')` }}
               aria-hidden="true"
             />
           </div>
