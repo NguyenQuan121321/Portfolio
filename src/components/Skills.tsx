@@ -67,42 +67,52 @@ export const Skills: React.FC = () => {
           </p>
         </div>
 
-        {/* 4-Column Skill Category Grid */}
+        {/* 4-Category Bento Grid with Distinct Color Accents */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillCategories.map((cat, i) => (
-            <div 
-              key={i} 
-              className="bg-surface-900 border border-border-subtle hover:border-border-highlight rounded-xl p-6 space-y-5 transition-all"
-            >
-              <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3">
-                {cat.icon}
-                <h3 className="font-bold text-base text-zinc-100 font-mono">
-                  {cat.title}
-                </h3>
-              </div>
+          {skillCategories.map((cat, i) => {
+            const accentBorders = [
+              "border-l-4 border-l-cyan-400 hover:border-accent-cyan/60",
+              "border-l-4 border-l-purple-400 hover:border-purple-400/60",
+              "border-l-4 border-l-emerald-400 hover:border-emerald-400/60",
+              "border-l-4 border-l-amber-400 hover:border-amber-400/60",
+            ];
+            const currentAccent = accentBorders[i % accentBorders.length];
 
-              <div className="space-y-3.5">
-                {cat.skills.map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className="p-3 rounded-lg bg-surface-950/70 border border-border-subtle/80 space-y-1 hover:border-border-highlight transition-all"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-semibold text-zinc-200">
-                        {item.name}
-                      </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-900 border border-border-subtle text-accent-cyan">
-                        {item.project}
-                      </span>
+            return (
+              <div 
+                key={i} 
+                className={`bg-surface-900 border border-border-subtle ${currentAccent} rounded-xl p-6 space-y-5 transition-all shadow-sm`}
+              >
+                <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3">
+                  {cat.icon}
+                  <h3 className="font-bold text-base text-zinc-100 font-mono">
+                    {cat.title}
+                  </h3>
+                </div>
+
+                <div className="space-y-3.5">
+                  {cat.skills.map((item, idx) => (
+                    <div 
+                      key={idx} 
+                      className="p-3 rounded-lg bg-surface-950/70 border border-border-subtle/80 space-y-1 hover:border-border-highlight transition-all"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-semibold text-zinc-200">
+                          {item.name}
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-900 border border-border-subtle text-accent-cyan">
+                          {item.project}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 leading-normal font-sans">
+                        {item.detail}
+                      </p>
                     </div>
-                    <p className="text-[11px] text-zinc-400 leading-normal font-sans">
-                      {item.detail}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>

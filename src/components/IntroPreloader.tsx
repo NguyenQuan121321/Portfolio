@@ -5,15 +5,42 @@ interface IntroPreloaderProps {
   onComplete?: () => void;
 }
 
+const SESSION_KEY = 'finn_portfolio_intro_seen';
+
 export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) => {
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  // Check if user already saw the intro in this browser session
+  const [isVisible, setIsVisible] = useState<boolean>(() => {
+    try {
+      return !sessionStorage.getItem(SESSION_KEY);
+    } catch {
+      return true;
+    }
+  });
   const [progress, setProgress] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
-  // Smooth boot progression over 2.0 seconds
+  const markSeenAndDismiss = useCallback(() => {
+    try {
+      sessionStorage.setItem(SESSION_KEY, 'true');
+    } catch {
+      // ignore
+    }
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      onComplete?.();
+    }, 250);
+  }, [onComplete]);
+
+  // Fast, snappy boot progression over ~750ms for optimal recruiter scanning
   useEffect(() => {
-    const totalDuration = 1800; // 1.8s loading + ~0.35s transition = 2s total
-    const intervalTime = 20;
+    if (!isVisible) {
+      onComplete?.();
+      return;
+    }
+
+    const totalDuration = 750;
+    const intervalTime = 16;
     const increment = 100 / (totalDuration / intervalTime);
 
     const timer = setInterval(() => {
@@ -22,12 +49,8 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
         if (next >= 100) {
           clearInterval(timer);
           setTimeout(() => {
-            setIsFadingOut(true);
-            setTimeout(() => {
-              setIsVisible(false);
-              onComplete?.();
-            }, 350);
-          }, 120);
+            markSeenAndDismiss();
+          }, 80);
           return 100;
         }
         return next;
@@ -35,18 +58,15 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [onComplete]);
+  }, [isVisible, markSeenAndDismiss, onComplete]);
 
   // Support ESC or Skip button
   const handleSkip = useCallback(() => {
-    setIsFadingOut(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      onComplete?.();
-    }, 250);
-  }, [onComplete]);
+    markSeenAndDismiss();
+  }, [markSeenAndDismiss]);
 
   useEffect(() => {
+    if (!isVisible) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         handleSkip();
@@ -54,7 +74,7 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleSkip]);
+  }, [isVisible, handleSkip]);
 
   if (!isVisible) return null;
 

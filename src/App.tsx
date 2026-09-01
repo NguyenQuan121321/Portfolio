@@ -5,11 +5,11 @@ import { IntroPreloader } from './components/IntroPreloader';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FinnApiGoSection } from './components/FinnApiGoSection';
+import { VovinamSection } from './components/VovinamSection';
 import { Skills } from './components/Skills';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { QuickNavFab } from './components/QuickNavFab';
 import { ChatbotAiFab } from './components/ChatbotAiFab';
 import { ThemeTransitionEffect } from './components/ThemeTransitionEffect';
 
@@ -24,11 +24,11 @@ export const App: React.FC = () => {
           <main>
             <Hero />
             <FinnApiGoSection />
+            <VovinamSection />
             <Skills />
             <About />
             <Contact />
           </main>
-          <QuickNavFab />
           <ChatbotAiFab />
           <Footer />
         </div>

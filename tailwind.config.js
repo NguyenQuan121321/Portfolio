@@ -13,12 +13,12 @@ export default {
           700: "rgb(var(--bg-surface-700-rgb, 34 44 66) / <alpha-value>)",
         },
         accent: {
-          cyan: "#00E5FF",
-          "cyan-glow": "rgba(0, 229, 255, 0.12)",
-          mint: "#10B981",
-          "mint-glow": "rgba(16, 185, 129, 0.12)",
-          amber: "#F59E0B",
-          "amber-glow": "rgba(245, 158, 11, 0.12)",
+          cyan: "var(--accent-cyan)",
+          "cyan-glow": "var(--accent-cyan-glow)",
+          mint: "var(--accent-mint)",
+          "mint-glow": "var(--accent-mint-glow)",
+          amber: "var(--accent-amber)",
+          "amber-glow": "var(--accent-amber-glow)",
         },
         border: {
           subtle: "rgb(var(--border-subtle-rgb, 27 34 52) / <alpha-value>)",

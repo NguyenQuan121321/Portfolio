@@ -118,22 +118,24 @@ Best regards,
     <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border-subtle/80 bg-surface-950">
       <div className="max-w-4xl mx-auto text-center space-y-8">
         
-        {/* Availability Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-950/40 border border-emerald-500/30 text-xs font-mono text-emerald-300">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-mint"></span>
-          </span>
-          <span>{t('contact.subtitle')}</span>
+        {/* Title */}
+        <div className="space-y-3">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-zinc-100 max-w-2xl mx-auto leading-tight">
+            {t('contact.title')}
+          </h2>
+
+          {/* Availability Subtitle */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-900 border border-border-subtle text-xs font-mono text-zinc-300">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-mint"></span>
+            </span>
+            <span>{t('contact.subtitle')}</span>
+          </div>
         </div>
 
-        {/* Title */}
-        <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-zinc-100 max-w-2xl mx-auto leading-tight">
-          {t('contact.title')}
-        </h2>
-
         {/* Email Copy Card & Direct Actions */}
-        <div className="p-6 sm:p-8 rounded-xl bg-surface-900 border border-border-subtle max-w-xl mx-auto space-y-6">
+        <div className="p-6 sm:p-8 rounded-xl bg-surface-900 border border-border-subtle max-w-xl mx-auto space-y-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-lg bg-surface-950 border border-border-subtle font-mono text-xs sm:text-sm text-zinc-200">
             <div className="flex items-center gap-2">
               <EnvelopeSimple size={18} className="text-accent-cyan" />
@@ -152,7 +154,7 @@ Best regards,
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto px-6 py-3 rounded-lg bg-accent-cyan text-surface-950 font-bold text-xs sm:text-sm hover:bg-cyan-300 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(0,229,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full sm:w-auto px-6 py-3 rounded-lg bg-accent-cyan text-white dark:text-surface-950 font-bold text-xs sm:text-sm hover:bg-cyan-400 dark:hover:bg-cyan-300 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(0,229,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
             >
               <PaperPlaneRight size={16} weight="bold" />
               <span>{t('contact.send_email_btn')}</span>

@@ -2,8 +2,7 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
   CheckCircle, 
-  TrendUp, 
-  UserCheck
+  TrendUp
 } from '@phosphor-icons/react';
 
 export const About: React.FC = () => {
@@ -18,11 +17,7 @@ export const About: React.FC = () => {
         
         {/* Section Header */}
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-900 border border-border-subtle text-xs font-mono text-zinc-300">
-            <UserCheck size={16} className="text-accent-cyan" />
-            <span>{t('nav.about')}</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-normal text-zinc-100 leading-snug">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-100">
             {t('about.title')}
           </h2>
         </div>
