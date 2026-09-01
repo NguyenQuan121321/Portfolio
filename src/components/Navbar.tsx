@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { GithubLogo, LinkedinLogo, FilePdf, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
@@ -7,6 +7,36 @@ export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionIds: string[] = ['projects', 'writeups', 'skills', 'about', 'contact'];
+      const scrollY = window.scrollY;
+
+      if (scrollY < 200) {
+        setActiveSection('');
+        return;
+      }
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        if (!id) continue;
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 240) {
+            setActiveSection(id);
+            return;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleLanguage = () => {
     setLang(lang === 'en' ? 'vi' : 'en');
@@ -68,15 +98,22 @@ export const Navbar: React.FC = () => {
 
           {/* Center: Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 transition-all"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.replace('#', '');
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    isActive
+                      ? 'text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/25 shadow-[0_0_12px_-2px_rgba(0,229,255,0.25)] font-semibold'
+                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 border border-transparent'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Right Actions: Theme Toggle, GitHub, LinkedIn, CV & Language */}
@@ -174,16 +211,23 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="md:hidden bg-surface-950 border-b border-border-subtle px-4 pt-2 pb-6 space-y-2 animate-fadeIn">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 rounded-lg text-base font-medium text-zinc-300 hover:text-white hover:bg-surface-900"
-            >
-              {link.label}
-            </a>
-          ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.replace('#', '');
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`block px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
+                    isActive
+                      ? 'text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/20 font-semibold'
+                      : 'text-zinc-300 hover:text-white hover:bg-surface-900'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           
           <div className="pt-2 border-t border-border-subtle flex flex-col gap-2">
             <a
