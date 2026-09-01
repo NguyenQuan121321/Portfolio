@@ -214,11 +214,11 @@ const en: Record<string, string> = {
   "contact.modal.close": "Close (ESC)",
 
   // Chatbot AI
-  "chatbot.button_tooltip": "Chat with Quan's AI Assistant",
-  "chatbot.title": "Finn AI Assistant",
+  "chatbot.button_tooltip": "Chat with Jake AI Assistant",
+  "chatbot.title": "Jake AI",
   "chatbot.subtitle": "AI Assistant for Quan's skills, projects & background",
   "chatbot.status_online": "Backend AI Online",
-  "chatbot.welcome_msg": "Hello! I am Quan's AI Assistant (Finn.dev). Feel free to ask me anything about his Golang/Node.js skills, Clean Architecture in FinnApiGo, or how to contact him for interview opportunities!",
+  "chatbot.welcome_msg": "Woof woof! Hello, I am Jake AI — Quan's AI Assistant! Feel free to ask me anything about his Golang/Node.js skills, Clean Architecture in FinnApiGo, or how to schedule an interview with Quan!",
   "chatbot.input_placeholder": "Ask AI anything (e.g. What are Quan's core backend skills?)...",
   "chatbot.suggest_title": "Quick suggestions:",
   "chatbot.suggest_1": "What are Quan's core technical skills?",

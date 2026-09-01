@@ -3,27 +3,55 @@
 @tailwind utilities;
 
 :root {
-  /* Light mode RGB channels (Soft Nordic Slate - Gentle on eyes, NOT blinding white) */
-  --bg-surface-950-rgb: 241 245 249; /* Slate 100 */
-  --bg-surface-900-rgb: 255 255 255; /* Crisp White Card */
-  --bg-surface-850-rgb: 248 250 252; /* Slate 50 */
-  --bg-surface-800-rgb: 226 232 240; /* Slate 200 */
-  --bg-surface-700-rgb: 203 213 225; /* Slate 300 */
+  /* ========================================================================= */
+  /* PREMIUM LIGHT THEME (Clean Architecture / Vercel / Linear Inspired)       */
+  /* ========================================================================= */
+  --bg-surface-950: #f8fafc; /* Slate-50: Crisp, elegant canvas */
+  --bg-surface-900: #ffffff; /* Pure White Card with soft studio shadow */
+  --bg-surface-850: #f1f5f9; /* Slate-100: Soft inset surface */
+  --bg-surface-800: #e2e8f0; /* Slate-200: Interactive hover */
+  --bg-surface-700: #cbd5e1; /* Slate-300: Active press */
+
+  --border-subtle: #e2e8f0;    /* Border subtle: Slate-200 */
+  --border-highlight: #cbd5e1; /* Border highlight: Slate-300 */
+
+  --accent-cyan: #0284c7;      /* Ocean Cyan / Electric Blue (WCAG AAA) */
+  --accent-cyan-glow: rgba(2, 132, 199, 0.12);
+  --accent-mint: #059669;      /* Forest Emerald */
+  --accent-mint-glow: rgba(5, 150, 105, 0.12);
+  --accent-amber: #d97706;     /* Amber Gold */
+  --accent-amber-glow: rgba(217, 119, 6, 0.12);
+
+  --bg-surface-950-rgb: 248 250 252;
+  --bg-surface-900-rgb: 255 255 255;
+  --bg-surface-850-rgb: 241 245 249;
+  --bg-surface-800-rgb: 226 232 240;
+  --bg-surface-700-rgb: 203 213 225;
   --border-subtle-rgb: 226 232 240;
   --border-highlight-rgb: 203 213 225;
-
-  --bg-surface-950: #f1f5f9;
-  --bg-surface-900: #ffffff;
-  --bg-surface-850: #f8fafc;
-  --bg-surface-800: #e2e8f0;
-  --bg-surface-700: #cbd5e1;
-  --border-subtle: #e2e8f0;
-  --border-highlight: #cbd5e1;
 }
 
 .dark,
 [data-theme="dark"] {
-  /* Dark mode RGB channels (Deep cyber, elegant contrast) */
+  /* ========================================================================= */
+  /* ELITE CYBER DARK THEME (Deep Obsidian, Neon Cyan & Matrix Accents)        */
+  /* ========================================================================= */
+  --bg-surface-950: #080a0f;
+  --bg-surface-900: #0d1117;
+  --bg-surface-850: #121722;
+  --bg-surface-800: #182030;
+  --bg-surface-700: #222c42;
+
+  --border-subtle: #1b2234;
+  --border-highlight: #2d3752;
+
+  --accent-cyan: #00E5FF;
+  --accent-cyan-glow: rgba(0, 229, 255, 0.15);
+  --accent-mint: #10B981;
+  --accent-mint-glow: rgba(16, 185, 129, 0.15);
+  --accent-amber: #F59E0B;
+  --accent-amber-glow: rgba(245, 158, 11, 0.15);
+
   --bg-surface-950-rgb: 8 10 15;
   --bg-surface-900-rgb: 13 17 23;
   --bg-surface-850-rgb: 18 23 34;
@@ -31,14 +59,6 @@
   --bg-surface-700-rgb: 34 44 66;
   --border-subtle-rgb: 27 34 52;
   --border-highlight-rgb: 45 55 82;
-
-  --bg-surface-950: #080a0f;
-  --bg-surface-900: #0d1117;
-  --bg-surface-850: #121722;
-  --bg-surface-800: #182030;
-  --bg-surface-700: #222c42;
-  --border-subtle: #1b2234;
-  --border-highlight: #2d3752;
 }
 
 @layer base {
@@ -50,7 +70,7 @@
     background-color: var(--bg-surface-950);
     font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
     line-height: 1.6;
-    transition: background-color 0.5s ease, color 0.5s ease;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   /* Custom sleek scrollbar */
@@ -74,56 +94,71 @@
 
   /* Focus rings for keyboard accessibility */
   *:focus-visible {
-    outline: 2px solid #00E5FF;
+    outline: 2px solid var(--accent-cyan);
     outline-offset: 2px;
   }
 }
 
 /* ========================================================================= */
-/* BULLETPROOF LIGHT MODE THEME (Sáng dịu mắt, tương phản cao, thẻ nổi bật)   */
+/* POLISHED LIGHT MODE STYLES & CONTRAST (Anti-Slop / UI/UX Pro Max)         */
 /* ========================================================================= */
 html:not(.dark),
 html[data-theme="light"],
 body[data-theme="light"] {
   color-scheme: light;
-  background-color: #f1f5f9 !important; /* Soft Slate-100 */
-  color: #0f172a !important;
+  background-color: #f8fafc !important;
+  color: #090d16 !important;
 }
 
 html:not(.dark) body {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
+  background-color: #f8fafc !important;
+  color: #090d16 !important;
 }
 
 /* 1. Main Sections & Containers */
 html:not(.dark) .bg-surface-950,
 html:not(.dark) section,
 html:not(.dark) footer {
-  background-color: #f1f5f9 !important;
+  background-color: #f8fafc !important;
 }
 
 /* 2. Elevated Main Cards (Clean Architecture, Scenarios, Skills, About, Contact) */
 html:not(.dark) .bg-surface-900 {
   background-color: #ffffff !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.06) !important;
 }
 
-/* 3. Nested Inner Sub-Cards & Stepper Items (Bên trong Clean Arch, Skills, Scenarios) */
+/* 3. Telemetry Strip & Verified Stack & Security Scenarios */
+html:not(.dark) [class*="bg-surface-900/90"],
+html:not(.dark) [class*="bg-surface-900/60"],
+html:not(.dark) [class*="bg-surface-950/80"],
+html:not(.dark) [class*="bg-surface-950/70"],
+html:not(.dark) [class*="bg-surface-950/50"],
+html:not(.dark) [class*="bg-surface-900/50"] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* 4. Inset Sub-panels (Active Layer Inspector, Inside Cards) */
 html:not(.dark) .bg-surface-850,
-html:not(.dark) .bg-surface-800,
-html:not(.dark) .bg-surface-950\/70,
-html:not(.dark) .bg-surface-950\/80,
-html:not(.dark) .bg-surface-950\/90,
-html:not(.dark) .bg-surface-950\/50,
-html:not(.dark) .bg-surface-900\/50 {
-  background-color: #f8fafc !important; /* Slate-50: Crisp light background */
+html:not(.dark) .bg-surface-800 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
 }
 
-/* 4. Scenario Colored Accent Badges in Light Mode */
+/* 5. Verified Tech Stack Tags & Badges in Light Mode */
+html:not(.dark) span[class*="bg-surface-950"] {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 6. Scenario Colored Accent Badges in Light Mode */
 html:not(.dark) .bg-cyan-950,
 html:not(.dark) .bg-cyan-950\/40,
 html:not(.dark) .bg-cyan-950\/60 {
-  background-color: #e0f2fe !important; /* Sky-100 */
+  background-color: #e0f2fe !important;
   color: #0369a1 !important;
   border-color: #bae6fd !important;
 }
@@ -131,14 +166,14 @@ html:not(.dark) .bg-cyan-950\/60 {
 html:not(.dark) .bg-emerald-950,
 html:not(.dark) .bg-emerald-950\/40,
 html:not(.dark) .bg-emerald-950\/50 {
-  background-color: #d1fae5 !important; /* Emerald-100 */
+  background-color: #d1fae5 !important;
   color: #047857 !important;
   border-color: #a7f3d0 !important;
 }
 
 html:not(.dark) .bg-purple-950,
 html:not(.dark) .bg-purple-950\/40 {
-  background-color: #f3e8ff !important; /* Purple-100 */
+  background-color: #f3e8ff !important;
   color: #6b21a8 !important;
   border-color: #e9d5ff !important;
 }
@@ -146,50 +181,51 @@ html:not(.dark) .bg-purple-950\/40 {
 html:not(.dark) .bg-amber-950,
 html:not(.dark) .bg-amber-950\/20,
 html:not(.dark) .bg-amber-950\/40 {
-  background-color: #fef3c7 !important; /* Amber-100 */
+  background-color: #fef3c7 !important;
   color: #92400e !important;
   border-color: #fde68a !important;
 }
 
-/* 5. Typography Contrast in Light Mode */
+/* 7. Typography Hierarchy & Contrast in Light Mode */
 html:not(.dark) .text-zinc-100 {
-  color: #0f172a !important; /* Slate-900 */
+  color: #090d16 !important; /* Deep Obsidian Ink for Headings */
 }
 html:not(.dark) .text-zinc-200 {
-  color: #1e293b !important; /* Slate-800 */
+  color: #1e293b !important; /* Slate-800 for Subtitles & Titles */
 }
 html:not(.dark) .text-zinc-300 {
-  color: #334155 !important; /* Slate-700 */
+  color: #334155 !important; /* Slate-700 for Body Paragraphs */
 }
 html:not(.dark) .text-zinc-400 {
-  color: #475569 !important; /* Slate-600 */
+  color: #526077 !important; /* Slate-600 for Secondary Metadata */
 }
 html:not(.dark) .text-zinc-500 {
-  color: #64748b !important; /* Slate-500 */
+  color: #64748b !important; /* Slate-500 for Captions */
 }
 
-/* 6. Accent Text */
+/* 8. Accent Text in Light Mode */
 html:not(.dark) .text-accent-cyan {
-  color: #0284c7 !important; /* Deep Sky Blue 600 */
+  color: #0284c7 !important; /* Deep Ocean Cyan 600 */
 }
 html:not(.dark) .text-accent-mint {
-  color: #059669 !important; /* Emerald 600 */
+  color: #059669 !important; /* Rich Forest Emerald 600 */
 }
 
-/* 7. Borders */
+/* 9. Borders in Light Mode */
 html:not(.dark) .border-border-subtle,
 html:not(.dark) .border-border-subtle\/80,
 html:not(.dark) .border-border-subtle\/60 {
-  border-color: #e2e8f0 !important; /* Slate-200 */
+  border-color: #e2e8f0 !important;
 }
 html:not(.dark) .border-border-highlight {
-  border-color: #cbd5e1 !important; /* Slate-300 */
+  border-color: #cbd5e1 !important;
 }
 
-/* 8. Navbar Header */
+/* 10. Navbar Header in Light Mode */
 html:not(.dark) header {
-  background-color: rgba(241, 245, 249, 0.92) !important;
-  border-color: #e2e8f0 !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
 /* ========================================================================= */
@@ -198,11 +234,11 @@ html:not(.dark) header {
 @keyframes sunriseSkySweep {
   0% {
     clip-path: circle(0% at 0% 100%);
-    opacity: 0.95;
+    opacity: 0.9;
   }
   45% {
     clip-path: circle(120% at 50% 20%);
-    opacity: 0.65;
+    opacity: 0.6;
   }
   100% {
     clip-path: circle(240% at 100% 100%);
@@ -213,11 +249,11 @@ html:not(.dark) header {
 @keyframes sunsetSkySweep {
   0% {
     clip-path: circle(0% at 100% 100%);
-    opacity: 0.95;
+    opacity: 0.9;
   }
   45% {
     clip-path: circle(120% at 50% 20%);
-    opacity: 0.65;
+    opacity: 0.6;
   }
   100% {
     clip-path: circle(240% at 0% 100%);
