@@ -186,15 +186,32 @@ const en: Record<string, string> = {
   "about.growth_4": "Getting hands-on with container orchestration on Kubernetes.",
 
   // Contact Section
-  "contact.title": "Get in Touch",
-  "contact.subtitle": "Seeking Intern / Fresher Backend Developer opportunities in Dong Nai, Viet Nam or Remote",
-  "contact.email_btn": "Copy Email Address",
-  "contact.email_copied": "Email copied to clipboard!",
+  "contact.title": "Get In Touch",
+  "contact.subtitle": "Open to Internship / Fresher Backend Developer Roles in Dong Nai, Ho Chi Minh City, or Remote",
+  "contact.send_email_btn": "Send Direct Email",
+  "contact.email_btn": "Copy Email",
+  "contact.email_copied": "Email Copied!",
   "contact.github_btn": "View GitHub Profile",
+  "contact.modal.title": "Choose Email Client / Webmail",
+  "contact.modal.subtitle": "Open directly in your webmail browser to avoid unconfigured default mail client issues:",
+  "contact.modal.gmail": "Open in Gmail Web (Recommended)",
+  "contact.modal.gmail_desc": "Opens a new compose tab in Gmail in your current browser",
+  "contact.modal.outlook": "Open in Outlook / Hotmail Web",
+  "contact.modal.outlook_desc": "Opens Outlook Live web compose page in your browser",
+  "contact.modal.yahoo": "Open in Yahoo Mail Web",
+  "contact.modal.yahoo_desc": "Opens Yahoo Mail compose screen in your browser",
+  "contact.modal.default_app": "Open via Default Mail App",
+  "contact.modal.default_app_desc": "Launches system default app (Apple Mail, Outlook, Windows Mail)",
+  "contact.modal.preview_title": "Pre-filled Email Draft Preview:",
+  "contact.modal.copy_draft": "Copy Email Draft",
+  "contact.modal.copied_draft": "Draft Copied!",
+  "contact.modal.subject_label": "Subject:",
+  "contact.modal.recommended": "Recommended",
+  "contact.modal.close": "Close (ESC)",
 
   // Footer
   "footer.text": "Nguyen Hoang Anh Quan — Backend Developer Portfolio.",
-  "footer.commit": "FinnApiGo live deployment on Render."
+  "footer.commit": "FinnApiGo Backend live verified on Render."
 };
 
 export default en;
