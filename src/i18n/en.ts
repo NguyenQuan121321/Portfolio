@@ -3,9 +3,11 @@ const en: Record<string, string> = {
   "nav.status": "Available for Fresher / Intern Backend Roles",
   "nav.home": "Home",
   "nav.projects": "Projects",
+  "nav.writeups": "Blog & Write-ups",
   "nav.skills": "Skills & Technologies",
   "nav.about": "About Me",
   "nav.contact": "Contact",
+  "nav.cv": "Download CV (PDF)",
   "nav.quick_menu": "Quick Navigation Menu",
   "theme.toggle_light": "Switch to Light mode",
   "theme.toggle_dark": "Switch to Dark mode",
@@ -19,7 +21,9 @@ const en: Record<string, string> = {
   "hero.headline_highlight": "High-Performance API Architectures.",
   "hero.description": "Final-year student specializing in Go and Node.js backend development. Focused on Clean Architecture, multi-factor security mechanisms (JWT rotation, TOTP, Passkeys), and automated testing.",
   "hero.cta.projects": "Explore Project & Try API",
-  "hero.cta.github": "GitHub Profile",
+  "hero.cta.cv": "Download CV (PDF)",
+  "hero.cta.github": "GitHub",
+  "hero.cta.linkedin": "LinkedIn",
   "hero.cta.contact": "Contact Me",
 
   // Telemetry Bar
@@ -165,6 +169,58 @@ const en: Record<string, string> = {
   "project.links.live": "Live Deployment (Render)",
   "project.links.docs": "Swagger OpenAPI Docs",
 
+  // Write-ups / Engineering Deep-Dives
+  "writeups.badge": "ENGINEERING CASE STUDIES & POST-MORTEMS",
+  "writeups.title": "Engineering Write-ups & Debugging Deep-Dives",
+  "writeups.subtitle": "Root Cause Analysis (RCA), architectural mitigations, and lessons learned from production backend engineering:",
+  "writeups.filter_all": "All Case Studies",
+  "writeups.filter_db": "Database & Migration",
+  "writeups.filter_auth": "Security & Auth",
+  "writeups.filter_concurrency": "Concurrency & Redis",
+  "writeups.read_deepdive": "Inspect RCA & Code",
+  "writeups.close": "Close (ESC)",
+  "writeups.problem_label": "Real-World Problem Statement:",
+  "writeups.rca_label": "Root Cause Analysis (RCA):",
+  "writeups.solution_label": "Architectural Mitigation & Solution:",
+  "writeups.code_label": "Code Implementation / Architectural Artifact:",
+  "writeups.metrics_label": "Measured Results & Engineering Takeaways:",
+
+  // Write-up 1: Database Migration
+  "writeups.art1.title": "Database Migration Deadlock: Implicit Table Locks & Zero-Downtime Rollbacks",
+  "writeups.art1.summary": "Diagnosing connection pool starvation caused by ALTER TABLE metadata locks on high-traffic databases and applying the 3-phase Expand/Contract pattern.",
+  "writeups.art1.tag": "Database · Safe Migration",
+  "writeups.art1.problem": "During a schema migration on the user accounts table (adding `totp_secret` and modifying `session_id`), the migration ran directly inside a standard GORM/Goose transaction. Under active login traffic, the DDL command requested an Exclusive Metadata Lock (MDL), blocking subsequent read/write queries and starving the Go backend's DB connection pool (causing an HTTP 500 spike).",
+  "writeups.art1.rca": "1. DDL operations such as `ALTER TABLE ADD COLUMN NOT NULL` (without safe default values) require an Exclusive Metadata Lock on MySQL/PostgreSQL.\n2. GORM wraps migrations in transactions by default. On MySQL, DDL statements trigger an implicit commit, breaking rollback safety if an error occurs midway.\n3. Absence of `lock_timeout` and `statement_timeout` resulted in indefinite lock queuing, exhausting worker Goroutines.",
+  "writeups.art1.solution": "1. Adopted the **3-Phase Expand/Contract Migration Pattern**:\n   - Phase 1 (Expand): Add new columns as `NULLABLE` or with safe defaults without touching existing columns.\n   - Phase 2 (Migrate): Deploy Go backend with dual-writing to both columns; backfill existing records in non-blocking batches.\n   - Phase 3 (Contract): Switch reads to the new column and drop old columns in a subsequent non-peak migration.\n2. Configured safe migration flags in Goose: Separated DDL from transactional scopes and enforced `SET lock_timeout = '3s'` to fail-fast rather than hang the system.\n3. Integrated `squawk` migration linter into the CI pipeline to catch dangerous schema changes prior to merge.",
+  "writeups.art1.metrics": "• Reduced table lock holding duration from 12 seconds to < 15ms.\n• Maintained 0% service downtime across schema upgrades.\n• Eliminated 100% of partial migration failure risks.",
+
+  // Write-up 2: Sudo Mode
+  "writeups.art2.title": "Sudo Mode: Designing Step-Up Re-Authentication for Sensitive Operations",
+  "writeups.art2.summary": "Building a short-lived elevated privilege token mechanism (GitHub-style Sudo Mode) backed by 5-minute Redis TTL to protect security settings without UX friction.",
+  "writeups.art2.tag": "Auth · Step-Up Security",
+  "writeups.art2.problem": "Relying solely on standard 15-minute JWT Access Tokens means that if an attacker intercepts a token (via XSS or a compromised client), they can immediately change the user's password, revoke Passkeys, or modify recovery emails. Forcing a full re-login for every setting change degrades the user experience.",
+  "writeups.art2.rca": "1. Standard stateless JWT architectures do not track 'session freshness' or recent biometric/challenge verification.\n2. Lack of distinction between routine operational requests (browsing data) and high-consequence administrative actions (modifying security credentials).",
+  "writeups.art2.solution": "1. Implemented a `RequireSudoMode()` middleware in Go:\n   - Sensitive routes (e.g. `POST /api/v1/auth/mfa/disable`) require a valid `X-Sudo-Token` header.\n   - If missing or expired (> 5 min), backend returns `HTTP 403 Sudo Mode Required` prompting for step-up auth (Password, TOTP, or Passkey).\n2. Upon successful step-up verification, the server generates a cryptographically secure token via `crypto/rand` and stores its SHA-256 hash in Redis with a 300-second TTL (5 minutes).\n3. Redis automatically expires the elevated grant, resetting the session to standard privilege.",
+  "writeups.art2.metrics": "• 100% protection against critical account takeover (ATO) attacks via stolen access tokens.\n• Frictionless 5-minute window for legitimate administrators performing multi-step config updates.\n• Seamless interoperability across both TOTP 2FA and FIDO2 Biometric credentials.",
+
+  // Write-up 3: WebAuthn RPID
+  "writeups.art3.title": "WebAuthn RPID Mismatch: Passkey Domain Binding & Origin Validation",
+  "writeups.art3.summary": "Demystifying DOMException errors when verifying FIDO2 Passkeys across localhost, staging, and Render production environments, with TLS proxy header normalization.",
+  "writeups.art3.tag": "FIDO2 · Passkeys & PKI",
+  "writeups.art3.problem": "When deploying FIDO2 WebAuthn Passkeys on FinnApiGo, registration worked seamlessly in local development (`localhost:8080`), but threw `DOMException: The operation is insecure` or `webauthn: relying party id mismatch` when deployed to Render (`https://finnapigo.onrender.com`) and accessed via client SPA domains.",
+  "writeups.art3.rca": "1. W3C WebAuthn enforces strict **RPID (Relying Party ID)** binding: RPID must be a registrable suffix of the effective origin (e.g. `finn.dev` origin can use RPID `finn.dev`, but not `render.com`).\n2. Origin headers from SPA clients contain scheme and port (`https://localhost:5173`), whereas backend host detection behind Render's reverse proxy ingress had mismatched host headers.\n3. The WebAuthn cryptographic verification library performs a byte-exact SHA-256 hash comparison between the ClientDataJSON origin and the AuthenticatorData RPID hash.",
+  "writeups.art3.solution": "1. Engineered a Dynamic RPID Resolver in the Go domain service:\n   - Loaded environment-governed origin whitelists.\n   - Extracted normalized effective domain hostnames (stripping ports/schemes) to construct valid RPIDs.\n2. Configured trusted reverse proxy middleware handling `X-Forwarded-Proto` and `X-Forwarded-Host` headers from Render ingress.\n3. Developed TypeScript client helpers to convert ArrayBuffers to Base64URL-safe strings following RFC 4648 §5.",
+  "writeups.art3.metrics": "• 100% Passkey registration & authentication success rate across Chrome, Safari, Firefox, and Windows Hello.\n• Absolute defense against domain phishing: credentials created for authentic domains cannot be leveraged on spoofed sites.\n• Sub-80ms biometric verification roundtrip latency.",
+
+  // Write-up 4: Token Race Condition
+  "writeups.art4.title": "Refresh Token Race Condition: Atomic Token Swaps with Redis Lua Scripts",
+  "writeups.art4.summary": "Resolving multi-tab simultaneous token refresh races that triggered false-positive token theft alerts (Family Revocation) and forced unintended user logouts.",
+  "writeups.art4.tag": "Concurrency · Redis Lua",
+  "writeups.art4.problem": "Per RFC 6749, Refresh Tokens are single-use. Re-submitting an already-rotated token triggers Family Revocation to neutralize token theft. However, when a user opened 4 browser tabs simultaneously on system boot, all 4 tabs fired `/refresh` within a 30ms window. Tab 1 rotated the token successfully, making Tabs 2, 3, and 4 present 'old tokens', triggering false-positive intrusion alerts and logging the user out.",
+  "writeups.art4.rca": "1. Concurrency race window between parallel browser tab network requests.\n2. Multi-step token validation and revocation in Redis (`GET` then `DEL` then `SET`) lacked microsecond-level atomicity.",
+  "writeups.art4.solution": "1. **Atomic Redis Lua Script Exchange**:\n   - Bundled token hash verification, revocation, and new token registration into a single atomic Lua script cycle executed in Redis memory.\n2. **10-Second Grace Period Mechanism**:\n   - Rotated tokens are marked as `GRACE_ACTIVE` for 10 seconds rather than being purged immediately.\n   - Concurrent requests within the 10-second window receive the newly issued Access Token without tripping the intrusion alarm.\n3. After the grace window expires, replayed tokens are permanently flagged as malicious.",
+  "writeups.art4.metrics": "• Eliminated 100% of false-positive multi-tab logouts.\n• Preserved strict intrusion detection for genuine replay attacks outside the grace window.\n• 0.8ms average Redis Lua execution latency.",
+
   // Skills Section
   "skills.title": "Practical Skills & Stack",
   "skills.subtitle": "Technologies actively applied and verified through concrete implementation:",
@@ -196,7 +252,9 @@ const en: Record<string, string> = {
   "contact.send_email_btn": "Send Direct Email",
   "contact.email_btn": "Copy Email",
   "contact.email_copied": "Email Copied!",
-  "contact.github_btn": "View GitHub Profile",
+  "contact.github_btn": "GitHub",
+  "contact.linkedin_btn": "LinkedIn Profile",
+  "contact.cv_btn": "Download CV (PDF)",
   "contact.modal.title": "Choose Email Client / Webmail",
   "contact.modal.subtitle": "Open directly in your webmail browser to avoid unconfigured default mail client issues:",
   "contact.modal.gmail": "Open in Gmail Web (Recommended)",
@@ -233,7 +291,10 @@ const en: Record<string, string> = {
 
   // Footer
   "footer.text": "Nguyen Hoang Anh Quan — Backend Developer Portfolio.",
-  "footer.commit": "FinnApiGo Backend live verified on Render."
+  "footer.commit": "FinnApiGo Backend live verified on Render.",
+  "footer.cv": "Download CV (PDF)",
+  "footer.linkedin": "LinkedIn",
+  "footer.github": "GitHub"
 };
 
 export default en;

@@ -3,6 +3,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { 
   ArrowDown, 
   GithubLogo, 
+  LinkedinLogo,
+  FilePdf,
   ShieldCheck, 
   CheckCircle, 
   Gauge, 
@@ -86,7 +88,7 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-4 pt-2">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
           <a
             href="#projects"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent-cyan text-white dark:text-surface-950 font-bold text-sm hover:bg-cyan-400 dark:hover:bg-cyan-300 transition-all shadow-[0_0_20px_-5px_rgba(0,229,255,0.4)] active:scale-95"
@@ -96,13 +98,32 @@ export const Hero: React.FC = () => {
           </a>
 
           <a
+            href="/CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+            download="CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-accent-cyan/40 hover:border-accent-cyan text-zinc-100 font-mono text-sm transition-all shadow-sm active:scale-95 group"
+          >
+            <FilePdf size={18} className="text-accent-cyan group-hover:scale-110 transition-transform" weight="bold" />
+            <span>{t('hero.cta.cv')}</span>
+          </a>
+
+          <a
             href="https://github.com/NguyenQuan121321"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-sm transition-all active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-sm transition-all active:scale-95"
           >
             <GithubLogo size={18} weight="bold" />
             <span>{t('hero.cta.github')}</span>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-accent-cyan/60 text-zinc-200 hover:text-accent-cyan font-mono text-sm transition-all active:scale-95"
+          >
+            <LinkedinLogo size={18} weight="bold" className="text-blue-400" />
+            <span>{t('hero.cta.linkedin')}</span>
           </a>
         </div>
 

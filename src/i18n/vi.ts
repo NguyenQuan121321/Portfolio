@@ -3,9 +3,11 @@ const vi: Record<string, string> = {
   "nav.status": "Sẵn sàng nhận việc Fresher / Intern Backend",
   "nav.home": "Trang chủ",
   "nav.projects": "Dự án",
+  "nav.writeups": "Blog & Write-ups",
   "nav.skills": "Kỹ năng & Công nghệ",
   "nav.about": "Về tôi",
   "nav.contact": "Liên hệ",
+  "nav.cv": "Tải CV (PDF)",
   "nav.quick_menu": "Menu Điều Hướng Nhanh",
   "theme.toggle_light": "Chuyển sang Chế độ Sáng",
   "theme.toggle_dark": "Chuyển sang Chế độ Tối",
@@ -19,7 +21,9 @@ const vi: Record<string, string> = {
   "hero.headline_highlight": "Kiến trúc API Hiệu Năng Cao.",
   "hero.description": "Sinh viên năm cuối tập trung chuyên sâu vào lập trình backend với Go và Node.js. Chú trọng kiến trúc Clean Architecture, cơ chế bảo mật xác thực (JWT rotation, TOTP, Passkeys) và viết test tự động.",
   "hero.cta.projects": "Xem Dự án & Thử API",
-  "hero.cta.github": "GitHub Cá nhân",
+  "hero.cta.cv": "Tải CV (PDF)",
+  "hero.cta.github": "GitHub",
+  "hero.cta.linkedin": "LinkedIn",
   "hero.cta.contact": "Liên hệ",
 
   // Telemetry Bar
@@ -162,6 +166,58 @@ const vi: Record<string, string> = {
   "project.links.live": "Trang Web Render (Live)",
   "project.links.docs": "Tài liệu API Swagger",
 
+  // Write-ups / Engineering Deep-Dives
+  "writeups.badge": "BÀI HỌC KỸ THUẬT & DEBUGGING",
+  "writeups.title": "Engineering Write-ups & Debugging Deep-Dives",
+  "writeups.subtitle": "Phân tích nguyên nhân gốc rễ (RCA), giải pháp kiến trúc và kinh nghiệm xử lý lỗi thực tế từ môi trường backend production:",
+  "writeups.filter_all": "Tất cả bài viết",
+  "writeups.filter_db": "Database & Migration",
+  "writeups.filter_auth": "Security & Auth",
+  "writeups.filter_concurrency": "Concurrency & Redis",
+  "writeups.read_deepdive": "Xem Chi Tiết RCA & Code",
+  "writeups.close": "Đóng (ESC)",
+  "writeups.problem_label": "Vấn Đề Thực Tế (Problem Statement):",
+  "writeups.rca_label": "Phân Tích Nguyên Nhân Gốc Rễ (Root Cause Analysis):",
+  "writeups.solution_label": "Giải Pháp & Kiến Trúc Áp Dụng (Mitigation):",
+  "writeups.code_label": "Đoạn Mã Nguồn / Cấu Hình Minh Họa:",
+  "writeups.metrics_label": "Kết Quả Đo Lường & Bài Học Đúc Kết:",
+
+  // Write-up 1: Database Migration
+  "writeups.art1.title": "Bug Database Migration: Deadlock, Table Lock Ngầm Định & Zero-Downtime Rollback",
+  "writeups.art1.summary": "Phân tích sự cố treo kết nối MySQL/PostgreSQL khi chạy ALTER TABLE trên bảng hàng triệu dòng và cách áp dụng mô hình 3 pha Expand-Migrate-Contract.",
+  "writeups.art1.tag": "Database · Safe Migration",
+  "writeups.art1.problem": "Trong quá trình cập nhật schema cho bảng tài khoản (thêm cột `totp_secret` và đổi kiểu dữ liệu `session_id`), hệ thống chạy `ALTER TABLE` trực tiếp trong transaction của GORM/Goose. Khi có lượng request đăng nhập đồng thời, lệnh migration gây ra Exclusive Table Lock (Metadata Lock), chặn đứng mọi query đọc/ghi tiếp theo và làm cạn kiệt Connection Pool của Go backend (HTTP 500 Spike).",
+  "writeups.art1.rca": "1. Các câu lệnh DDL như `ALTER TABLE ADD COLUMN NOT NULL` (không có DEFAULT hợp lý) hoặc thêm Foreign Key ngầm định yêu cầu Exclusive Metadata Lock (MDL).\n2. GORM mặc định bọc migration trong Transaction. Trên MySQL, DDL tự động kích hoạt Implicit Commit, khiến cơ chế rollback của transaction bị vô hiệu hóa khi xảy ra lỗi giữa chừng.\n3. Thiếu `lock_timeout` và `statement_timeout` khiến query chờ lock vô hạn, làm treo toàn bộ Goroutine worker.",
+  "writeups.art1.solution": "1. Áp dụng chuẩn **3-Phase Expand/Contract Pattern**:\n   - Pha 1 (Expand): Thêm cột mới dạng `NULLABLE` hoặc có Default an toàn mà không sửa cột cũ.\n   - Pha 2 (Migrate): Go code ghi song song (Dual-write) vào cả 2 cột; chạy batch script chuyển dữ liệu ngầm.\n   - Pha 3 (Contract): Chuyển đọc sang cột mới và xóa cột cũ bằng migration riêng biệt.\n2. Cấu hình cờ an toàn trong Migration Tool (Goose/Golang-Migrate): Tách DDL ra khỏi Transaction, thiết lập `SET lock_timeout = '3s'` để fail-fast nếu gặp tranh chấp lock thay vì treo hệ thống.\n3. Thêm linter `squawk` và test tự động kiểm tra cú pháp migration trước khi merge code vào main.",
+  "writeups.art1.metrics": "• Giảm thời gian chiếm giữ Table Lock từ 12s xuống < 15ms.\n• Tỷ lệ gián đoạn dịch vụ (Downtime) đạt mức 0% trong suốt quá trình cập nhật schema.\n• Loại bỏ 100% rủi ro Partial Migration (lỗi dở dang không rollback được).",
+
+  // Write-up 2: Sudo Mode
+  "writeups.art2.title": "Sudo Mode: Thiết Kế Step-Up Re-Authentication Bảo Vệ Tác Vụ Nhạy Cảm",
+  "writeups.art2.summary": "Xây dựng cơ chế nâng quyền ngắn hạn (GitHub-style Sudo Mode) bằng token Redis TTL 5 phút, bảo vệ đổi mật khẩu/MFA mà không làm phiền trải nghiệm đăng nhập thường ngày.",
+  "writeups.art2.tag": "Auth · Step-Up Security",
+  "writeups.art2.problem": "Nếu chỉ dựa vào JWT Access Token thông thường (thời hạn 15 phút), một khi attacker đánh cắp được token (qua XSS hoặc network sniffer), họ có thể lập tức đổi mật khẩu, xóa Passkey hoặc thay đổi email khôi phục của nạn nhân trước khi token hết hạn. Bắt người dùng đăng nhập lại từ đầu mỗi khi thao tác thì gây ức chế UX.",
+  "writeups.art2.rca": "1. Kiến trúc JWT stateless thông thường không lưu trạng thái 'mức độ tin cậy của phiên' (Session Freshness).\n2. Không có sự phân biệt giữa 'xác thực danh tính định kỳ' (đọc tin tức, xem dashboard) và 'thao tác có rủi ro cao' (đổi cấu hình bảo mật, chuyển quyền).",
+  "writeups.art2.solution": "1. Xây dựng middleware `RequireSudoMode()` trong Go:\n   - Khi người dùng gửi request vào route nhạy cảm (VD: `POST /api/v1/auth/mfa/disable`), middleware kiểm tra header `X-Sudo-Token`.\n   - Nếu thiếu hoặc token đã quá 5 phút, backend trả về mã lỗi chuẩn `HTTP 403 Sudo Mode Required` kèm prompt yêu cầu xác thực lại (bằng mật khẩu, TOTP hoặc WebAuthn Passkey).\n2. Khi xác thực Step-Up thành công, server sinh ra một chuỗi ngẫu nhiên mã hóa `crypto/rand`, lưu hash SHA-256 vào Redis với TTL đúng 300 giây (5 phút).\n3. Sau khi thực hiện xong tác vụ nhạy cảm hoặc hết 5 phút, Redis tự động giải phóng key, đưa phiên về trạng thái an toàn.",
+  "writeups.art2.metrics": "• Ngăn chặn 100% các cuộc tấn công chiếm quyền tài khoản (Account Takeover) thông qua token rò rỉ.\n• Thời gian bảo vệ linh hoạt: 5 phút không cần nhập lại mã liên tục nếu thao tác nhiều cài đặt cùng lúc.\n• Tích hợp mượt mà với cả TOTP 2FA và WebAuthn Biometrics.",
+
+  // Write-up 3: WebAuthn RPID
+  "writeups.art3.title": "WebAuthn RPID Mismatch: Khắc Phục Passkey Domain Binding & Origin Validation",
+  "writeups.art3.summary": "Giải mã sự cố DOMException khi xác thực FIDO2 Passkey giữa môi trường dev localhost, staging và Render live, cùng cách chuẩn hóa kiến trúc TLS reverse proxy.",
+  "writeups.art3.tag": "FIDO2 · Passkeys & PKI",
+  "writeups.art3.problem": "Khi triển khai tính năng FIDO2 Passkeys (WebAuthn) trên FinnApiGo, quá trình đăng ký hoạt động hoàn hảo ở máy local (`localhost:8080`), nhưng khi đưa lên môi trường Render (`https://finnapigo.onrender.com`) hoặc gọi qua SPA client (`https://finn.dev`), trình duyệt liên tục ném lỗi `DOMException: The operation is insecure` hoặc Go backend trả về `webauthn: relying party id mismatch`.",
+  "writeups.art3.rca": "1. Chuẩn bảo mật W3C WebAuthn quy định cực kỳ nghiêm ngặt về **RPID (Relying Party ID)**: RPID bắt buộc phải là effective domain hoặc hậu tố hợp lệ của Origin (ví dụ: domain `finn.dev` có thể đặt RPID là `finn.dev`, nhưng không thể đặt RPID là `render.com`).\n2. Origin từ client SPA gửi lên qua HTTPS chứa port và scheme (`https://localhost:5173`), trong khi backend Go đọc header `Host` sau tầng Reverse Proxy của Render bị lệch tên miền gốc.\n3. Thư viện WebAuthn kiểm tra byte-for-byte chuỗi ClientDataJSON hash với RPID hash trong Authenticator Data.",
+  "writeups.art3.solution": "1. Thiết kế cơ chế Dynamic RPID Resolver trong Go Service:\n   - Đọc cấu hình danh sách miền hợp lệ (Whitelisted Origins) từ biến môi trường.\n   - Chuẩn hóa tách lấy `hostname` sạch (loại bỏ port và scheme) để làm RPID hợp lệ.\n2. Cấu hình Middleware tin cậy Reverse Proxy Header (`X-Forwarded-Proto`, `X-Forwarded-Host`) từ Render Cloudflare Ingress.\n3. Viết helper TypeScript ở phía Frontend để chuẩn hóa việc chuyển đổi ArrayBuffer sang Base64URL-safe string theo chuẩn RFC 4648 §5.",
+  "writeups.art3.metrics": "• Tỷ lệ đăng ký và đăng nhập Passkey thành công 100% trên Chrome, Safari, Firefox và Windows Hello.\n• Bảo vệ chống hoàn toàn tấn công Phishing Domain: kẻ gian dựng website giả mạo không thể dùng chung credential của domain thật.\n• Hỗ trợ xác thực vân tay/FaceID với độ trễ phản hồi < 80ms.",
+
+  // Write-up 4: Token Race Condition
+  "writeups.art4.title": "Refresh Token Race Condition: Khắc Phục Token Theft Giả Mạo Với Redis Lua Script",
+  "writeups.art4.summary": "Xử lý triệt để bài toán mở nhiều tab trình duyệt cùng xoay vòng Refresh Token đồng thời gây kích hoạt nhầm cơ chế Family Revocation (False-Positive Alert).",
+  "writeups.art4.tag": "Concurrency · Redis Lua",
+  "writeups.art4.problem": "Theo chuẩn RFC 6749, Refresh Token chỉ được dùng 1 lần (Single-use). Nếu một token cũ được gửi lại, server sẽ coi đó là hành vi trộm cắp và hủy toàn bộ phiên (Family Revocation). Tuy nhiên, khi người dùng mở đồng thời 4 tab trên trình duyệt, cả 4 tab cùng gửi request `/refresh` trong khoảng 30ms. Tab 1 xoay vòng thành công, khiến Tab 2, 3, 4 trở thành 'token cũ' và kích hoạt lệnh hủy phiên oan uổng, đá văng user ra màn hình login.",
+  "writeups.art4.rca": "1. Khoảng cách thời gian (Race Window) giữa các request song song từ frontend.\n2. Kiểm tra token và ghi đè token mới trong Redis thực hiện bằng nhiều lệnh độc lập (`GET` rồi `DEL` rồi `SET`), không đảm bảo tính nguyên tử (Atomicity) ở mức microsecond.",
+  "writeups.art4.solution": "1. **Áp dụng Redis Lua Script nguyên tử (Atomic Exchange)**:\n   - Thực hiện kiểm tra hash token cũ, lưu hash token mới và cấp quyền trong 1 chu kỳ thực thi duy nhất của Redis.\n2. **Triển khai Grace Period (Cửa sổ ân hạn 10 giây)**:\n   - Khi một Refresh Token vừa bị xoay vòng, không xóa hẳn ngay mà chuyển vào trạng thái `GRACE_ACTIVE` trong 10 giây.\n   - Nếu trong 10 giây này có request song song gửi lên đúng token vừa xoay, server trả về đúng Access Token mới đã tạo thay vì báo động giả mạo trộm cắp.\n3. Sau 10 giây ân hạn, token chính thức chuyển sang danh sách đen vĩnh viễn.",
+  "writeups.art4.metrics": "• Xóa bỏ 100% lỗi false-positive logout khi mở nhiều tab.\n• Duy trì toàn vẹn khả năng phát hiện Replay Attack thực sự sau 10s.\n• Thời gian xử lý lệnh xoay vòng tại Redis chỉ 0.8ms nhờ Lua Script chạy trực tiếp trong memory.",
+
   // Skills Section
   "skills.title": "Kỹ năng & Công nghệ Thực tế",
   "skills.subtitle": "Các công nghệ đã trực tiếp áp dụng và kiểm chứng qua dự án thực tế:",
@@ -193,7 +249,9 @@ const vi: Record<string, string> = {
   "contact.send_email_btn": "Gửi Email Trực tiếp",
   "contact.email_btn": "Sao chép Email",
   "contact.email_copied": "Đã sao chép email!",
-  "contact.github_btn": "Xem GitHub Cá nhân",
+  "contact.github_btn": "GitHub",
+  "contact.linkedin_btn": "LinkedIn Profile",
+  "contact.cv_btn": "Tải CV (PDF)",
   "contact.modal.title": "Chọn Phương Thức Gửi Email",
   "contact.modal.subtitle": "Mở trực tiếp trên Webmail trình duyệt để tránh lỗi máy tính chưa cấu hình ứng dụng Mail mặc định:",
   "contact.modal.gmail": "Mở trên Web Gmail (Khuyên dùng)",
@@ -230,7 +288,11 @@ const vi: Record<string, string> = {
 
   // Footer
   "footer.text": "Nguyễn Hoàng Anh Quân — Backend Developer Portfolio.",
-  "footer.commit": "Dự án FinnApiGo đã triển khai trên Render."
+  "footer.commit": "Dự án FinnApiGo đã triển khai trên Render.",
+  "footer.cv": "Tải CV (PDF)",
+  "footer.linkedin": "LinkedIn",
+  "footer.github": "GitHub"
 };
 
 export default vi;
+

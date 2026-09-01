@@ -93,10 +93,16 @@ export const ChatbotAiFab: React.FC = () => {
         : `Quan is a final-year IT student seeking **Fresher / Junior / Intern Backend Developer (Golang / Node.js)** roles in **Dong Nai, Ho Chi Minh City**, or **Remote**. He is available to join immediately with strong problem-solving and self-learning skills!`;
     }
 
-    if (q.includes('liên hệ') || q.includes('contact') || q.includes('email') || q.includes('phỏng vấn') || q.includes('interview') || q.includes('sđt') || q.includes('phone')) {
+    if (q.includes('cv') || q.includes('resume') || q.includes('hồ sơ')) {
       return currentLang === 'vi'
-        ? `Bạn có thể liên hệ phỏng vấn Quân trực tiếp qua:\n\n• **Email**: nguyenhoanganhquan13@gmail.com\n• **GitHub**: https://github.com/NguyenQuan121321\n• **Địa điểm**: Đồng Nai, TP.HCM hoặc Remote.\n\nHoặc bạn có thể bấm nút **"Gửi Email Trực tiếp"** ở phần Contact để mở sẵn mẫu thư gửi qua Webmail!`
-        : `You can reach out to Quan directly via:\n\n• **Email**: nguyenhoanganhquan13@gmail.com\n• **GitHub**: https://github.com/NguyenQuan121321\n• **Location**: Dong Nai, Ho Chi Minh City, or Remote.\n\nYou can also click **"Send Direct Email"** in the Contact section to launch a pre-filled interview invite draft!`;
+        ? `Bạn có thể tải bản **CV PDF chính thức** của Quân trực tiếp trên website tại nút **"Tải CV (PDF)"** (hoặc mở file /CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf) để xem chi tiết học vấn, các dự án thực tế và kinh nghiệm làm việc nhé!`
+        : `You can download Quan's official **Backend Developer CV (PDF)** directly from the **"Download CV (PDF)"** button on this site (or access /CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf)!`;
+    }
+
+    if (q.includes('liên hệ') || q.includes('contact') || q.includes('email') || q.includes('phỏng vấn') || q.includes('interview') || q.includes('linkedin') || q.includes('sđt') || q.includes('phone')) {
+      return currentLang === 'vi'
+        ? `Bạn có thể liên hệ phỏng vấn Quân trực tiếp qua:\n\n• **Email**: nguyenhoanganhquan13@gmail.com\n• **LinkedIn**: https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/\n• **GitHub**: https://github.com/NguyenQuan121321\n• **Địa điểm**: Đồng Nai, TP.HCM hoặc Remote.\n\nHoặc bạn có thể bấm nút **"Gửi Email Trực tiếp"** ở phần Contact để mở sẵn mẫu thư gửi qua Webmail!`
+        : `You can reach out to Quan directly via:\n\n• **Email**: nguyenhoanganhquan13@gmail.com\n• **LinkedIn**: https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/\n• **GitHub**: https://github.com/NguyenQuan121321\n• **Location**: Dong Nai, Ho Chi Minh City, or Remote.\n\nYou can also click **"Send Direct Email"** in the Contact section to launch a pre-filled interview invite draft!`;
     }
 
     return currentLang === 'vi'

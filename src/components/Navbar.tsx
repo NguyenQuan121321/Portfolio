@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { GithubLogo, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
+import { GithubLogo, LinkedinLogo, FilePdf, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
@@ -14,6 +14,7 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { href: '#projects', label: t('nav.projects') },
+    { href: '#writeups', label: t('nav.writeups') },
     { href: '#skills', label: t('nav.skills') },
     { href: '#about', label: t('nav.about') },
     { href: '#contact', label: t('nav.contact') },
@@ -98,15 +99,40 @@ export const Navbar: React.FC = () => {
               </div>
             </button>
 
+            {/* LinkedIn Link */}
+            <a
+              href="https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg text-zinc-400 hover:text-accent-cyan hover:bg-surface-900 border border-transparent hover:border-border-subtle transition-colors"
+              title="LinkedIn Profile"
+              aria-label="LinkedIn Profile"
+            >
+              <LinkedinLogo size={20} weight="bold" />
+            </a>
+
             {/* GitHub Link */}
             <a
               href="https://github.com/NguyenQuan121321"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 border border-transparent hover:border-border-subtle transition-colors"
+              title="GitHub Profile"
               aria-label="GitHub Profile"
             >
               <GithubLogo size={20} weight="bold" />
+            </a>
+
+            {/* Download CV PDF Action Button */}
+            <a
+              href="/CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              download="CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono font-medium text-zinc-200 hover:text-accent-cyan transition-all active:scale-95"
+              title={t('nav.cv')}
+              aria-label={t('nav.cv')}
+            >
+              <FilePdf size={15} className="text-accent-cyan" weight="bold" />
+              <span>{t('nav.cv')}</span>
             </a>
 
             {/* Language Switcher */}
@@ -144,9 +170,43 @@ export const Navbar: React.FC = () => {
               {link.label}
             </a>
           ))}
-          <div className="pt-2 flex items-center gap-2 px-3 text-xs text-zinc-400">
-            <span className="h-2 w-2 rounded-full bg-accent-mint inline-block"></span>
-            <span>{t('nav.status')}</span>
+          
+          <div className="pt-2 border-t border-border-subtle flex flex-col gap-2">
+            <a
+              href="/CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              download="CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-accent-cyan text-white dark:text-surface-950 font-bold text-sm"
+            >
+              <FilePdf size={16} weight="bold" />
+              <span>{t('nav.cv')}</span>
+            </a>
+
+            <div className="flex items-center justify-between px-3 pt-1 text-xs text-zinc-400">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-accent-mint inline-block"></span>
+                <span>{t('nav.status')}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <a 
+                  href="https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-zinc-300 hover:text-accent-cyan"
+                  aria-label="LinkedIn Profile"
+                >
+                  <LinkedinLogo size={18} weight="bold" />
+                </a>
+                <a 
+                  href="https://github.com/NguyenQuan121321" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-zinc-300 hover:text-accent-cyan"
+                  aria-label="GitHub Profile"
+                >
+                  <GithubLogo size={18} weight="bold" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}

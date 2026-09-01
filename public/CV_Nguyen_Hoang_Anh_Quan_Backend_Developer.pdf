@@ -1,0 +1,522 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 5 0 R
+      /F3 6 0 R
+    >>
+  >>
+  /Contents 7 0 R
+>>
+endobj
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica
+  /Encoding /WinAnsiEncoding
+>>
+endobj
+5 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica-Bold
+  /Encoding /WinAnsiEncoding
+>>
+endobj
+6 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica-Oblique
+  /Encoding /WinAnsiEncoding
+>>
+endobj
+7 0 obj
+<<
+  /Length 9274
+>>
+stream
+0.051 0.067 0.090 rg
+0.00 751.89 595.28 90.00 re
+f
+0.008 0.518 0.780 RG
+3.00 w
+0.00 839.89 m 595.28 839.89 l S
+1.000 1.000 1.000 rg
+BT
+/F2 18.00 Tf
+1 0 0 1 36.00 803.89 Tm
+(NGUYEN HOANG ANH QUAN \(FINN\)) Tj
+ET
+0.000 0.898 1.000 rg
+BT
+/F2 10.50 Tf
+1 0 0 1 36.00 787.89 Tm
+(BACKEND DEVELOPER - GOLANG & NODE.JS) Tj
+ET
+0.850 0.880 0.920 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 36.00 767.89 Tm
+(Email: nguyenhoanganhquan13@gmail.com) Tj
+ET
+0.850 0.880 0.920 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 231.00 767.89 Tm
+(GitHub: github.com/NguyenQuan121321) Tj
+ET
+0.850 0.880 0.920 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 401.00 767.89 Tm
+(LinkedIn: linkedin.com/in/quan-nguyen-bb2053433) Tj
+ET
+0.051 0.067 0.090 rg
+0.050 0.070 0.100 rg
+BT
+/F2 11.00 Tf
+1 0 0 1 36.00 731.89 Tm
+(PROFESSIONAL SUMMARY) Tj
+ET
+0.008 0.518 0.780 RG
+1.00 w
+36.00 727.89 m 559.28 727.89 l S
+0.180 0.220 0.280 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 36.00 713.89 Tm
+(Final-year IT student specializing in high-performance Backend Development with Golang and Node.js.) Tj
+ET
+0.180 0.220 0.280 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 36.00 700.89 Tm
+(Demonstrated expertise in Clean Architecture, multi-factor security mechanisms \(JWT single-use rotation, RFC 6238) Tj
+ET
+0.180 0.220 0.280 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 36.00 687.89 Tm
+(TOTP 2FA, FIDO2/WebAuthn Passkeys\), database transaction reliability \(MySQL, PostgreSQL, Redis 7\), and automated) Tj
+ET
+0.180 0.220 0.280 rg
+BT
+/F1 9.00 Tf
+1 0 0 1 36.00 674.89 Tm
+(testing with over 301 unit & fuzz test cases. Passionate about solving real concurrency & distributed systems challenges.) Tj
+ET
+0.051 0.067 0.090 rg
+0.050 0.070 0.100 rg
+BT
+/F2 11.00 Tf
+1 0 0 1 36.00 653.89 Tm
+(CORE TECHNICAL SKILLS) Tj
+ET
+0.008 0.518 0.780 RG
+1.00 w
+36.00 649.89 m 559.28 649.89 l S
+0.080 0.120 0.180 rg
+BT
+/F2 8.80 Tf
+1 0 0 1 36.00 635.89 Tm
+(Backend & Architecture:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.80 Tf
+1 0 0 1 156.00 635.89 Tm
+(Golang \(1.26\), Gin, GORM, Node.js \(22 LTS\), TypeScript, Clean Architecture, RESTful API, DTOs) Tj
+ET
+0.080 0.120 0.180 rg
+BT
+/F2 8.80 Tf
+1 0 0 1 36.00 622.39 Tm
+(Databases & Caching:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.80 Tf
+1 0 0 1 156.00 622.39 Tm
+(MySQL 8 \(Indexing & Transactions\), PostgreSQL 16, Redis 7 \(Sessions, Sliding Limits, Token Blacklist\)) Tj
+ET
+0.080 0.120 0.180 rg
+BT
+/F2 8.80 Tf
+1 0 0 1 36.00 608.89 Tm
+(Security & Auth:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.80 Tf
+1 0 0 1 156.00 608.89 Tm
+(JWT Rotation & Family Revocation, TOTP 2FA \(RFC 6238\), WebAuthn Passkeys, BCrypt \(72B cap\), Argon2id) Tj
+ET
+0.080 0.120 0.180 rg
+BT
+/F2 8.80 Tf
+1 0 0 1 36.00 595.39 Tm
+(DevOps & Testing:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.80 Tf
+1 0 0 1 156.00 595.39 Tm
+(Docker & Docker Compose, GitHub Actions \(7 automated CI jobs\), Unit & Fuzz Testing \(301 tests\), slog, Prometheus) Tj
+ET
+0.051 0.067 0.090 rg
+0.050 0.070 0.100 rg
+BT
+/F2 11.00 Tf
+1 0 0 1 36.00 573.89 Tm
+(FEATURED ENGINEERING PROJECTS) Tj
+ET
+0.008 0.518 0.780 RG
+1.00 w
+36.00 569.89 m 559.28 569.89 l S
+0.050 0.070 0.100 rg
+BT
+/F2 10.00 Tf
+1 0 0 1 36.00 555.89 Tm
+(FinnApiGo - Authentication & Multi-Factor Security Engine in Go) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F3 8.20 Tf
+1 0 0 1 391.00 555.89 Tm
+(Live on Render | Golang, Redis 7, MySQL 8) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 542.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 542.89 Tm
+(Architected a production-ready authentication engine in Go strictly following 5-layer Clean Architecture with zero Gin leak.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 530.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 530.39 Tm
+(Implemented JWT Access Token \(15m\) paired with single-use Refresh Token rotation stored as SHA-256 hashes in Redis 7.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 517.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 517.89 Tm
+(Engineered Token Family Revocation: automated intrusion detection revoking entire session family upon replay attack detection.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 505.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 505.39 Tm
+(Built sliding-window rate limiting with IPv6 /64 subnet collapse mitigating botnet brute-force attacks with HTTP 429.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 492.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 492.89 Tm
+(Created dynamic TOTP 2FA provisioning \(RFC 6238\) with AES-256-GCM encrypted recovery codes and FIDO2/WebAuthn Passkeys.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 480.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 480.39 Tm
+(Automated comprehensive 7-job CI pipeline: 301 unit tests, 3 fuzzing targets, gosec security scans, and Trivy CVE scanning.) Tj
+ET
+0.050 0.070 0.100 rg
+BT
+/F2 10.00 Tf
+1 0 0 1 36.00 461.89 Tm
+(VovinamClubManagement - Martial Arts Management System) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F3 8.20 Tf
+1 0 0 1 391.00 461.89 Tm
+(Thesis Capstone | Node.js, TS, PostgreSQL 16) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 448.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 448.89 Tm
+(Engineered backend REST API handling multi-tenant martial arts club operations: member grading, attendance, and finances.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 436.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 436.39 Tm
+(Designed strict Role-Based Access Control \(RBAC\) matrix for Admin, Coach, Student, and Cashier with object-level validation.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 423.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 423.89 Tm
+(Integrated dynamic VietQR payment automation with webhook HMAC-SHA256 signature verification & idempotent ledgers.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 411.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 411.39 Tm
+(Modeled normalized relational schemas on PostgreSQL 16 with UUID primary keys and automated Docker schema migrations.) Tj
+ET
+0.050 0.070 0.100 rg
+BT
+/F2 10.00 Tf
+1 0 0 1 36.00 392.89 Tm
+(JakeAI - Dedicated Interactive AI Assistant Microservice) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F3 8.20 Tf
+1 0 0 1 391.00 392.89 Tm
+(Independent Go Backend | Gin, Reverse Proxy) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 379.89 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 379.89 Tm
+(Developed standalone Go microservice acting as conversational AI assistant to guide recruiters through portfolio systems.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 367.39 Tm
+(-) Tj
+ET
+0.200 0.240 0.300 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 52.00 367.39 Tm
+(Implemented lightweight in-memory knowledge store with fallback heuristics ensuring 99.9% uptime even during cold boots.) Tj
+ET
+0.051 0.067 0.090 rg
+0.050 0.070 0.100 rg
+BT
+/F2 11.00 Tf
+1 0 0 1 36.00 346.89 Tm
+(TECHNICAL WRITE-UPS & DEBUGGING CASE STUDIES) Tj
+ET
+0.008 0.518 0.780 RG
+1.00 w
+36.00 342.89 m 559.28 342.89 l S
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 328.89 Tm
+(-) Tj
+ET
+0.100 0.140 0.200 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 52.00 328.89 Tm
+(Zero-Downtime DB Migration:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 196.00 328.89 Tm
+(Resolved production schema deadlocks via 3-phase Expand/Contract pattern & Goose transaction guards.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 316.39 Tm
+(-) Tj
+ET
+0.100 0.140 0.200 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 52.00 316.39 Tm
+(Sudo Mode Re-Authentication:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 196.00 316.39 Tm
+(Designed 5-minute cryptographic step-up tokens in Redis to secure sensitive account operations.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 303.89 Tm
+(-) Tj
+ET
+0.100 0.140 0.200 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 52.00 303.89 Tm
+(WebAuthn RPID Domain Binding:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 196.00 303.89 Tm
+(Fixed FIDO2 signature validation across localhost/staging/prod via dynamic origin whitelist middleware.) Tj
+ET
+0.008 0.518 0.780 rg
+BT
+/F2 9.00 Tf
+1 0 0 1 42.00 291.39 Tm
+(-) Tj
+ET
+0.100 0.140 0.200 rg
+BT
+/F2 8.50 Tf
+1 0 0 1 52.00 291.39 Tm
+(Token Rotation Race Defense:) Tj
+ET
+0.220 0.260 0.320 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 196.00 291.39 Tm
+(Eliminated multi-tab false-positive replay alerts via Redis Lua atomic single-use exchange.) Tj
+ET
+0.051 0.067 0.090 rg
+0.050 0.070 0.100 rg
+BT
+/F2 11.00 Tf
+1 0 0 1 36.00 270.89 Tm
+(EDUCATION & LANGUAGES) Tj
+ET
+0.008 0.518 0.780 RG
+1.00 w
+36.00 266.89 m 559.28 266.89 l S
+0.080 0.120 0.180 rg
+BT
+/F2 9.20 Tf
+1 0 0 1 36.00 252.89 Tm
+(Bachelor of Information Technology \(Final-Year Student\)) Tj
+ET
+0.300 0.350 0.420 rg
+BT
+/F3 8.50 Tf
+1 0 0 1 396.00 252.89 Tm
+(Expected Graduation: 2026) Tj
+ET
+0.250 0.280 0.340 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 36.00 239.89 Tm
+(Focus: Software Engineering, Distributed Systems, Database Management, Network Security) Tj
+ET
+0.250 0.280 0.340 rg
+BT
+/F1 8.50 Tf
+1 0 0 1 36.00 227.89 Tm
+(Languages: Vietnamese \(Native\), English \(Technical reading, documentation & API specifications\)) Tj
+ET
+0.850 0.880 0.920 RG
+0.50 w
+36.00 26.00 m 559.28 26.00 l S
+0.450 0.500 0.580 rg
+BT
+/F3 7.50 Tf
+1 0 0 1 36.00 16.00 Tm
+(Verified Deployed Portfolio: https://github.com/NguyenQuan121321 - Available for Fresher/Junior Backend Roles) Tj
+ET
+endstream
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000068 00000 n 
+0000000131 00000 n 
+0000000321 00000 n 
+0000000426 00000 n 
+0000000536 00000 n 
+0000000649 00000 n 
+trailer
+<<
+  /Size 8
+  /Root 1 0 R
+>>
+startxref
+9977
+%%EOF

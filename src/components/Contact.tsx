@@ -3,6 +3,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { 
   EnvelopeSimple, 
   GithubLogo, 
+  LinkedinLogo,
+  FilePdf,
   Copy, 
   Check, 
   PaperPlaneRight,
@@ -28,7 +30,7 @@ My name is [Your Name / HR] from [Company Name].
 
 I came across your portfolio and was really impressed with your projects and technical expertise. We are currently looking for a [Backend Developer / Fullstack Developer / Target Role] to join our team.
 
-I would love to connect and discuss potential opportunities with you further via this email or phone number: [...]
+I would love to connect and discuss potential opportunities with you further via this email.
 
 Best regards,
 [Your Name]
@@ -150,7 +152,7 @@ Best regards,
             </button>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
@@ -161,13 +163,32 @@ Best regards,
             </button>
 
             <a
+              href="https://www.linkedin.com/in/qu%C3%A2n-nguy%E1%BB%85n-bb2053433/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-5 py-3 rounded-lg bg-surface-950 hover:bg-surface-850 border border-border-subtle hover:border-accent-cyan/60 text-zinc-200 hover:text-accent-cyan font-mono text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
+            >
+              <LinkedinLogo size={18} weight="bold" className="text-blue-400" />
+              <span>{t('contact.linkedin_btn')}</span>
+            </a>
+
+            <a
               href="https://github.com/NguyenQuan121321"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-6 py-3 rounded-lg bg-surface-950 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
+              className="w-full sm:w-auto px-5 py-3 rounded-lg bg-surface-950 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-zinc-200 font-mono text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
             >
               <GithubLogo size={18} weight="bold" />
               <span>{t('contact.github_btn')}</span>
+            </a>
+
+            <a
+              href="/CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              download="CV_Nguyen_Hoang_Anh_Quan_Backend_Developer.pdf"
+              className="w-full sm:w-auto px-5 py-3 rounded-lg bg-surface-950 hover:bg-surface-850 border border-accent-cyan/40 hover:border-accent-cyan text-zinc-100 font-mono text-xs sm:text-sm flex items-center justify-center gap-2 transition-all group"
+            >
+              <FilePdf size={18} className="text-accent-cyan group-hover:scale-110 transition-transform" weight="bold" />
+              <span>{t('contact.cv_btn')}</span>
             </a>
           </div>
         </div>
