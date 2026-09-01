@@ -27,7 +27,7 @@ const vi: Record<string, string> = {
   "telemetry.uptime": "Trạng thái Live",
   "telemetry.uptime_val": "Online (Render)",
   "telemetry.tests": "Hàm Test Tự động",
-  "telemetry.tests_val": "258 Test Cases",
+  "telemetry.tests_val": "301 Test Cases",
   "telemetry.ci": "CI Pipeline",
   "telemetry.ci_val": "7 Jobs Tự động",
   "telemetry.latency": "Độ trễ phản hồi",
@@ -155,7 +155,7 @@ const vi: Record<string, string> = {
   "project.finnapi.sec.obs_title": "Logging Có cấu trúc & Quan sát",
   "project.finnapi.sec.obs_desc": "Ghi log JSON có cấu trúc bằng thư viện chuẩn slog, tự động ẩn (mask) mật khẩu và token. Xuất dữ liệu metric Prometheus và ghi vết audit bất đồng bộ.",
   "project.finnapi.sec.ci_title": "Kiểm thử Toàn diện qua CI/CD",
-  "project.finnapi.sec.ci_desc": "Pipeline GitHub Actions 7 jobs tự động: chạy 258 unit tests, 3 fuzzing tests, kiểm thử bảo mật gosec, rà soát lỗ hổng thư viện govulncheck và quét container Trivy.",
+  "project.finnapi.sec.ci_desc": "Pipeline GitHub Actions 7 jobs tự động: chạy 301 unit tests, 3 fuzzing tests, kiểm thử bảo mật gosec, rà soát lỗ hổng thư viện govulncheck và quét container Trivy.",
 
   // Project Links
   "project.links.source": "Mã nguồn GitHub",

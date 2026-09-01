@@ -47,7 +47,7 @@ export const Skills: React.FC = () => {
       skills: [
         { name: 'CI/CD (GitHub Actions)', project: 'FinnApiGo', detail: '7-stage pipeline: lint, test, security scans, coverage' },
         { name: 'Docker & Docker Compose', project: 'Both', detail: 'Multi-stage builds, isolated local database services' },
-        { name: 'Automated & Fuzz Testing', project: 'FinnApiGo', detail: '258 unit tests, 3 fuzzing targets, integration tests' },
+        { name: 'Automated & Fuzz Testing', project: 'FinnApiGo', detail: '301 unit tests, 3 fuzzing targets, integration tests' },
         { name: 'Observability & Metrics', project: 'FinnApiGo', detail: 'Prometheus metrics exporter, slog structured JSON logs' }
       ]
     },

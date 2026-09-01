@@ -27,7 +27,7 @@ const en: Record<string, string> = {
   "telemetry.uptime": "Live Status",
   "telemetry.uptime_val": "Online (Render)",
   "telemetry.tests": "Automated Tests",
-  "telemetry.tests_val": "258 Test Cases",
+  "telemetry.tests_val": "301 Test Cases",
   "telemetry.ci": "CI Pipeline",
   "telemetry.ci_val": "7 Automated Jobs",
   "telemetry.latency": "Response Latency",
@@ -158,7 +158,7 @@ const en: Record<string, string> = {
   "project.finnapi.sec.obs_title": "Structured Observability & Audit",
   "project.finnapi.sec.obs_desc": "High-performance structured slog JSON logging with automatic token/credential field redaction. Prometheus metrics exporter and async non-blocking audit trail.",
   "project.finnapi.sec.ci_title": "Automated Security CI Assurance",
-  "project.finnapi.sec.ci_desc": "7-job GitHub Actions pipeline running gosec static security analysis, Trivy container vulnerability scanning, govulncheck, 3 fuzzing targets, and 14 CI coverage floors.",
+  "project.finnapi.sec.ci_desc": "7-job GitHub Actions pipeline running 301 unit tests, gosec static security analysis, Trivy container vulnerability scanning, govulncheck, 3 fuzzing targets, and 14 CI coverage floors.",
 
   // Project Links
   "project.links.source": "GitHub Source Code",

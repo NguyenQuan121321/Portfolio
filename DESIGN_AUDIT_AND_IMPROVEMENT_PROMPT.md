@@ -11,7 +11,7 @@
 > *"Reading this as: High-credibility Engineer Portfolio & Interactive Backend Sandbox for Technical Hiring Managers and Enterprise Clients, built with a high-trust, cyber-minimalist design language (Deep Obsidian / Pure Slate foundations, Electric Ocean Cyan primary brand accent, Emerald verification markers, and Amber defense signals), emphasizing Clean Architecture, live API telemetry, and defense-in-depth security verification."*
 
 ### Overall Assessment Scorecard: 8.5 / 10
-* **Technical Credibility & Proof of Work (9.5/10):** Exceptional. Live Render API integration, 258 automated test counter, interactive 5-layer Clean Architecture inspector, and 4 runnable security scenarios (JWT rotation, token theft detection, sliding-window rate limiting, remote session management) immediately distinguish this portfolio from 99% of junior portfolios.
+* **Technical Credibility & Proof of Work (9.5/10):** Exceptional. Live Render API integration, 301 automated test counter, interactive 5-layer Clean Architecture inspector, and 4 runnable security scenarios (JWT rotation, token theft detection, sliding-window rate limiting, remote session management) immediately distinguish this portfolio from 99% of junior portfolios.
 * **Layout Structure & Visual Rhythm (8.0/10):** Strong grid containment and responsive foundation, but needs rhythm diversification to avoid card-stack fatigue and strict adherence to the **Eyebrow Restraint Rule** (max 1 eyebrow per 3 sections).
 * **Color Harmony & Theme Parity (8.5/10):** Well-chosen Slate/Obsidian + Ocean Cyan color palette with accessible contrast. Needs refactoring of hardcoded CSS `!important` overrides into clean CSS Variable tokens.
 * **Recruiter UX & Interaction Flow (8.0/10):** The 2.15-second blocking preloader on every reload creates unnecessary friction for busy recruiters scanning in 6–10 seconds. Dual floating FABs (QuickNav + JakeAI) create mobile clutter.
@@ -67,7 +67,7 @@ graph TD
 * **Improvement:** Ensure consistent active link indicator on scroll. Enhance mobile menu drawer with smooth backdrop blur.
 
 ### 3. Hero Section (`Hero.tsx`)
-* **Improvement:** Keep the high-impact telemetry bar (Online, 258 Tests, CI 7 Jobs, Latency <20ms). Ensure typography uses `leading-tight` with `tracking-tight` on the name.
+* **Improvement:** Keep the high-impact telemetry bar (Online, 301 Tests, CI 7 Jobs, Latency <20ms). Ensure typography uses `leading-tight` with `tracking-tight` on the name.
 
 ### 4. Flagship Go Project (`FinnApiGoSection.tsx`)
 * **Improvement:**
