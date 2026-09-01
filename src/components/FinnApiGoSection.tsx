@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
   ShieldCheck, 
-  Key, 
   Fingerprint, 
   Cpu, 
   LockKey, 
@@ -17,7 +16,9 @@ import {
   Eye,
   EyeSlash,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  Lightning,
+  Sparkle
 } from '@phosphor-icons/react';
 
 export const FinnApiGoSection: React.FC = () => {
@@ -27,25 +28,28 @@ export const FinnApiGoSection: React.FC = () => {
   const [activeLayer, setActiveLayer] = useState<number>(3); // Default to Service layer
 
   // Interactive Playground State
-  const [activeTab, setActiveTab] = useState<'register' | 'login' | 'totp' | 'metrics'>('register');
+  const [activeTab, setActiveTab] = useState<'register' | 'login' | 'profile' | 'metrics'>('register');
+  
+  // Register fields (Matches Go DTO: RegisterRequest)
+  const [regUsername, setRegUsername] = useState('finn_dev');
+  const [regFullName, setRegFullName] = useState('Nguyen Hoang Anh Quan');
   const [regEmail, setRegEmail] = useState('anhquan.dev@gmail.com');
-  const [regPassword, setRegPassword] = useState('Quan#Secure2026');
+  const [regPassword, setRegPassword] = useState('Quan#FinnSecure2026!');
   const [showRegPassword, setShowRegPassword] = useState(false);
   
+  // Login fields (Matches Go DTO: LoginRequest)
   const [loginEmail, setLoginEmail] = useState('anhquan.dev@gmail.com');
-  const [loginPassword, setLoginPassword] = useState('Quan#Secure2026');
+  const [loginPassword, setLoginPassword] = useState('Quan#FinnSecure2026!');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   
-  const [sessionId, setSessionId] = useState('');
-  const [totpCode, setTotpCode] = useState('');
+  // Auth Token for Protected Endpoints
+  const [accessToken, setAccessToken] = useState('');
 
   const [copiedCurl, setCopiedCurl] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulatedResponse, setSimulatedResponse] = useState<any>(null);
   const [responseStatus, setResponseStatus] = useState<number>(200);
-  const [responseLatency, setResponseLatency] = useState<string>('14.2ms');
-
-  const DEMO_VALID_TOTP = '839201';
+  const [responseLatency, setResponseLatency] = useState<string>('0ms');
 
   const liveRenderUrl = 'https://finnapigo.onrender.com';
   const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html';
@@ -89,173 +93,118 @@ export const FinnApiGoSection: React.FC = () => {
     },
   ];
 
-  // Execute Simulated or Real API request
-  const handleExecuteRequest = () => {
+  // Helper to generate fresh random credentials for live testing
+  const handleGenerateFreshCredentials = () => {
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    const user = `finn_${rand}`;
+    const email = `finn_${rand}@gmail.com`;
+    const pass = `Quan#Secure${rand}!`;
+    setRegUsername(user);
+    setRegEmail(email);
+    setRegPassword(pass);
+    setLoginEmail(email);
+    setLoginPassword(pass);
+  };
+
+  // Execute REAL LIVE API Request to Render Backend
+  const handleExecuteRequest = async () => {
     setIsSimulating(true);
-    setTimeout(() => {
-      setIsSimulating(false);
-      const timestamp = new Date().toISOString();
+    setSimulatedResponse(null);
+    const startTime = performance.now();
+
+    try {
+      let endpoint = '';
+      let options: RequestInit = {};
 
       if (activeTab === 'register') {
-        if (!regEmail || !regPassword) {
-          setResponseStatus(400);
-          setResponseLatency('4.1ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "VALIDATION_FAILED",
-              message: "Email và mật khẩu không được để trống."
-            }
-          });
-          return;
-        }
-        // Auto transfer to Login form
-        setLoginEmail(regEmail);
-        setLoginPassword(regPassword);
-        setResponseStatus(201);
-        setResponseLatency('18.5ms');
-        setSimulatedResponse({
-          success: true,
-          message: "Tài khoản đã được đăng ký thành công. Thông tin đã tự động đồng bộ sang bước Đăng nhập.",
-          data: {
-            user_id: "usr_" + Math.random().toString(36).substring(2, 10),
-            email: regEmail,
-            mfa_enabled: true,
-            created_at: timestamp
-          }
-        });
+        endpoint = '/render-api/api/v1/auth/register';
+        options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: regUsername.trim(),
+            fullName: regFullName.trim(),
+            email: regEmail.trim(),
+            password: regPassword
+          })
+        };
       } else if (activeTab === 'login') {
-        if (!loginEmail || !loginPassword) {
-          setResponseStatus(400);
-          setResponseLatency('3.8ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "INVALID_CREDENTIALS",
-              message: "Email hoặc mật khẩu không được để trống."
-            }
-          });
-          return;
-        }
-        const newSessId = "sess_" + Math.random().toString(36).substring(2, 14);
-        setSessionId(newSessId);
-        setTotpCode(''); // Initially empty for user to type
-        setResponseStatus(200);
-        setResponseLatency('14.2ms');
-        setSimulatedResponse({
-          success: true,
-          data: {
-            token_type: "Bearer",
-            mfa_required: true,
-            session_id: newSessId,
-            mfa_types: ["totp_authenticator", "webauthn_passkey"],
-            refresh_token_hash: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
-            expires_in: 900
+        endpoint = '/render-api/api/v1/auth/login';
+        options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: loginEmail.trim(),
+            password: loginPassword
+          })
+        };
+      } else if (activeTab === 'profile') {
+        endpoint = '/render-api/api/v1/auth/me';
+        options = {
+          method: 'GET',
+          headers: {
+            'Authorization': accessToken ? `Bearer ${accessToken}` : '',
+            'Content-Type': 'application/json'
           }
-        });
-      } else if (activeTab === 'totp') {
-        const trimmed = totpCode.trim();
-        if (!sessionId) {
-          setResponseStatus(400);
-          setResponseLatency('3.5ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "SESSION_MISSING",
-              message: "Thiếu session_id. Vui lòng thực hiện bước Đăng nhập trước để nhận session_id hợp lệ."
-            }
-          });
-          return;
-        }
-        if (!trimmed) {
-          setResponseStatus(400);
-          setResponseLatency('4.0ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "TOTP_CODE_EMPTY",
-              message: "Vui lòng nhập mã xác thực 2 bước (6 chữ số) từ ứng dụng Google Authenticator."
-            }
-          });
-          return;
-        }
-        if (trimmed.length !== 6 || !/^\d{6}$/.test(trimmed)) {
-          setResponseStatus(400);
-          setResponseLatency('4.8ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "INVALID_FORMAT",
-              message: "Mã OTP phải là dãy chính xác 6 chữ số."
-            }
-          });
-          return;
-        }
-        // Strict RFC 6238 check
-        if (trimmed !== DEMO_VALID_TOTP) {
-          setResponseStatus(401);
-          setResponseLatency('8.4ms');
-          setSimulatedResponse({
-            success: false,
-            error: {
-              code: "MFA_TOTP_MISMATCH",
-              message: `Mã xác thực 2 bước (${trimmed}) không khớp với thuật toán RFC 6238 HMAC-SHA1 trong cửa sổ 30s. Mã OTP mẫu hợp lệ hiện tại là: ${DEMO_VALID_TOTP}`
-            }
-          });
-          return;
-        }
-        setResponseStatus(200);
-        setResponseLatency('9.6ms');
-        setSimulatedResponse({
-          success: true,
-          data: {
-            authenticated: true,
-            session_id: sessionId,
-            user: {
-              email: loginEmail || "anhquan.dev@gmail.com",
-              mfa_verified: true
-            },
-            access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfcXVhbjEzIiwiZXhwIjoxNzI1MTk4NDAwLCJzY29wZXMiOlsicmVhZDpwcm9maWxlIiwid3JpdGU6Y3JlZGVudGlhbHMiXX0.valid_jwt_signature",
-            scope: ["read:profile", "write:credentials", "auth:passkeys"],
-            authenticated_at: timestamp
-          }
-        });
+        };
       } else if (activeTab === 'metrics') {
-        setResponseStatus(200);
-        setResponseLatency('3.9ms');
-        setSimulatedResponse(
-`# HELP http_requests_total Total number of HTTP requests processed
-# TYPE http_requests_total counter
-http_requests_total{code="200",handler="login",method="POST"} 14892
-http_requests_total{code="201",handler="register",method="POST"} 4210
-http_requests_total{code="401",handler="totp_verify",method="POST"} 38
-http_requests_total{code="429",handler="rate_limit",method="POST"} 12
-
-# HELP http_request_duration_seconds Latency histogram in seconds
-# TYPE http_request_duration_seconds histogram
-http_request_duration_seconds_bucket{le="0.005"} 9840
-http_request_duration_seconds_bucket{le="0.010"} 13420
-http_request_duration_seconds_bucket{le="0.025"} 14892
-http_request_duration_seconds_count 14892
-
-# HELP go_goroutines Number of active goroutines
-# TYPE go_goroutines gauge
-go_goroutines 24`
-        );
+        endpoint = '/render-api/metrics';
+        options = { method: 'GET' };
       }
-    }, 280);
+
+      // First try proxy route, fall back to direct Render URL
+      let res: Response;
+      try {
+        res = await fetch(endpoint, options);
+      } catch {
+        const directUrl = endpoint.replace(/^\/render-api/, 'https://finnapigo.onrender.com');
+        res = await fetch(directUrl, options);
+      }
+
+      const elapsed = (performance.now() - startTime).toFixed(1) + 'ms';
+      setResponseLatency(elapsed);
+      setResponseStatus(res.status);
+
+      if (activeTab === 'metrics') {
+        const metricsText = await res.text();
+        setSimulatedResponse(metricsText);
+      } else {
+        const resJson = await res.json();
+        setSimulatedResponse(resJson);
+
+        // Auto data sync on success
+        if (activeTab === 'register' && (res.status === 200 || res.status === 201)) {
+          setLoginEmail(regEmail);
+          setLoginPassword(regPassword);
+        }
+        if (activeTab === 'login' && res.status === 200 && resJson?.data?.accessToken) {
+          setAccessToken(resJson.data.accessToken);
+        }
+      }
+    } catch (err: any) {
+      const elapsed = (performance.now() - startTime).toFixed(1) + 'ms';
+      setResponseLatency(elapsed);
+      setResponseStatus(503);
+      setSimulatedResponse({
+        error: "RENDER_COLD_BOOT_OR_NETWORK",
+        message: "Server Render đang khởi động từ trạng thái nghỉ (Free tier cold boot) hoặc bị chặn CORS từ trình duyệt. Hãy thử lại sau 15-20 giây.",
+        details: err?.message || "Failed to fetch from finnapigo.onrender.com"
+      });
+    } finally {
+      setIsSimulating(false);
+    }
   };
 
   // Get current cURL command string based on tab
   const getCurlCommand = () => {
     if (activeTab === 'register') {
-      return `curl -X POST https://finnapigo.onrender.com/api/v1/auth/register \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "email": "${regEmail}",\n    "password": "${regPassword}"\n  }'`;
+      return `curl -X POST https://finnapigo.onrender.com/api/v1/auth/register \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "username": "${regUsername}",\n    "fullName": "${regFullName}",\n    "email": "${regEmail}",\n    "password": "${regPassword}"\n  }'`;
     }
     if (activeTab === 'login') {
       return `curl -X POST https://finnapigo.onrender.com/api/v1/auth/login \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "email": "${loginEmail}",\n    "password": "${loginPassword}"\n  }'`;
     }
-    if (activeTab === 'totp') {
-      return `curl -X POST https://finnapigo.onrender.com/api/v1/mfa/totp/verify \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "session_id": "${sessionId}",\n    "totp_code": "${totpCode}"\n  }'`;
+    if (activeTab === 'profile') {
+      return `curl -X GET https://finnapigo.onrender.com/api/v1/auth/me \\\n  -H "Authorization: Bearer ${accessToken || '<ACCESS_TOKEN>'}"`;
     }
     return `curl -X GET https://finnapigo.onrender.com/metrics`;
   };
@@ -445,12 +394,12 @@ go_goroutines 24`
           })()}
         </div>
 
-        {/* 2. Interactive API Simulator Playground with Editable Inputs & Eye Toggle */}
+        {/* 2. Interactive API Simulator Playground with LIVE Render Connection */}
         <div className="bg-surface-900 border border-border-subtle rounded-xl p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
             <div>
               <h3 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
-                <Key size={20} className="text-accent-cyan" />
+                <Lightning size={20} className="text-accent-cyan" weight="fill" />
                 <span>{t('project.finnapi.sim.title')}</span>
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
@@ -459,13 +408,16 @@ go_goroutines 24`
             </div>
 
             {/* Live API Server Status Indicator */}
-            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-              <span>{t('project.finnapi.sim.note_real_api')}</span>
+            <div className="flex items-center gap-2 text-xs font-mono">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              </span>
               <a 
                 href={liveRenderUrl} 
                 target="_blank" 
                 rel="noreferrer"
-                className="text-accent-cyan hover:underline inline-flex items-center gap-1"
+                className="text-accent-cyan hover:underline inline-flex items-center gap-1 font-mono"
               >
                 <span>finnapigo.onrender.com</span>
                 <ArrowSquareOut size={12} />
@@ -478,7 +430,7 @@ go_goroutines 24`
             {[
               { id: 'register', label: t('project.finnapi.sim.tab_register'), method: 'POST', path: '/api/v1/auth/register' },
               { id: 'login', label: t('project.finnapi.sim.tab_login'), method: 'POST', path: '/api/v1/auth/login' },
-              { id: 'totp', label: t('project.finnapi.sim.tab_totp'), method: 'POST', path: '/api/v1/mfa/totp/verify' },
+              { id: 'profile', label: t('project.finnapi.sim.tab_profile'), method: 'GET', path: '/api/v1/auth/me' },
               { id: 'metrics', label: t('project.finnapi.sim.tab_metrics'), method: 'GET', path: '/metrics' },
             ].map((tab) => (
               <button
@@ -514,6 +466,39 @@ go_goroutines 24`
               {/* Form Fields by Tab */}
               {activeTab === 'register' && (
                 <div className="space-y-3 font-sans">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10.5px] text-zinc-400">Payload DTO (Go Backend)</span>
+                    <button
+                      type="button"
+                      onClick={handleGenerateFreshCredentials}
+                      className="text-[10px] font-mono text-accent-cyan hover:underline bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 flex items-center gap-1"
+                    >
+                      <Sparkle size={12} />
+                      <span>Sinh User Mới</span>
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_username')}</label>
+                      <input 
+                        type="text"
+                        value={regUsername}
+                        onChange={(e) => setRegUsername(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                        placeholder="finn_dev"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_fullname')}</label>
+                      <input 
+                        type="text"
+                        value={regFullName}
+                        onChange={(e) => setRegFullName(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
+                        placeholder="Nguyen Hoang Anh Quan"
+                      />
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_email')}</label>
                     <input 
@@ -550,6 +535,9 @@ go_goroutines 24`
                         {showRegPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
+                    <span className="text-[10px] text-zinc-500 mt-1 block">
+                      Backend tích hợp kiểm tra HIBP — mật khẩu yếu đã từng bị rò rỉ sẽ bị từ chối với mã 422.
+                    </span>
                   </div>
                 </div>
               )}
@@ -590,39 +578,19 @@ go_goroutines 24`
                 </div>
               )}
 
-              {activeTab === 'totp' && (
+              {activeTab === 'profile' && (
                 <div className="space-y-3 font-sans">
                   <div>
-                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_session')}</label>
-                    <input 
-                      type="text"
-                      value={sessionId}
-                      onChange={(e) => setSessionId(e.target.value)}
-                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-zinc-200 text-xs font-mono"
-                      placeholder={sessionId ? sessionId : "sess_..."}
+                    <label className="block text-[11px] font-mono text-zinc-400 mb-1">{t('project.finnapi.sim.input_token')}</label>
+                    <textarea 
+                      rows={3}
+                      value={accessToken}
+                      onChange={(e) => setAccessToken(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-accent-cyan text-[11px] font-mono break-all"
+                      placeholder="eyJhbGciOiJIUzI1NiIs..."
                     />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-mono text-zinc-400">{t('project.finnapi.sim.input_totp')}</label>
-                      <button
-                        type="button"
-                        onClick={() => setTotpCode(DEMO_VALID_TOTP)}
-                        className="text-[10px] font-mono text-accent-cyan hover:underline bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/40"
-                      >
-                        Dán mã mẫu: {DEMO_VALID_TOTP}
-                      </button>
-                    </div>
-                    <input 
-                      type="text"
-                      maxLength={6}
-                      value={totpCode}
-                      onChange={(e) => setTotpCode(e.target.value)}
-                      className="w-full px-3 py-2 rounded bg-surface-900 border border-border-subtle focus:border-accent-cyan text-accent-cyan font-mono text-sm tracking-widest text-center"
-                      placeholder="Nhập 6 số (VD: 839201)"
-                    />
-                    <span className="text-[10.5px] text-zinc-500 mt-1 block">
-                      Thử nhập mã đúng <span className="text-accent-cyan font-mono">{DEMO_VALID_TOTP}</span> để thành công, hoặc nhập mã khác để xem hệ thống từ chối theo chuẩn RFC 6238.
+                    <span className="text-[10px] text-zinc-500 mt-1 block">
+                      Token này được tự động điền sau khi bạn thực thi bước Đăng nhập thành công.
                     </span>
                   </div>
                 </div>
@@ -630,7 +598,7 @@ go_goroutines 24`
 
               {activeTab === 'metrics' && (
                 <div className="text-zinc-400 text-xs py-4 leading-relaxed font-sans">
-                  Endpoint <span className="font-mono text-zinc-200">GET /metrics</span> xuất ra các chỉ số Prometheus thời gian thực của server (Goroutines, số lượng request, độ trễ histogram).
+                  Endpoint <span className="font-mono text-zinc-200">GET /metrics</span> kéo trực tiếp các chỉ số Prometheus thời gian thực từ container Go trên Render (Goroutines, memory allocation, request counters).
                 </div>
               )}
 
@@ -642,9 +610,15 @@ go_goroutines 24`
                   className="flex-1 py-2.5 rounded-lg bg-accent-cyan hover:bg-cyan-300 text-surface-950 font-sans font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_-4px_rgba(0,229,255,0.3)]"
                 >
                   {isSimulating ? (
-                    <span className="animate-spin inline-block">↻</span>
+                    <span className="flex items-center gap-2">
+                      <span className="animate-spin inline-block">↻</span>
+                      <span>Đang gọi Render API...</span>
+                    </span>
                   ) : (
-                    <span>{t('project.finnapi.sim.send_btn')}</span>
+                    <span className="flex items-center gap-1.5">
+                      <Lightning size={14} weight="fill" />
+                      <span>{t('project.finnapi.sim.send_btn')}</span>
+                    </span>
                   )}
                 </button>
                 <button
@@ -662,13 +636,15 @@ go_goroutines 24`
             <div className="lg:col-span-7 bg-surface-950 border border-border-subtle rounded-xl p-5 space-y-3 font-mono text-xs">
               <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle pb-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-zinc-200 font-semibold uppercase tracking-wider text-[11px]">RESPONSE OUTPUT</span>
+                  <span className="text-zinc-200 font-semibold uppercase tracking-wider text-[11px]">LIVE HTTP RESPONSE</span>
                   <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
-                    responseStatus === 200 || responseStatus === 201 
+                    responseStatus >= 200 && responseStatus < 300 
                       ? 'bg-emerald-950/70 border-emerald-700/50 text-emerald-400' 
+                      : responseStatus === 422
+                      ? 'bg-amber-950/70 border-amber-700/50 text-amber-400'
                       : 'bg-red-950/70 border-red-700/50 text-red-400'
                   }`}>
-                    {responseStatus} {responseStatus === 200 ? 'OK' : responseStatus === 201 ? 'Created' : responseStatus === 401 ? 'Unauthorized' : 'Bad Request'}
+                    {responseStatus} {responseStatus === 200 ? 'OK' : responseStatus === 201 ? 'Created' : responseStatus === 422 ? 'Unprocessable (HIBP)' : responseStatus === 401 ? 'Unauthorized' : 'Bad Request'}
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-400">
@@ -680,7 +656,7 @@ go_goroutines 24`
               <div className="bg-surface-900 p-4 rounded-lg border border-border-subtle text-zinc-200 overflow-x-auto text-[11px] leading-relaxed max-h-[250px]">
                 {simulatedResponse ? (
                   typeof simulatedResponse === 'string' ? (
-                    <pre className="text-zinc-300 whitespace-pre font-mono">{simulatedResponse}</pre>
+                    <pre className="text-zinc-300 whitespace-pre font-mono text-[10.5px]">{simulatedResponse}</pre>
                   ) : (
                     <pre className="text-cyan-200 whitespace-pre font-mono">
                       {JSON.stringify(simulatedResponse, null, 2)}
@@ -688,7 +664,7 @@ go_goroutines 24`
                   )
                 ) : (
                   <div className="text-zinc-500 py-6 text-center italic font-sans">
-                    Nhấn "Thực thi Request" để gửi yêu cầu và nhận kết quả phản hồi có định dạng.
+                    Nhấn "Thực thi Request Live" để gửi HTTP request thực tế đến server Render và nhận phản hồi trực tiếp.
                   </div>
                 )}
               </div>
@@ -696,7 +672,7 @@ go_goroutines 24`
               {/* Flow Transition Quick Action Buttons */}
               {simulatedResponse && (
                 <div className="pt-2">
-                  {activeTab === 'register' && responseStatus === 201 && (
+                  {activeTab === 'register' && (responseStatus === 200 || responseStatus === 201) && (
                     <button
                       onClick={() => {
                         setActiveTab('login');
@@ -704,19 +680,19 @@ go_goroutines 24`
                       }}
                       className="w-full py-2 px-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-accent-cyan/40 text-accent-cyan text-xs font-mono flex items-center justify-center gap-1.5 transition-all"
                     >
-                      <span>Thông tin đã đồng bộ → Chuyển sang bước Đăng nhập</span>
+                      <span>Tài khoản đã tạo trên Render → Chuyển sang bước Đăng nhập</span>
                       <ArrowRight size={14} />
                     </button>
                   )}
                   {activeTab === 'login' && responseStatus === 200 && (
                     <button
                       onClick={() => {
-                        setActiveTab('totp');
+                        setActiveTab('profile');
                         setSimulatedResponse(null);
                       }}
                       className="w-full py-2 px-3 rounded-lg bg-surface-900 hover:bg-surface-850 border border-emerald-500/40 text-emerald-400 text-xs font-mono flex items-center justify-center gap-1.5 transition-all"
                     >
-                      <span>Đã nhận session_id → Chuyển sang Xác thực 2 bước (Google Authenticator)</span>
+                      <span>Đã nhận JWT Token → Chuyển sang Lấy Profile (GET /me)</span>
                       <ArrowRight size={14} />
                     </button>
                   )}
@@ -727,10 +703,10 @@ go_goroutines 24`
               <div className="text-[10px] text-zinc-400 space-y-1 pt-1 font-mono">
                 <div className="text-zinc-400 font-semibold">{t('project.finnapi.sim.response_headers')}:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10.5px]">
-                  <div><span className="text-zinc-500">X-Content-Type-Options:</span> <span className="text-zinc-300">nosniff</span></div>
-                  <div><span className="text-zinc-500">Strict-Transport-Security:</span> <span className="text-zinc-300">max-age=63072000</span></div>
-                  <div><span className="text-zinc-500">RateLimit-Remaining:</span> <span className="text-zinc-300">98 / 100</span></div>
-                  <div><span className="text-zinc-500">Content-Type:</span> <span className="text-zinc-300">application/json</span></div>
+                  <div><span className="text-zinc-500">server:</span> <span className="text-zinc-300">cloudflare / Render</span></div>
+                  <div><span className="text-zinc-500">x-content-type-options:</span> <span className="text-zinc-300">nosniff</span></div>
+                  <div><span className="text-zinc-500">cache-control:</span> <span className="text-zinc-300">no-store</span></div>
+                  <div><span className="text-zinc-500">content-type:</span> <span className="text-zinc-300">application/json; charset=utf-8</span></div>
                 </div>
               </div>
             </div>

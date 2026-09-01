@@ -6,5 +6,14 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      '/render-api': {
+        target: 'https://finnapigo.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/render-api/, '')
+      }
+    }
   },
 });
+

@@ -1,0 +1,12 @@
+﻿{
+  "rewrites": [
+    {
+      "source": "/render-api/:path*",
+      "destination": "https://finnapigo.onrender.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

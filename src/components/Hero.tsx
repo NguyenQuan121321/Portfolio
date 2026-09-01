@@ -60,7 +60,7 @@ export const Hero: React.FC = () => {
             <ShieldCheck size={16} className="text-accent-cyan" weight="bold" />
             <span>{t('hero.badge')}</span>
           </div>
-          <span className="text-xs font-mono text-zinc-400">Hanoi, Vietnam</span>
+          <span className="text-xs font-mono text-zinc-400">Dong Nai, Viet Nam</span>
         </div>
 
         {/* Headline & Value Proposition */}
