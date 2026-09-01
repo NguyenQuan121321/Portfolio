@@ -90,8 +90,6 @@ export const FinnApiGoSection: React.FC = () => {
   const [theftLog, setTheftLog] = useState<{
     status: number;
     code: string;
-    message: string;
-    blacklistAction: string;
     timestamp: string;
   } | null>(null);
   const [isSimulatingTheft, setIsSimulatingTheft] = useState<boolean>(false);
@@ -114,7 +112,7 @@ export const FinnApiGoSection: React.FC = () => {
       os: 'Windows 11 (Current)',
       location: 'Dong Nai, Viet Nam',
       ip: '113.161.xx.xx',
-      lastActive: 'Vừa xong',
+      lastActive: 'Just now',
       isCurrent: true
     },
     {
@@ -123,7 +121,7 @@ export const FinnApiGoSection: React.FC = () => {
       os: 'iOS 17.5',
       location: 'TP. Ho Chi Minh, Viet Nam',
       ip: '14.169.xx.xx',
-      lastActive: '15 phút trước',
+      lastActive: '15m ago',
       isCurrent: false
     },
     {
@@ -132,7 +130,7 @@ export const FinnApiGoSection: React.FC = () => {
       os: 'macOS Sonoma',
       location: 'Da Nang, Viet Nam',
       ip: '118.69.xx.xx',
-      lastActive: '3 giờ trước',
+      lastActive: '3h ago',
       isCurrent: false
     }
   ]);
@@ -287,7 +285,7 @@ export const FinnApiGoSection: React.FC = () => {
       setRotationHistory([
         {
           step: 1,
-          action: 'Initial Login & Token Family Genesis',
+          action: t('project.finnapi.sc1.action_initial'),
           tokenPreview: newAccess.substring(0, 24) + '...',
           refreshPreview: newRefresh.substring(0, 20) + '...',
           status: loginRes.status || 200,
@@ -368,7 +366,7 @@ export const FinnApiGoSection: React.FC = () => {
       setRotationHistory(prev => [
         {
           step: nextGen,
-          action: `Rotation Step #${nextGen} (Old Token Revoked in Redis)`,
+          action: `${t('project.finnapi.sc1.action_step')} #${nextGen} (${t('project.finnapi.sc1.action_revoked_note')})`,
           tokenPreview: nextAccess.substring(0, 24) + '...',
           refreshPreview: nextRefresh.substring(0, 20) + '...',
           status: res.status || 200,
@@ -388,7 +386,7 @@ export const FinnApiGoSection: React.FC = () => {
       setRotationHistory(prev => [
         {
           step: nextGen,
-          action: `Rotation Step #${nextGen} (Redis Hash Replaced)`,
+          action: `${t('project.finnapi.sc1.action_step')} #${nextGen} (${t('project.finnapi.sc1.action_revoked_note')})`,
           tokenPreview: nextAccess.substring(0, 24) + '...',
           refreshPreview: nextRefresh.substring(0, 20) + '...',
           status: 200,
@@ -407,13 +405,10 @@ export const FinnApiGoSection: React.FC = () => {
     setIsSimulatingTheft(true);
     setTheftLog(null);
 
-    // Simulate attacker replaying a revoked generation 1 token
     setTimeout(() => {
       setTheftLog({
         status: 401,
         code: "TOKEN_FAMILY_COMPROMISED",
-        message: "CẢNH BÁO XÂM NHẬP: Token refresh này đã từng được sử dụng trước đó (Reuse Detected). Toàn bộ chuỗi Token Family của phiên này đã bị thu hồi ngay lập tức trong Redis.",
-        blacklistAction: "SET token_blacklist:usr_fam_* TTL=86400s (Tất cả thiết bị buộc phải đăng nhập lại)",
         timestamp: new Date().toISOString()
       });
       // Invalidate current state
@@ -432,7 +427,6 @@ export const FinnApiGoSection: React.FC = () => {
 
     for (let i = 1; i <= 8; i++) {
       const start = performance.now();
-      // Emulate rapid hits to rate-limited endpoint
       await new Promise(r => setTimeout(r, 60));
       const elapsed = (performance.now() - start).toFixed(1) + 'ms';
       
@@ -452,7 +446,7 @@ export const FinnApiGoSection: React.FC = () => {
   // Scenario 4: Revoke Remote Device Session
   const handleRevokeSession = (sessionId: string) => {
     setSessions(prev => prev.filter(s => s.id !== sessionId));
-    setSessionActionLog(`Đã gửi lệnh thu hồi phiên [${sessionId}]. Khóa phiên trong Redis (DEL session:${sessionId}) thành công.`);
+    setSessionActionLog(t('project.finnapi.sc4.revoke_success'));
     setTimeout(() => setSessionActionLog(null), 3500);
   };
 
@@ -713,7 +707,7 @@ export const FinnApiGoSection: React.FC = () => {
                 {isQuickAuthing ? (
                   <>
                     <ArrowsClockwise size={14} className="animate-spin text-accent-cyan" />
-                    <span>Đang khởi tạo Quick Auth...</span>
+                    <span>{t('project.finnapi.sim.quick_auth_running')}</span>
                   </>
                 ) : (
                   <>
@@ -776,10 +770,10 @@ export const FinnApiGoSection: React.FC = () => {
 
                 <div className="pt-2 flex items-center justify-between border-t border-border-subtle/60 text-xs font-mono">
                   <span className="text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                    Kịch bản #{sc.id}
+                    {t('project.finnapi.sim.scenario_label')} #{sc.id}
                   </span>
                   <span className={`px-3 py-1.5 rounded-lg border font-semibold flex items-center gap-1.5 transition-all ${sc.buttonColor}`}>
-                    <span>Thực thi Live</span>
+                    <span>{t('project.finnapi.sim.execute_live')}</span>
                     <ArrowRight size={13} />
                   </span>
                 </div>
@@ -805,10 +799,10 @@ export const FinnApiGoSection: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="text-base font-bold text-zinc-100">
-                        Quick Auth — Tự Động Hóa Xác Thực Hai Chiều
+                        {t('project.finnapi.qa.title')}
                       </h3>
                       <p className="text-xs text-zinc-400 font-mono">
-                        Luồng tự động: Đăng ký tài khoản → Chuyển thông tin → Đăng nhập & Nhận JWT
+                        {t('project.finnapi.qa.subtitle')}
                       </p>
                     </div>
                   </div>
@@ -837,7 +831,7 @@ export const FinnApiGoSection: React.FC = () => {
                         : 'bg-surface-950 border-border-subtle text-zinc-500'
                     }`}>
                       <UserCheck size={16} />
-                      <span>1. Đăng ký (POST /register)</span>
+                      <span>{t('project.finnapi.qa.step1')}</span>
                       {(quickAuthStep === 'registered' || quickAuthStep === 'logging_in' || quickAuthStep === 'logged_in') && (
                         <Check size={14} className="text-emerald-400" />
                       )}
@@ -851,7 +845,7 @@ export const FinnApiGoSection: React.FC = () => {
                         : 'bg-surface-950 border-border-subtle text-zinc-500'
                     }`}>
                       <SignIn size={16} />
-                      <span>2. Đăng nhập (POST /login)</span>
+                      <span>{t('project.finnapi.qa.step2')}</span>
                       {quickAuthStep === 'logged_in' && <Check size={14} className="text-emerald-400" />}
                     </div>
                   </div>
@@ -863,13 +857,13 @@ export const FinnApiGoSection: React.FC = () => {
                     {(quickAuthStep === 'registering' || quickAuthStep === 'registered') && (
                       <div className="bg-surface-950 border border-border-subtle rounded-xl p-4 space-y-3 transition-all animate-fadeIn">
                         <div className="flex items-center justify-between border-b border-border-subtle pb-2 text-zinc-300">
-                          <span className="font-bold uppercase text-[11px]">BẢNG ĐĂNG KÝ (TRÁI)</span>
+                          <span className="font-bold uppercase text-[11px]">{t('project.finnapi.qa.left_title')}</span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             qaRegisterStatus === 201 
                               ? 'bg-emerald-950 text-emerald-400 border border-emerald-700/50' 
                               : 'bg-cyan-950 text-cyan-400 border border-cyan-800/40 animate-pulse'
                           }`}>
-                            {qaRegisterStatus === 201 ? '201 Created' : 'Đang gửi Request...'}
+                            {qaRegisterStatus === 201 ? '201 Created' : t('project.finnapi.qa.sending')}
                           </span>
                         </div>
 
@@ -895,7 +889,7 @@ export const FinnApiGoSection: React.FC = () => {
                         {quickAuthStep === 'registered' && (
                           <div className="p-2 rounded bg-emerald-950/60 border border-emerald-800/50 text-emerald-300 text-[11px] flex items-center gap-1.5 font-sans">
                             <CheckCircle size={14} className="text-emerald-400 shrink-0" />
-                            <span>Đăng ký thành công! Đang tự động ẩn bảng trái và chuyển sang Đăng nhập...</span>
+                            <span>{t('project.finnapi.qa.reg_success')}</span>
                           </div>
                         )}
                       </div>
@@ -908,7 +902,7 @@ export const FinnApiGoSection: React.FC = () => {
                         : 'border-border-subtle opacity-60'
                     }`}>
                       <div className="flex items-center justify-between border-b border-border-subtle pb-2 text-zinc-300">
-                        <span className="font-bold uppercase text-[11px]">BẢNG ĐĂNG NHẬP (PHẢI)</span>
+                        <span className="font-bold uppercase text-[11px]">{t('project.finnapi.qa.right_title')}</span>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           qaLoginStatus === 200 
                             ? 'bg-emerald-950 text-emerald-400 border border-emerald-700/50' 
@@ -916,7 +910,7 @@ export const FinnApiGoSection: React.FC = () => {
                             ? 'bg-cyan-950 text-cyan-400 border border-cyan-800/40 animate-pulse'
                             : 'bg-surface-900 text-zinc-500'
                         }`}>
-                          {qaLoginStatus === 200 ? `200 OK (${qaLatency})` : quickAuthStep === 'logging_in' ? 'Đang xác thực...' : 'Chờ đăng ký...'}
+                          {qaLoginStatus === 200 ? `200 OK (${qaLatency})` : quickAuthStep === 'logging_in' ? t('project.finnapi.qa.authenticating') : t('project.finnapi.qa.waiting')}
                         </span>
                       </div>
 
@@ -935,10 +929,10 @@ export const FinnApiGoSection: React.FC = () => {
                         <div className="p-3 rounded-lg bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-sans space-y-1.5 animate-fadeIn">
                           <div className="flex items-center gap-1.5 font-bold text-emerald-200">
                             <CheckCircle size={16} className="text-emerald-400" />
-                            <span>Đăng nhập thành công! Đã nhận JWT Access Token (15m) & Refresh Token.</span>
+                            <span>{t('project.finnapi.qa.login_success_title')}</span>
                           </div>
                           <div className="text-[11px] text-zinc-400 font-mono">
-                            Hệ thống sẽ tự động đóng popup và cập nhật phiên hoạt động vào bảng điều khiển...
+                            {t('project.finnapi.qa.auto_close_note')}
                           </div>
                         </div>
                       )}
@@ -952,14 +946,14 @@ export const FinnApiGoSection: React.FC = () => {
                 <div className="p-4 border-t border-border-subtle bg-surface-950 flex items-center justify-between text-xs text-zinc-400 shrink-0">
                   <div className="flex items-center gap-2 font-mono">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-                    <span>Live Render API Server Connected</span>
+                    <span>{t('project.finnapi.sim.server_connected')}</span>
                   </div>
                   <button
                     type="button"
                     onClick={handleCloseModal}
                     className="px-3 py-1.5 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle text-zinc-200 font-sans font-semibold transition-colors"
                   >
-                    Đóng ngay
+                    {t('project.finnapi.sim.close_now')}
                   </button>
                 </div>
 
@@ -988,7 +982,7 @@ export const FinnApiGoSection: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-accent-cyan border border-cyan-800/40">
-                          SCENARIO {selectedScenario}
+                          {t('project.finnapi.sim.scenario_label').toUpperCase()} {selectedScenario}
                         </span>
                         <span className="text-xs font-mono text-zinc-400">
                           {scenarios.find(s => s.id === selectedScenario)?.tag}
@@ -1019,9 +1013,9 @@ export const FinnApiGoSection: React.FC = () => {
                   <div className="p-3 rounded-lg bg-surface-950 border border-border-subtle flex flex-wrap items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-2 text-zinc-300">
                       <Key size={16} className="text-accent-cyan" />
-                      <span>Active Identity:</span>
+                      <span>{t('project.finnapi.sim.active_identity')}</span>
                       <span className="text-accent-cyan font-bold">
-                        {currentUser ? `@${currentUser.username}` : 'Guest (Chưa có token)'}
+                        {currentUser ? `@${currentUser.username}` : t('project.finnapi.sim.guest')}
                       </span>
                       {accessToken && (
                         <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40 font-mono truncate max-w-[180px]" title={accessToken}>
@@ -1038,7 +1032,7 @@ export const FinnApiGoSection: React.FC = () => {
                         className="px-3 py-1 rounded bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/50 flex items-center gap-1.5 transition-colors"
                       >
                         <Sparkle size={12} />
-                        <span>Quick Auth 1-Click</span>
+                        <span>{t('project.finnapi.sim.quick_auth')}</span>
                       </button>
                     )}
                   </div>
@@ -1050,14 +1044,14 @@ export const FinnApiGoSection: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <h4 className="font-bold text-zinc-100 text-sm flex items-center gap-2 font-mono">
                             <ArrowsClockwise size={16} className="text-accent-cyan" />
-                            <span>Cơ Chế Token Rotation (Single-Use Refresh Token)</span>
+                            <span>{t('project.finnapi.sc1.heading')}</span>
                           </h4>
                           <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800/40">
-                            Redis Atomic Swap
+                            {t('project.finnapi.sc1.tag')}
                           </span>
                         </div>
                         <p className="text-xs text-zinc-300 leading-relaxed">
-                          Mỗi khi client gửi Refresh Token để lấy Access Token mới, backend Go sẽ xác thực chữ ký, kiểm tra SHA-256 hash trong Redis, <strong>hủy ngay lập tức Refresh Token cũ</strong> và cấp phát một cặp Access + Refresh Token hoàn toàn mới.
+                          {t('project.finnapi.sc1.desc')}
                         </p>
                       </div>
 
@@ -1072,12 +1066,12 @@ export const FinnApiGoSection: React.FC = () => {
                           {isRotating ? (
                             <>
                               <ArrowsClockwise size={16} className="animate-spin" />
-                              <span>Đang xoay vòng token trên Render...</span>
+                              <span>{t('project.finnapi.sc1.btn_loading')}</span>
                             </>
                           ) : (
                             <>
                               <Play size={16} weight="fill" />
-                              <span>Gửi Yêu Cầu Xoay Vòng (POST /api/v1/auth/refresh)</span>
+                              <span>{t('project.finnapi.sc1.btn')}</span>
                             </>
                           )}
                         </button>
@@ -1088,7 +1082,7 @@ export const FinnApiGoSection: React.FC = () => {
                           className="py-3 px-4 rounded-xl bg-surface-950 hover:bg-surface-850 border border-border-subtle text-zinc-300 transition-colors flex items-center gap-1.5"
                         >
                           {copiedCurl ? <Check size={14} className="text-accent-mint" /> : <Copy size={14} />}
-                          <span>{copiedCurl ? 'Đã copy' : 'Copy cURL'}</span>
+                          <span>{copiedCurl ? t('project.finnapi.sim.copied') : t('project.finnapi.sim.copy_btn')}</span>
                         </button>
                       </div>
 
@@ -1096,14 +1090,14 @@ export const FinnApiGoSection: React.FC = () => {
                       <div className="space-y-2.5">
                         <div className="flex items-center justify-between text-zinc-400 border-b border-border-subtle pb-2">
                           <span className="font-semibold text-[11px] uppercase tracking-wider text-zinc-200">
-                            Nhật ký Xoay vòng Token Thời gian thực ({rotationHistory.length} vòng đời)
+                            {t('project.finnapi.sc1.log_title')} ({rotationHistory.length})
                           </span>
-                          <span className="text-zinc-500 text-[10.5px]">Single-use Invalidation</span>
+                          <span className="text-zinc-500 text-[10.5px]">{t('project.finnapi.sc1.invalidation')}</span>
                         </div>
 
                         {rotationHistory.length === 0 ? (
                           <div className="p-6 rounded-lg bg-surface-950 border border-border-subtle text-center text-zinc-500 font-sans">
-                            Nhấn nút "Gửi Yêu Cầu Xoay Vòng" để quan sát quá trình cấp mới token và hủy bỏ token cũ.
+                            {t('project.finnapi.sc1.empty_log')}
                           </div>
                         ) : (
                           <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
@@ -1143,10 +1137,10 @@ export const FinnApiGoSection: React.FC = () => {
                       <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/40 space-y-2 font-sans">
                         <div className="flex items-center gap-2 text-amber-300 font-bold text-sm font-mono">
                           <Warning size={18} className="text-amber-400" />
-                          <span>Mô Phỏng Cuộc Tấn Công: Replay Old Refresh Token</span>
+                          <span>{t('project.finnapi.sc2.heading')}</span>
                         </div>
                         <p className="text-xs text-amber-200/80 leading-relaxed">
-                          Giả định kẻ tấn công chặn bắt được một Refresh Token cũ (đã từng được xoay vòng). Khi kẻ tấn công gửi request với token cũ này, hệ thống sẽ nhận diện hành vi trộm cắp và kích hoạt cơ chế <strong>Family Revocation</strong> — lập tức thu hồi toàn bộ token của phiên đăng nhập đó.
+                          {t('project.finnapi.sc2.desc')}
                         </p>
                       </div>
 
@@ -1159,12 +1153,12 @@ export const FinnApiGoSection: React.FC = () => {
                         {isSimulatingTheft ? (
                           <>
                             <ArrowsClockwise size={16} className="animate-spin" />
-                            <span>Đang kiểm tra rà soát trong Redis...</span>
+                            <span>{t('project.finnapi.sc2.btn_loading')}</span>
                           </>
                         ) : (
                           <>
                             <ShieldWarning size={16} weight="bold" />
-                            <span>Kích Hoạt: Gửi Token Cũ Tái Sử Dụng (Simulate Replay Attack)</span>
+                            <span>{t('project.finnapi.sc2.btn')}</span>
                           </>
                         )}
                       </button>
@@ -1176,14 +1170,14 @@ export const FinnApiGoSection: React.FC = () => {
                               <X size={16} weight="bold" />
                               <span>HTTP {theftLog.status} UNAUTHORIZED · {theftLog.code}</span>
                             </span>
-                            <span className="text-[10.5px] text-zinc-500">Security Audit Triggered</span>
+                            <span className="text-[10.5px] text-zinc-500">{t('project.finnapi.sc2.audit_triggered')}</span>
                           </div>
                           <p className="text-xs text-zinc-200 leading-relaxed font-sans">
-                            {theftLog.message}
+                            {t('project.finnapi.sc2.alert_msg')}
                           </p>
                           <div className="p-3 rounded bg-red-950/40 border border-red-800/40 text-[11px] text-red-300 font-mono space-y-1">
-                            <div className="font-semibold text-red-200">&gt; Automated Remediation Executed:</div>
-                            <div>{theftLog.blacklistAction}</div>
+                            <div className="font-semibold text-red-200">&gt; {t('project.finnapi.sc2.remediation')}</div>
+                            <div>{t('project.finnapi.sc2.action')}</div>
                           </div>
                         </div>
                       )}
@@ -1197,14 +1191,14 @@ export const FinnApiGoSection: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <h4 className="font-bold text-zinc-100 text-sm flex items-center gap-2 font-mono">
                             <Lightning size={16} className="text-emerald-400" weight="fill" />
-                            <span>Redis Sliding Window Rate Limiter (IPv6 /64 Collapse)</span>
+                            <span>{t('project.finnapi.sc3.heading')}</span>
                           </h4>
                           <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/40">
-                            Max 4 req/sec
+                            {t('project.finnapi.sc3.tag')}
                           </span>
                         </div>
                         <p className="text-xs text-zinc-300 leading-relaxed">
-                          Bộ giới hạn tốc độ cửa sổ trượt ngăn chặn brute-force mật khẩu. Khi vượt quá ngưỡng cho phép, server lập tức ngắt kết nối với mã <strong>HTTP 429 Too Many Requests</strong> và header <code>Retry-After: 60</code>.
+                          {t('project.finnapi.sc3.desc')}
                         </p>
                       </div>
 
@@ -1217,12 +1211,12 @@ export const FinnApiGoSection: React.FC = () => {
                         {isBursting ? (
                           <>
                             <ArrowsClockwise size={16} className="animate-spin" />
-                            <span>Đang bắn loạt 8 requests liên tiếp...</span>
+                            <span>{t('project.finnapi.sc3.btn_loading')}</span>
                           </>
                         ) : (
                           <>
                             <Play size={16} weight="fill" />
-                            <span>Bắn Loạt 8 Requests Liên Tục Trong 500ms</span>
+                            <span>{t('project.finnapi.sc3.btn')}</span>
                           </>
                         )}
                       </button>
@@ -1230,7 +1224,7 @@ export const FinnApiGoSection: React.FC = () => {
                       {burstRequests.length > 0 && (
                         <div className="space-y-2">
                           <div className="text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
-                            Kết Quả Phản Hồi Từ Redis Rate Limiter:
+                            {t('project.finnapi.sc3.result_title')}
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {burstRequests.map((req) => (
@@ -1244,7 +1238,7 @@ export const FinnApiGoSection: React.FC = () => {
                               >
                                 <span>Req #{req.id}: {req.url}</span>
                                 <span className={`px-2 py-0.5 rounded text-[10.5px] ${req.status === 200 ? 'bg-emerald-950 text-emerald-400' : 'bg-red-900 text-red-200'}`}>
-                                  {req.status} {req.status === 200 ? `(Remaining: ${req.remaining})` : 'BLOCKED (429)'}
+                                  {req.status} {req.status === 200 ? `(Remaining: ${req.remaining})` : t('project.finnapi.sc3.blocked')}
                                 </span>
                               </div>
                             ))}
@@ -1261,14 +1255,14 @@ export const FinnApiGoSection: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <h4 className="font-bold text-zinc-100 text-sm flex items-center gap-2 font-mono">
                             <Laptop size={16} className="text-purple-400" />
-                            <span>Quản Lý Thiết Bị Đăng Nhập Đa Nền Tảng (Distributed Sessions)</span>
+                            <span>{t('project.finnapi.sc4.heading')}</span>
                           </h4>
                           <span className="text-[11px] font-mono text-purple-400 bg-purple-950/50 px-2 py-0.5 rounded border border-purple-800/40">
-                            {sessions.length} Thiết bị active
+                            {sessions.length} {t('project.finnapi.sc4.devices_active')}
                           </span>
                         </div>
                         <p className="text-xs text-zinc-300 leading-relaxed">
-                          Mỗi phiên đăng nhập lưu kèm thông tin Fingerprint (Hệ điều hành, User-Agent, IP và Geolocation). Người dùng có thể chủ động thu hồi phiên của bất kỳ thiết bị nào từ xa.
+                          {t('project.finnapi.sc4.desc')}
                         </p>
                       </div>
 
@@ -1298,7 +1292,7 @@ export const FinnApiGoSection: React.FC = () => {
                                   <span className="font-bold text-zinc-100 text-xs">{sess.device}</span>
                                   {sess.isCurrent && (
                                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950 text-accent-cyan border border-cyan-800/40">
-                                      Thiết bị hiện tại
+                                      {t('project.finnapi.sc4.current_device')}
                                     </span>
                                   )}
                                 </div>
@@ -1323,7 +1317,7 @@ export const FinnApiGoSection: React.FC = () => {
                                   onClick={() => handleRevokeSession(sess.id)}
                                   className="px-3 py-1.5 rounded-lg bg-red-950/50 hover:bg-red-900 border border-red-700/50 text-red-300 text-xs font-sans font-semibold transition-colors"
                                 >
-                                  Thu hồi từ xa
+                                  {t('project.finnapi.sc4.revoke_btn')}
                                 </button>
                               )}
                             </div>
@@ -1337,9 +1331,9 @@ export const FinnApiGoSection: React.FC = () => {
 
                 {/* Modal Footer */}
                 <div className="p-4 sm:p-5 border-t border-border-subtle bg-surface-950 flex items-center justify-between text-xs text-zinc-400 shrink-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 font-mono">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block"></span>
-                    <span>Backend Render: Live Connection Verified</span>
+                    <span>{t('project.finnapi.sim.server_connected')}</span>
                   </div>
                   <button
                     type="button"
