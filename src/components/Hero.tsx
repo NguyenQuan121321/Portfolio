@@ -73,9 +73,9 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* Main Powerful Engineering Slogan Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-100 leading-[1.25] sm:leading-[1.32] lg:leading-[1.36]">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-100 leading-[1.25] sm:leading-[1.28] lg:leading-[1.3]">
             <span className="block">{t('hero.headline_prefix')}</span>
-            <span className="block mt-1 sm:mt-2 pb-1.5 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-accent-cyan to-emerald-400">
+            <span className="block mt-1 sm:mt-1.5 pb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-accent-cyan to-emerald-400">
               {t('hero.headline_highlight')}
             </span>
           </h1>
