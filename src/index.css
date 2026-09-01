@@ -2,17 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Light mode RGB channels (Soft Nordic Slate - Gentle on eyes, NOT blinding white) */
+  --bg-surface-950-rgb: 241 245 249; /* Slate 100 */
+  --bg-surface-900-rgb: 255 255 255; /* Crisp White Card */
+  --bg-surface-850-rgb: 248 250 252; /* Slate 50 */
+  --bg-surface-800-rgb: 226 232 240; /* Slate 200 */
+  --bg-surface-700-rgb: 203 213 225; /* Slate 300 */
+  --border-subtle-rgb: 226 232 240;
+  --border-highlight-rgb: 203 213 225;
+
+  --bg-surface-950: #f1f5f9;
+  --bg-surface-900: #ffffff;
+  --bg-surface-850: #f8fafc;
+  --bg-surface-800: #e2e8f0;
+  --bg-surface-700: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --border-highlight: #cbd5e1;
+}
+
+.dark,
+[data-theme="dark"] {
+  /* Dark mode RGB channels (Deep cyber, elegant contrast) */
+  --bg-surface-950-rgb: 8 10 15;
+  --bg-surface-900-rgb: 13 17 23;
+  --bg-surface-850-rgb: 18 23 34;
+  --bg-surface-800-rgb: 24 32 48;
+  --bg-surface-700-rgb: 34 44 66;
+  --border-subtle-rgb: 27 34 52;
+  --border-highlight-rgb: 45 55 82;
+
+  --bg-surface-950: #080a0f;
+  --bg-surface-900: #0d1117;
+  --bg-surface-850: #121722;
+  --bg-surface-800: #182030;
+  --bg-surface-700: #222c42;
+  --border-subtle: #1b2234;
+  --border-highlight: #2d3752;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
-    color-scheme: dark;
   }
 
   body {
-    background-color: #080a0f;
-    color: #e2e8f0;
+    background-color: var(--bg-surface-950);
     font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
     line-height: 1.6;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
   /* Custom sleek scrollbar */
@@ -22,16 +60,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #080a0f;
+    background: var(--bg-surface-950);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #1e2638;
+    background: var(--border-subtle);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #2d3850;
+    background: var(--border-highlight);
   }
 
   /* Focus rings for keyboard accessibility */
@@ -39,6 +77,160 @@
     outline: 2px solid #00E5FF;
     outline-offset: 2px;
   }
+}
+
+/* ========================================================================= */
+/* BULLETPROOF LIGHT MODE THEME (Sáng dịu mắt, tương phản cao, thẻ nổi bật)   */
+/* ========================================================================= */
+html:not(.dark),
+html[data-theme="light"],
+body[data-theme="light"] {
+  color-scheme: light;
+  background-color: #f1f5f9 !important; /* Soft Slate-100 */
+  color: #0f172a !important;
+}
+
+html:not(.dark) body {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* 1. Main Sections & Containers */
+html:not(.dark) .bg-surface-950,
+html:not(.dark) section,
+html:not(.dark) footer {
+  background-color: #f1f5f9 !important;
+}
+
+/* 2. Elevated Main Cards (Clean Architecture, Scenarios, Skills, About, Contact) */
+html:not(.dark) .bg-surface-900 {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 3. Nested Inner Sub-Cards & Stepper Items (Bên trong Clean Arch, Skills, Scenarios) */
+html:not(.dark) .bg-surface-850,
+html:not(.dark) .bg-surface-800,
+html:not(.dark) .bg-surface-950\/70,
+html:not(.dark) .bg-surface-950\/80,
+html:not(.dark) .bg-surface-950\/90,
+html:not(.dark) .bg-surface-950\/50,
+html:not(.dark) .bg-surface-900\/50 {
+  background-color: #f8fafc !important; /* Slate-50: Crisp light background */
+}
+
+/* 4. Scenario Colored Accent Badges in Light Mode */
+html:not(.dark) .bg-cyan-950,
+html:not(.dark) .bg-cyan-950\/40,
+html:not(.dark) .bg-cyan-950\/60 {
+  background-color: #e0f2fe !important; /* Sky-100 */
+  color: #0369a1 !important;
+  border-color: #bae6fd !important;
+}
+
+html:not(.dark) .bg-emerald-950,
+html:not(.dark) .bg-emerald-950\/40,
+html:not(.dark) .bg-emerald-950\/50 {
+  background-color: #d1fae5 !important; /* Emerald-100 */
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html:not(.dark) .bg-purple-950,
+html:not(.dark) .bg-purple-950\/40 {
+  background-color: #f3e8ff !important; /* Purple-100 */
+  color: #6b21a8 !important;
+  border-color: #e9d5ff !important;
+}
+
+html:not(.dark) .bg-amber-950,
+html:not(.dark) .bg-amber-950\/20,
+html:not(.dark) .bg-amber-950\/40 {
+  background-color: #fef3c7 !important; /* Amber-100 */
+  color: #92400e !important;
+  border-color: #fde68a !important;
+}
+
+/* 5. Typography Contrast in Light Mode */
+html:not(.dark) .text-zinc-100 {
+  color: #0f172a !important; /* Slate-900 */
+}
+html:not(.dark) .text-zinc-200 {
+  color: #1e293b !important; /* Slate-800 */
+}
+html:not(.dark) .text-zinc-300 {
+  color: #334155 !important; /* Slate-700 */
+}
+html:not(.dark) .text-zinc-400 {
+  color: #475569 !important; /* Slate-600 */
+}
+html:not(.dark) .text-zinc-500 {
+  color: #64748b !important; /* Slate-500 */
+}
+
+/* 6. Accent Text */
+html:not(.dark) .text-accent-cyan {
+  color: #0284c7 !important; /* Deep Sky Blue 600 */
+}
+html:not(.dark) .text-accent-mint {
+  color: #059669 !important; /* Emerald 600 */
+}
+
+/* 7. Borders */
+html:not(.dark) .border-border-subtle,
+html:not(.dark) .border-border-subtle\/80,
+html:not(.dark) .border-border-subtle\/60 {
+  border-color: #e2e8f0 !important; /* Slate-200 */
+}
+html:not(.dark) .border-border-highlight {
+  border-color: #cbd5e1 !important; /* Slate-300 */
+}
+
+/* 8. Navbar Header */
+html:not(.dark) header {
+  background-color: rgba(241, 245, 249, 0.92) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* ========================================================================= */
+/* CELESTIAL SUNRISE & SUNSET SMOOTH LIGHT SWEEPS                            */
+/* ========================================================================= */
+@keyframes sunriseSkySweep {
+  0% {
+    clip-path: circle(0% at 0% 100%);
+    opacity: 0.95;
+  }
+  45% {
+    clip-path: circle(120% at 50% 20%);
+    opacity: 0.65;
+  }
+  100% {
+    clip-path: circle(240% at 100% 100%);
+    opacity: 0;
+  }
+}
+
+@keyframes sunsetSkySweep {
+  0% {
+    clip-path: circle(0% at 100% 100%);
+    opacity: 0.95;
+  }
+  45% {
+    clip-path: circle(120% at 50% 20%);
+    opacity: 0.65;
+  }
+  100% {
+    clip-path: circle(240% at 0% 100%);
+    opacity: 0;
+  }
+}
+
+.animate-sunrise-sweep {
+  animation: sunriseSkySweep 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-sunset-sweep {
+  animation: sunsetSkySweep 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @layer utilities {

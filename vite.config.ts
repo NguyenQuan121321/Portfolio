@@ -12,6 +12,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/render-api/, '')
+      },
+      '/chat-api': {
+        target: 'https://finnapigo.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/chat-api/, '')
       }
     }
   },

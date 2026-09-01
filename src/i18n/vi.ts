@@ -1,10 +1,14 @@
 const vi: Record<string, string> = {
   // Navigation
   "nav.status": "Sẵn sàng nhận việc Fresher / Intern Backend",
+  "nav.home": "Trang chủ",
   "nav.projects": "Dự án",
   "nav.skills": "Kỹ năng & Công nghệ",
   "nav.about": "Về tôi",
   "nav.contact": "Liên hệ",
+  "nav.quick_menu": "Menu Điều Hướng Nhanh",
+  "theme.toggle_light": "Chuyển sang Chế độ Sáng",
+  "theme.toggle_dark": "Chuyển sang Chế độ Tối",
   "lang.toggle": "EN",
 
   // Hero
@@ -205,6 +209,22 @@ const vi: Record<string, string> = {
   "contact.modal.subject_label": "Tiêu đề:",
   "contact.modal.recommended": "Khuyên dùng",
   "contact.modal.close": "Đóng (ESC)",
+
+  // Chatbot AI
+  "chatbot.button_tooltip": "Chat với AI Assistant của Quân",
+  "chatbot.title": "Finn AI Assistant",
+  "chatbot.subtitle": "Trợ lý AI trả lời về kỹ năng, dự án & kinh nghiệm của Quân",
+  "chatbot.status_online": "Backend AI Online",
+  "chatbot.welcome_msg": "Xin chào! Mình là Trợ lý AI của Quân (Finn.dev). Bạn có thể hỏi mình bất cứ điều gì về kinh nghiệm lập trình, kỹ năng Golang/Node.js, kiến trúc dự án FinnApiGo hoặc cách thức liên hệ phỏng vấn Quân!",
+  "chatbot.input_placeholder": "Nhập câu hỏi cho AI (ví dụ: Kỹ năng chính của Quân là gì?)...",
+  "chatbot.suggest_title": "Gợi ý câu hỏi nhanh:",
+  "chatbot.suggest_1": "Kỹ năng chính của Quân là gì?",
+  "chatbot.suggest_2": "Dự án FinnApiGo giải quyết bài toán gì?",
+  "chatbot.suggest_3": "Quân định hướng làm vị trí nào?",
+  "chatbot.suggest_4": "Làm sao để liên hệ phỏng vấn Quân?",
+  "chatbot.thinking": "AI đang suy nghĩ và phản hồi...",
+  "chatbot.clear_chat": "Xóa đoạn chat",
+  "chatbot.backend_notice": "Kết nối Backend AI API bảo mật (Server-side architecture)",
 
   // Footer
   "footer.text": "Nguyễn Hoàng Anh Quân — Backend Developer Portfolio.",

@@ -6,11 +6,11 @@ export default {
     extend: {
       colors: {
         surface: {
-          950: "#080a0f", // Deep background
-          900: "#0d1117", // Primary container
-          850: "#121722", // Card background
-          800: "#182030", // Elevated card / border
-          700: "#222c42", // Hover border
+          950: "rgb(var(--bg-surface-950-rgb, 8 10 15) / <alpha-value>)",
+          900: "rgb(var(--bg-surface-900-rgb, 13 17 23) / <alpha-value>)",
+          850: "rgb(var(--bg-surface-850-rgb, 18 23 34) / <alpha-value>)",
+          800: "rgb(var(--bg-surface-800-rgb, 24 32 48) / <alpha-value>)",
+          700: "rgb(var(--bg-surface-700-rgb, 34 44 66) / <alpha-value>)",
         },
         accent: {
           cyan: "#00E5FF",
@@ -21,8 +21,8 @@ export default {
           "amber-glow": "rgba(245, 158, 11, 0.12)",
         },
         border: {
-          subtle: "#1b2234",
-          highlight: "#2d3752",
+          subtle: "rgb(var(--border-subtle-rgb, 27 34 52) / <alpha-value>)",
+          highlight: "rgb(var(--border-highlight-rgb, 45 55 82) / <alpha-value>)",
         },
       },
       fontFamily: {

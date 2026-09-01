@@ -1,5 +1,6 @@
 import React from 'react';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { IntroPreloader } from './components/IntroPreloader';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -8,23 +9,31 @@ import { Skills } from './components/Skills';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { QuickNavFab } from './components/QuickNavFab';
+import { ChatbotAiFab } from './components/ChatbotAiFab';
+import { ThemeTransitionEffect } from './components/ThemeTransitionEffect';
 
 export const App: React.FC = () => {
   return (
-    <LanguageProvider>
-      <div className="min-h-screen bg-surface-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-200">
-        <IntroPreloader />
-        <Navbar />
-        <main>
-          <Hero />
-          <FinnApiGoSection />
-          <Skills />
-          <About />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <div className="min-h-screen bg-surface-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-200">
+          <ThemeTransitionEffect />
+          <IntroPreloader />
+          <Navbar />
+          <main>
+            <Hero />
+            <FinnApiGoSection />
+            <Skills />
+            <About />
+            <Contact />
+          </main>
+          <QuickNavFab />
+          <ChatbotAiFab />
+          <Footer />
+        </div>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

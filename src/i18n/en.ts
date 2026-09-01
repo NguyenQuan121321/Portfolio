@@ -1,10 +1,14 @@
 const en: Record<string, string> = {
   // Navigation
   "nav.status": "Available for Fresher / Intern Backend Roles",
+  "nav.home": "Home",
   "nav.projects": "Projects",
   "nav.skills": "Skills & Technologies",
   "nav.about": "About Me",
   "nav.contact": "Contact",
+  "nav.quick_menu": "Quick Navigation Menu",
+  "theme.toggle_light": "Switch to Light mode",
+  "theme.toggle_dark": "Switch to Dark mode",
   "lang.toggle": "VI",
 
   // Hero
@@ -208,6 +212,22 @@ const en: Record<string, string> = {
   "contact.modal.subject_label": "Subject:",
   "contact.modal.recommended": "Recommended",
   "contact.modal.close": "Close (ESC)",
+
+  // Chatbot AI
+  "chatbot.button_tooltip": "Chat with Quan's AI Assistant",
+  "chatbot.title": "Finn AI Assistant",
+  "chatbot.subtitle": "AI Assistant for Quan's skills, projects & background",
+  "chatbot.status_online": "Backend AI Online",
+  "chatbot.welcome_msg": "Hello! I am Quan's AI Assistant (Finn.dev). Feel free to ask me anything about his Golang/Node.js skills, Clean Architecture in FinnApiGo, or how to contact him for interview opportunities!",
+  "chatbot.input_placeholder": "Ask AI anything (e.g. What are Quan's core backend skills?)...",
+  "chatbot.suggest_title": "Quick suggestions:",
+  "chatbot.suggest_1": "What are Quan's core technical skills?",
+  "chatbot.suggest_2": "What problem does FinnApiGo solve?",
+  "chatbot.suggest_3": "What career role is Quan targeting?",
+  "chatbot.suggest_4": "How can I schedule an interview with Quan?",
+  "chatbot.thinking": "AI is thinking and responding...",
+  "chatbot.clear_chat": "Clear chat",
+  "chatbot.backend_notice": "Connected to Secure Backend AI API (Server-side architecture)",
 
   // Footer
   "footer.text": "Nguyen Hoang Anh Quan — Backend Developer Portfolio.",

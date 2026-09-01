@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { GithubLogo, List, X, Globe } from '@phosphor-icons/react';
+import { useTheme } from '../context/ThemeContext';
+import { GithubLogo, List, X, Globe, Sun, Moon } from '@phosphor-icons/react';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggleLanguage = () => {
@@ -62,13 +64,46 @@ export const Navbar: React.FC = () => {
             ))}
           </nav>
 
-          {/* Right Actions: Language & GitHub */}
-          <div className="flex items-center gap-2.5">
+          {/* Right Actions: Theme Toggle, GitHub & Language */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Theme Toggle Button: Animated Sun & Moon Transition */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight transition-all focus:outline-none focus:ring-2 focus:ring-accent-cyan/50 shadow-sm flex items-center justify-center relative overflow-hidden group hover:scale-105 active:scale-95"
+              title={theme === 'dark' ? t('theme.toggle_light') : t('theme.toggle_dark')}
+              aria-label={theme === 'dark' ? t('theme.toggle_light') : t('theme.toggle_dark')}
+            >
+              <div className="relative w-5 h-5 flex items-center justify-center">
+                {/* Sun (Mặt trời mọc/lặn) */}
+                <div 
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-500 transform ${
+                    theme === 'dark' 
+                      ? 'translate-y-0 rotate-0 scale-100 opacity-100 text-white group-hover:text-amber-300' 
+                      : 'translate-y-6 rotate-90 scale-50 opacity-0 text-amber-500'
+                  }`}
+                >
+                  <Sun size={19} weight="bold" />
+                </div>
+
+                {/* Moon (Mặt trăng mọc/lặn) */}
+                <div 
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-500 transform ${
+                    theme === 'light' 
+                      ? 'translate-y-0 rotate-0 scale-100 opacity-100 text-slate-800 group-hover:text-indigo-600' 
+                      : '-translate-y-6 -rotate-90 scale-50 opacity-0 text-slate-400'
+                  }`}
+                >
+                  <Moon size={19} weight="bold" />
+                </div>
+              </div>
+            </button>
+
+            {/* GitHub Link */}
             <a
               href="https://github.com/NguyenQuan121321"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 border border-transparent hover:border-border-subtle transition-colors"
+              className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-surface-900 border border-transparent hover:border-border-subtle transition-colors"
               aria-label="GitHub Profile"
             >
               <GithubLogo size={20} weight="bold" />
@@ -77,20 +112,20 @@ export const Navbar: React.FC = () => {
             {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono font-medium text-zinc-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono font-medium text-zinc-200 transition-colors"
               aria-label="Switch Language"
             >
               <Globe size={14} className="text-accent-cyan" />
               <span>{t('lang.toggle')}</span>
             </button>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle in Navbar */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-surface-900"
+              className="md:hidden p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-surface-900"
               aria-label="Toggle navigation menu"
             >
-              {mobileOpen ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
+              {mobileOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
             </button>
           </div>
         </div>
@@ -98,13 +133,13 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="md:hidden bg-surface-950 border-b border-border-subtle px-4 pt-2 pb-6 space-y-2">
+        <div className="md:hidden bg-surface-950 border-b border-border-subtle px-4 pt-2 pb-6 space-y-2 animate-fadeIn">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 rounded-md text-base font-medium text-zinc-300 hover:text-white hover:bg-surface-900"
+              className="block px-3 py-2.5 rounded-lg text-base font-medium text-zinc-300 hover:text-white hover:bg-surface-900"
             >
               {link.label}
             </a>
