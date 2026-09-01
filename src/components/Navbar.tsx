@@ -42,13 +42,16 @@ export const Navbar: React.FC = () => {
               <span>Finn<span className="text-accent-cyan">.dev</span></span>
             </a>
 
-            {/* Status Indicator */}
-            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-900 border border-border-subtle text-xs text-zinc-400">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-mint"></span>
+            {/* Status Indicator: Sleek Modern Micro-Pill */}
+            <div 
+              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400 select-none cursor-default transition-all hover:bg-emerald-500/15 hover:border-emerald-500/40"
+              title={t('nav.status_tooltip')}
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
               </span>
-              <span>{t('nav.status')}</span>
+              <span className="font-medium tracking-tight">{t('nav.status')}</span>
             </div>
           </div>
 
@@ -182,8 +185,11 @@ export const Navbar: React.FC = () => {
             </a>
 
             <div className="flex items-center justify-between px-3 pt-1 text-xs text-zinc-400">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-accent-mint inline-block"></span>
+              <div 
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400"
+                title={t('nav.status_tooltip')}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
                 <span>{t('nav.status')}</span>
               </div>
               <div className="flex items-center gap-3">
