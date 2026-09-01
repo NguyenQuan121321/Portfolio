@@ -293,7 +293,7 @@ const en: Record<string, string> = {
   "chatbot.view_github": "View JakeAI Go Backend Source",
 
   // Footer
-  "footer.text": "Nguyen Hoang Anh Quan — Backend Developer Portfolio.",
+  "footer.text": "Backend Developer Portfolio.",
   "footer.commit": "FinnApiGo Backend live verified on Render.",
   "footer.cv": "Download CV (PDF)",
   "footer.linkedin": "LinkedIn",

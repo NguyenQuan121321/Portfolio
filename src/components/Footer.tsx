@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
               aria-hidden="true"
             />
           </div>
-          <span>&copy; {year} Nguyễn Hoàng Anh Quân. {t('footer.text')}</span>
+          <span>&copy; {year} Nguyễn Hoàng Anh Quân · {t('footer.text')}</span>
         </div>
 
         {/* Right: Quick Links & Back to top button */}
