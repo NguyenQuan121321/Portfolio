@@ -518,14 +518,67 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       fill: currentColor;
     }
 
-    /* Dog House (Jake's Home) */
-    #jake-ai-doghouse, .jake-doghouse {
+    /* Mini Action Popup over Corgi */
+    .jake-action-menu {
+      position: absolute;
+      bottom: calc(100% + 14px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      background: var(--jake-bg-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--jake-card-border);
+      border-radius: 12px;
+      padding: 6px;
+      display: flex;
+      gap: 6px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      z-index: 2147483646;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .jake-action-menu.jake-menu-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) scale(1);
+    }
+
+    .jake-action-btn {
+      background: var(--jake-msg-ai-bg);
+      color: var(--jake-text);
+      border: 1px solid var(--jake-card-border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s, color 0.15s, transform 0.15s;
+    }
+
+    .jake-action-btn:hover {
+      background: var(--jake-primary);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .jake-action-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Dog Bed (Sleep Cushion at bottom right) */
+    #jake-ai-dogbed, .jake-dogbed {
       position: fixed;
-      z-index: 2147483638;
+      z-index: 2147483637;
       bottom: 20px;
       right: 20px;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 42px;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -540,30 +593,22 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       touch-action: none;
     }
 
-    #jake-ai-doghouse:hover, .jake-doghouse:hover {
-      transform: scale(1.15) translateY(-3px);
-      filter: drop-shadow(0 6px 14px rgba(255, 159, 67, 0.5));
+    #jake-ai-dogbed:hover, .jake-dogbed:hover {
+      transform: scale(1.1) translateY(-2px);
+      filter: drop-shadow(0 6px 14px rgba(255, 159, 67, 0.45));
     }
 
-    #jake-ai-doghouse:active, .jake-doghouse:active {
+    #jake-ai-dogbed:active, .jake-dogbed:active {
       transform: scale(0.95);
     }
 
-    .jake-doghouse-svg {
+    .jake-dogbed-svg {
       width: 100%;
       height: 100%;
       image-rendering: pixelated;
-      image-rendering: crisp-edges;
     }
 
-    .jake-doghouse-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      image-rendering: pixelated;
-    }
-
-    .jake-doghouse-tooltip {
+    .jake-dogbed-tooltip {
       position: absolute;
       bottom: calc(100% + 6px);
       right: 0;
@@ -582,10 +627,30 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transition: opacity 0.15s ease, transform 0.15s ease;
     }
 
-    #jake-ai-doghouse:hover .jake-doghouse-tooltip,
-    .jake-doghouse:hover .jake-doghouse-tooltip {
+    #jake-ai-dogbed:hover .jake-dogbed-tooltip,
+    .jake-dogbed:hover .jake-dogbed-tooltip {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* Zzz floating animation */
+    .jake-sleep-zzz {
+      position: absolute;
+      top: -12px;
+      right: 2px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #38bdf8;
+      font-family: monospace;
+      animation: jakeZzzFloat 2.4s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes jakeZzzFloat {
+      0% { opacity: 0; transform: translateY(4px) scale(0.6); }
+      40% { opacity: 1; transform: translateY(-4px) scale(1); }
+      80% { opacity: 0.8; transform: translateY(-12px) scale(1.15); }
+      100% { opacity: 0; transform: translateY(-16px) scale(1.25); }
     }
 
     @media (max-width: 480px) {

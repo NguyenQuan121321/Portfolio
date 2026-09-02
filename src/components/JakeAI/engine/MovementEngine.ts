@@ -1,4 +1,4 @@
-// Decoupled 60-120 FPS Physics & Movement Controller (TypeScript)
+// Decoupled Smooth Physics & Movement Controller (TypeScript)
 import { SpriteEngine } from './SpriteEngine';
 import { DirectionName, JakeProps } from '../types';
 
@@ -18,6 +18,7 @@ export class MovementEngine {
   public lastTimestamp: number = 0;
   public isChatOpen: boolean = false;
   public isPaused: boolean = false;
+  public isSleeping: boolean = false;
 
   private onCorgiClick?: (x: number, y: number) => void;
   private tooltipEl?: HTMLElement;
@@ -34,7 +35,7 @@ export class MovementEngine {
       backendUrl: props.backendUrl || '',
       greeting: props.greeting || "Hi! I'm Jake, your portfolio guide 🐕",
       position: props.position || 'bottom-right',
-      speed: props.speed ?? 4,
+      speed: props.speed ?? 3,
       theme: props.theme || 'auto',
       name: props.name || 'Jake',
       persistPosition: props.persistPosition ?? true,
@@ -54,7 +55,7 @@ export class MovementEngine {
   }
 
   private initPosition(): void {
-    let saved: { x: number; y: number; dir?: DirectionName } | null = null;
+    let saved: { x: number; y: number; dir?: DirectionName; isSleeping?: boolean } | null = null;
     if (this.config.persistPosition && typeof window !== 'undefined') {
       try {
         const raw = window.localStorage.getItem('jakeai_pos');
@@ -68,6 +69,7 @@ export class MovementEngine {
       this.corgiX = Math.min(Math.max(20, saved.x), window.innerWidth - 20);
       this.corgiY = Math.min(Math.max(20, saved.y), window.innerHeight - 20);
       this.lastDirection = saved.dir || 'S';
+      if (typeof saved.isSleeping === 'boolean') this.isSleeping = saved.isSleeping;
     } else if (typeof window !== 'undefined') {
       const pos = String(this.config.position).toLowerCase();
       const margin = 80;
@@ -94,8 +96,8 @@ export class MovementEngine {
           break;
         case 'bottom-right':
         default:
-          this.corgiX = window.innerWidth - margin;
-          this.corgiY = window.innerHeight - margin;
+          this.corgiX = window.innerWidth - 75;
+          this.corgiY = window.innerHeight - 45;
           this.lastDirection = 'NW';
           break;
       }
@@ -111,12 +113,14 @@ export class MovementEngine {
     if (typeof window === 'undefined') return;
 
     window.addEventListener('mousemove', (e: MouseEvent) => {
-      this.targetX = e.clientX;
-      this.targetY = e.clientY;
+      if (!this.isSleeping) {
+        this.targetX = e.clientX;
+        this.targetY = e.clientY;
+      }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e: TouchEvent) => {
-      if (e.touches && e.touches[0]) {
+      if (!this.isSleeping && e.touches && e.touches[0]) {
         this.targetX = e.touches[0].clientX;
         this.targetY = e.touches[0].clientY;
       }
@@ -135,7 +139,8 @@ export class MovementEngine {
           window.localStorage.setItem('jakeai_pos', JSON.stringify({
             x: Math.round(this.corgiX),
             y: Math.round(this.corgiY),
-            dir: this.lastDirection
+            dir: this.lastDirection,
+            isSleeping: this.isSleeping
           }));
         } catch {
           // ignore storage error
@@ -144,8 +149,13 @@ export class MovementEngine {
     }
 
     window.addEventListener('resize', () => {
-      this.corgiX = Math.min(Math.max(20, this.corgiX), window.innerWidth - 20);
-      this.corgiY = Math.min(Math.max(20, this.corgiY), window.innerHeight - 20);
+      if (this.isSleeping) {
+        this.corgiX = window.innerWidth - 75;
+        this.corgiY = window.innerHeight - 45;
+      } else {
+        this.corgiX = Math.min(Math.max(20, this.corgiX), window.innerWidth - 20);
+        this.corgiY = Math.min(Math.max(20, this.corgiY), window.innerHeight - 20);
+      }
       this.updatePosition();
     });
   }
@@ -179,14 +189,31 @@ export class MovementEngine {
     this.element.style.top = `${posY}px`;
   }
 
+  public goToBed(): void {
+    this.isSleeping = true;
+    this.corgiX = window.innerWidth - 75;
+    this.corgiY = window.innerHeight - 45;
+    this.targetX = this.corgiX;
+    this.targetY = this.corgiY;
+    this.lastDirection = 'S';
+    this.spriteEngine.setSprite('idle', 'S', 0);
+    this.updatePosition();
+    this.showHint("Sleeping in bed zZz... 🐾", 3000);
+  }
+
+  public wakeUp(): void {
+    this.isSleeping = false;
+    this.showHint("Woof! Ready to explore! 🐾", 3000);
+  }
+
   public step(timestamp: number): void {
     if (!this.element.isConnected) return;
 
     if (!this.lastTimestamp) this.lastTimestamp = timestamp;
     const elapsed = timestamp - this.lastTimestamp;
 
-    // 110ms smooth cadence for natural walking steps
-    if (elapsed >= 110) {
+    // 130ms gentle cadence for natural trot
+    if (elapsed >= 130) {
       this.lastTimestamp = timestamp;
       this.tick();
     }
@@ -195,20 +222,24 @@ export class MovementEngine {
   public tick(): void {
     if (this.isPaused) return;
 
+    // If sleeping in dog bed, stay quiet
+    if (this.isSleeping) {
+      this.corgiX = window.innerWidth - 75;
+      this.corgiY = window.innerHeight - 45;
+      this.spriteEngine.setSprite('idle', 'S', 0);
+      this.updatePosition();
+      return;
+    }
+
     const dx = this.targetX - this.corgiX;
     const dy = this.targetY - this.corgiY;
     const distance = Math.hypot(dx, dy);
 
-    // Stop distance threshold
-    const stopDistance = 48;
+    // Comfortable distance bubble (60px) so Jake doesn't crowd cursor
+    const stopDistance = 60;
     if (distance <= stopDistance) {
       this.idleTime += 1;
       this.frameCount = 0;
-
-      if (distance > 10) {
-        const dir = SpriteEngine.getDirection(dx, dy);
-        this.lastDirection = dir.name;
-      }
 
       this.spriteEngine.setSprite('idle', this.lastDirection, 0);
       this.updatePosition();
@@ -218,8 +249,10 @@ export class MovementEngine {
     // Alert reaction countdown
     if (this.idleTime > 6) {
       this.idleTime -= 2;
-      const dir = SpriteEngine.getDirection(dx, dy);
-      this.lastDirection = dir.name;
+      if (distance > 20) {
+        const dir = SpriteEngine.getDirection(dx, dy);
+        this.lastDirection = dir.name;
+      }
       this.spriteEngine.setSprite('idle', this.lastDirection, 0);
       return;
     }
@@ -227,18 +260,21 @@ export class MovementEngine {
     this.idleTime = 0;
     this.frameCount += 1;
 
-    // Move step
-    const dirInfo = SpriteEngine.getDirection(dx, dy);
-    this.lastDirection = dirInfo.name;
+    // Direction deadzone (prevents rapid head-shaking jitter)
+    if (distance > 24) {
+      const dirInfo = SpriteEngine.getDirection(dx, dy);
+      this.lastDirection = dirInfo.name;
+    }
 
-    const stepSpeed = Math.min(this.config.speed, distance);
+    // Smooth step velocity (decelerates smoothly as it nears target)
+    const stepSpeed = Math.min(this.config.speed, Math.max(1.2, distance * 0.06));
     const moveX = (dx / distance) * stepSpeed;
     const moveY = (dy / distance) * stepSpeed;
 
     this.corgiX += moveX;
     this.corgiY += moveY;
 
-    // Clamp
+    // Viewport clamp
     const half = 18;
     this.corgiX = Math.min(Math.max(half, this.corgiX), window.innerWidth - half);
     this.corgiY = Math.min(Math.max(half, this.corgiY), window.innerHeight - half);
