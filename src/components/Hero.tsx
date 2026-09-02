@@ -18,7 +18,7 @@ import {
   BookOpen
 } from '@phosphor-icons/react';
 
-type EndpointKey = 'passkey' | 'totp' | 'sessions' | 'metrics';
+type EndpointKey = 'readyz' | 'register' | 'login' | 'metrics';
 
 interface EndpointConfig {
   method: 'POST' | 'GET';
@@ -26,149 +26,122 @@ interface EndpointConfig {
   summary: string;
   tag: string;
   tagColor: string;
+  payload?: any;
   defaultResponse: any;
   defaultStatus: string;
   defaultLatency: string;
 }
 
 const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
-  passkey: {
-    method: 'POST',
-    path: '/api/v1/auth/mfa/passkey/register/challenge',
-    summary: 'FIDO2 / WebAuthn Hardware Attestation Challenge',
-    tag: 'POST',
-    tagColor: 'text-amber-600 dark:text-amber-400',
+  readyz: {
+    method: 'GET',
+    path: '/readyz',
+    summary: 'Database Cluster & Redis Readiness Probe',
+    tag: 'GET',
+    tagColor: 'text-emerald-600 dark:text-emerald-400',
     defaultStatus: "200 OK",
-    defaultLatency: "18ms",
+    defaultLatency: "14ms",
     defaultResponse: {
       code: 200,
-      message: "passkey registration challenge generated",
+      message: "ok",
       data: {
-        publicKey: {
-          challenge: "4a7f9b2e8c1d5f3a6b0e9d8c7b6a5f4e3d2c1b0a",
-          rp: {
-            name: "FinnApiGo Enterprise Security",
-            id: "finnapigo.onrender.com"
-          },
-          user: {
-            id: "dXNlcl8xM19hdXRoX3Byb2ZpbGU",
-            name: "lead_architect@finn.dev",
-            displayName: "Lead Security Architect"
-          },
-          pubKeyCredParams: [
-            { type: "public-key", alg: -7 },
-            { type: "public-key", alg: -257 }
-          ],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required",
-            residentKey: "preferred"
-          },
-          timeout: 60000,
-          attestation: "direct"
+        db: "up",
+        status: "ok"
+      }
+    }
+  },
+  register: {
+    method: 'POST',
+    path: '/api/v1/auth/register',
+    summary: 'NIST 800-63B Password Validation & User Creation',
+    tag: 'POST',
+    tagColor: 'text-cyan-600 dark:text-cyan-400',
+    payload: {
+      username: "recruiter_test",
+      fullName: "Lead Recruiter",
+      email: "recruiter_test@finn.dev",
+      password: "Fin_LeadEnterprise2026!#9"
+    },
+    defaultStatus: "201 Created",
+    defaultLatency: "42ms",
+    defaultResponse: {
+      code: 201,
+      message: "account created",
+      data: {
+        profile: {
+          id: 15,
+          username: "recruiter_test",
+          email: "recruiter_test@finn.dev",
+          fullName: "Lead Recruiter",
+          role: "user",
+          isActive: true,
+          isEmailVerified: false,
+          createdAt: "2026-09-02T10:15:00.000Z"
         }
       }
     }
   },
-  totp: {
+  login: {
     method: 'POST',
-    path: '/api/v1/auth/mfa/totp/enable',
-    summary: 'RFC 6238 Base32 Secret & AES-256 Recovery Codes',
+    path: '/api/v1/auth/login',
+    summary: 'Argon2id Verification & JWT Token Issuance',
     tag: 'POST',
-    tagColor: 'text-purple-600 dark:text-purple-400',
+    tagColor: 'text-amber-600 dark:text-amber-400',
+    payload: {
+      email: "recruiter_test@finn.dev",
+      password: "Fin_LeadEnterprise2026!#9"
+    },
     defaultStatus: "200 OK",
-    defaultLatency: "22ms",
+    defaultLatency: "38ms",
     defaultResponse: {
       code: 200,
-      message: "totp enrollment initiated",
+      message: "login successful",
       data: {
-        secret: "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP",
-        otpauthUrl: "otpauth://totp/FinnApiGo:lead_architect@finn.dev?secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&issuer=FinnApiGo",
-        recoveryCodes: [
-          "a9f2-84b1-c03e-7d9a",
-          "4b71-92e0-f3a8-1c6d",
-          "e8d3-50c2-b91a-7f4e",
-          "2c6f-18d9-a3e0-5b7c",
-          "7e1a-49c0-f8d2-3b6e",
-          "3d8c-20f1-b7a9-e4c5",
-          "9f4b-61e8-a0d3-2c7f",
-          "1a7e-52d0-c8f9-4b3a"
-        ]
-      }
-    }
-  },
-  sessions: {
-    method: 'GET',
-    path: '/api/v1/auth/sessions',
-    summary: 'Multi-Device Distributed Session Registry & GeoIP',
-    tag: 'GET',
-    tagColor: 'text-cyan-600 dark:text-cyan-400',
-    defaultStatus: "200 OK",
-    defaultLatency: "19ms",
-    defaultResponse: {
-      code: 200,
-      message: "sessions fetched",
-      data: {
-        sessions: [
-          {
-            id: 42,
-            ipAddress: "113.161.72.18",
-            userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/128.0",
-            deviceName: "MacBook Pro (Apple Silicon)",
-            locationEstimate: "Ho Chi Minh City, VN",
-            isCurrent: true,
-            createdAt: "2026-09-02T09:15:30Z",
-            lastActiveAt: "2026-09-02T10:04:12Z",
-            expiresAt: "2026-09-09T09:15:30Z"
-          },
-          {
-            id: 41,
-            ipAddress: "42.118.15.92",
-            userAgent: "FinnApiGo-CLI/1.0 (Darwin arm64; Go 1.23)",
-            deviceName: "Developer CLI Terminal",
-            locationEstimate: "Da Nang, VN",
-            isCurrent: false,
-            createdAt: "2026-09-01T14:20:00Z",
-            lastActiveAt: "2026-09-02T08:30:10Z",
-            expiresAt: "2026-09-08T14:20:00Z"
-          }
-        ]
+        profile: {
+          id: 15,
+          username: "recruiter_test",
+          email: "recruiter_test@finn.dev",
+          fullName: "Lead Recruiter",
+          role: "user",
+          isActive: true,
+          isEmailVerified: false,
+          createdAt: "2026-09-02T10:15:00.000Z"
+        },
+        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjE1LCJyb2xlIjoidXNlciIsImVtYWlsIjoicmVjcnVpdGVyX3Rlc3RAZmlubi5kZXYiLCJ0eXBlIjoiYWNjZXNzIiwiaXNzIjoiZmlubmFwaWdvIiwiZXhwIjoxNzg4MzQ1OTAwfQ.7d8a9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
+        refreshToken: "8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b",
+        expiresAt: "2026-09-02T10:30:00.000Z"
       }
     }
   },
   metrics: {
     method: 'GET',
     path: '/metrics',
-    summary: 'Prometheus SRE Runtime, Goroutines & DB Pool Telemetry',
+    summary: 'Prometheus Runtime Engine & SRE Telemetry',
     tag: 'GET',
-    tagColor: 'text-emerald-600 dark:text-emerald-400',
+    tagColor: 'text-purple-600 dark:text-purple-400',
     defaultStatus: "200 OK",
-    defaultLatency: "12ms",
-    defaultResponse: {
-      code: 200,
-      message: "telemetry metrics streamed",
-      data: {
-        engine: "Go 1.23.4 (linux/amd64)",
-        runtime: {
-          goroutines: 18,
-          heapAllocBytes: 4829184,
-          gcPauseMicroseconds: 84,
-          activeDbPoolConns: 5
-        },
-        security: {
-          argon2idMemoryKiB: 65536,
-          argon2idIterations: 3,
-          redisTokenFamilyLocks: 12,
-          rateLimitedRequestsTotal: 0
-        }
-      }
-    }
+    defaultLatency: "11ms",
+    defaultResponse: `# HELP finnapigo_audit_buffer_depth Entries currently buffered by async audit writer
+# TYPE finnapigo_audit_buffer_depth gauge
+finnapigo_audit_buffer_depth 0
+
+# HELP go_goroutines Number of goroutines currently existing
+# TYPE go_goroutines gauge
+go_goroutines 19
+
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 4892408
+
+# HELP finnapigo_rate_limited_requests_total Total 429 rate limit events
+# TYPE finnapigo_rate_limited_requests_total counter
+finnapigo_rate_limited_requests_total 0`
   }
 };
 
 export const Hero: React.FC = () => {
   const { lang, t } = useLanguage();
-  const [activeEndpoint, setActiveEndpoint] = useState<EndpointKey>('passkey');
+  const [activeEndpoint, setActiveEndpoint] = useState<EndpointKey>('readyz');
   const [copiedCode, setCopiedCode] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
   const [liveResponse, setLiveResponse] = useState<any | null>(null);
@@ -177,7 +150,7 @@ export const Hero: React.FC = () => {
   const [isLiveConnected, setIsLiveConnected] = useState(false);
 
   const currentConfig = ENDPOINT_CONFIGS[activeEndpoint];
-  const displayedJson = liveResponse || currentConfig.defaultResponse;
+  const displayedContent = liveResponse !== null ? liveResponse : currentConfig.defaultResponse;
   const displayedStatus = liveStatus || currentConfig.defaultStatus;
   const displayedLatency = liveLatency || currentConfig.defaultLatency;
 
@@ -189,92 +162,85 @@ export const Hero: React.FC = () => {
       const baseUrl = 'https://finnapigo.onrender.com';
       let res: Response;
 
-      if (activeEndpoint === 'passkey') {
-        const demoEmail = "lead_recruiter@finn.dev";
-        const demoPass = "Fin_LeadEnterprise2026!#9";
-        let aToken = "";
-        try {
-          const lRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: demoEmail, password: demoPass })
-          });
-          const lJson = await lRes.json();
-          if (lJson?.data?.accessToken) aToken = lJson.data.accessToken;
-        } catch {}
-
-        res = await fetch(`${baseUrl}/api/v1/auth/mfa/passkey/register/challenge`, {
-          method: 'POST',
-          headers: aToken ? { 'Authorization': `Bearer ${aToken}` } : {}
-        });
-      } else if (activeEndpoint === 'totp') {
-        const demoEmail = "lead_recruiter@finn.dev";
-        const demoPass = "Fin_LeadEnterprise2026!#9";
-        let aToken = "";
-        try {
-          const lRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: demoEmail, password: demoPass })
-          });
-          const lJson = await lRes.json();
-          if (lJson?.data?.accessToken) aToken = lJson.data.accessToken;
-        } catch {}
-
-        res = await fetch(`${baseUrl}/api/v1/auth/mfa/totp/enable`, {
-          method: 'POST',
-          headers: aToken ? { 'Authorization': `Bearer ${aToken}` } : {}
-        });
-      } else if (activeEndpoint === 'sessions') {
-        let aToken = "";
-        try {
-          const lRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: "lead_recruiter@finn.dev", password: "Fin_LeadEnterprise2026!#9" })
-          });
-          const lJson = await lRes.json();
-          if (lJson?.data?.accessToken) aToken = lJson.data.accessToken;
-        } catch {}
-
-        res = await fetch(`${baseUrl}/api/v1/auth/sessions`, {
-          method: 'GET',
-          headers: aToken ? { 'Authorization': `Bearer ${aToken}` } : {}
-        });
-      } else {
+      if (activeEndpoint === 'readyz') {
         res = await fetch(`${baseUrl}/readyz`);
-      }
+      } else if (activeEndpoint === 'register') {
+        const seed = Math.random().toString(36).substring(2, 6);
+        const dynamicPayload = {
+          username: `user_${seed}`,
+          fullName: `Recruiter Tester ${seed}`,
+          email: `recruiter_${seed}@finn.dev`,
+          password: `Fin_${Math.random().toString(36).substring(2, 8)}!9Aa`
+        };
+        res = await fetch(`${baseUrl}/api/v1/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dynamicPayload)
+        });
+      } else if (activeEndpoint === 'login') {
+        const seed = Math.random().toString(36).substring(2, 6);
+        const demoEmail = `lead_${seed}@finn.dev`;
+        const demoPass = `Fin_${Math.random().toString(36).substring(2, 8)}!9Aa`;
+        try {
+          await fetch(`${baseUrl}/api/v1/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: `lead_${seed}`,
+              fullName: `Lead Recruiter ${seed}`,
+              email: demoEmail,
+              password: demoPass
+            })
+          });
+        } catch {}
 
-      const elapsed = Math.round(performance.now() - start);
-      const json = await res.json().catch(() => null);
-
-      if (json && res.ok) {
-        setLiveResponse(json);
-        setLiveStatus(`${res.status} ${res.statusText || 'OK'}`);
+        res = await fetch(`${baseUrl}/api/v1/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: demoEmail, password: demoPass })
+        });
       } else {
-        setLiveResponse(ENDPOINT_CONFIGS[activeEndpoint].defaultResponse);
-        setLiveStatus("200 OK (Render Live Edge)");
+        // metrics endpoint (plain text)
+        res = await fetch(`${baseUrl}/metrics`);
       }
-      setLiveLatency(`${elapsed}ms`);
-      setIsLiveConnected(true);
-    } catch {
+
       const elapsed = Math.round(performance.now() - start);
-      setLiveResponse(ENDPOINT_CONFIGS[activeEndpoint].defaultResponse);
-      setLiveStatus("200 OK (Render Live Edge)");
+      setLiveStatus(`${res.status} ${res.statusText || 'OK'}`);
       setLiveLatency(`${elapsed}ms`);
       setIsLiveConnected(true);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const json = await res.json();
+        setLiveResponse(json);
+      } else {
+        const text = await res.text();
+        // Snippet first 500 chars for readability if it's metrics
+        setLiveResponse(text.length > 500 ? text.substring(0, 500) + '\n...' : text);
+      }
+    } catch (err: any) {
+      const elapsed = Math.round(performance.now() - start);
+      setLiveStatus("Error (Network Offline)");
+      setLiveLatency(`${elapsed}ms`);
+      setLiveResponse({
+        error: "Failed to connect to Render server",
+        detail: err?.message || "Network timeout"
+      });
     } finally {
       setIsExecuting(false);
     }
   }, [activeEndpoint]);
 
-  const handleCopyJson = useCallback(() => {
+  const handleCopyCode = useCallback(() => {
     if (typeof navigator !== 'undefined') {
-      navigator.clipboard.writeText(JSON.stringify(displayedJson, null, 2));
+      const textToCopy = typeof displayedContent === 'string' 
+        ? displayedContent 
+        : JSON.stringify(displayedContent, null, 2);
+      navigator.clipboard.writeText(textToCopy);
       setCopiedCode(true);
       setTimeout(() => setCopiedCode(false), 2000);
     }
-  }, [displayedJson]);
+  }, [displayedContent]);
 
   const handleTabChange = useCallback((key: EndpointKey) => {
     setActiveEndpoint(key);
@@ -354,10 +320,10 @@ export const Hero: React.FC = () => {
                 PostgreSQL 16 · Redis 7
               </span>
               <span className="px-2.5 py-1 rounded bg-surface-900 border border-purple-500/30 text-purple-300">
-                FIDO2 Passkeys · TOTP
+                JWT · Argon2id · TOTP
               </span>
               <span className="px-2.5 py-1 rounded bg-surface-900 border border-amber-500/30 text-amber-300">
-                Argon2id · Redis Lock
+                FIDO2 Passkeys
               </span>
             </div>
 
@@ -402,7 +368,7 @@ export const Hero: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: High-Tech Enterprise Terminal Simulator (Desktop Only) */}
+          {/* Right Column: 100% Genuine Live Backend Terminal Simulator (Desktop Only) */}
           <div className="hidden lg:block lg:col-span-5">
             <div className="rounded-2xl bg-white dark:bg-[#0d1117] border border-slate-200/90 dark:border-border-highlight/80 shadow-[0_15px_45px_-10px_rgba(0,0,0,0.08)] dark:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.5)] backdrop-blur-xl overflow-hidden transition-all hover:border-accent-cyan/60 group">
               
@@ -444,9 +410,9 @@ export const Hero: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={handleCopyJson}
+                    onClick={handleCopyCode}
                     className="p-1 rounded hover:bg-slate-200 dark:hover:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-100 transition-colors"
-                    title="Copy response JSON"
+                    title="Copy response"
                   >
                     {copiedCode ? <Check size={13} className="text-emerald-600 dark:text-accent-mint" /> : <Copy size={13} />}
                   </button>
@@ -458,41 +424,41 @@ export const Hero: React.FC = () => {
                 <div className="flex items-center gap-1 overflow-x-auto">
                   <button
                     type="button"
-                    onClick={() => handleTabChange('passkey')}
+                    onClick={() => handleTabChange('readyz')}
                     className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
-                      activeEndpoint === 'passkey'
+                      activeEndpoint === 'readyz'
+                        ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
+                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
+                    }`}
+                  >
+                    <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">GET</span>
+                    <span>/readyz</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('register')}
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                      activeEndpoint === 'register'
+                        ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
+                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
+                    }`}
+                  >
+                    <span className="text-[9.5px] text-cyan-600 dark:text-cyan-400 font-bold">POST</span>
+                    <span>/auth/register</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('login')}
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                      activeEndpoint === 'login'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
                     }`}
                   >
                     <span className="text-[9.5px] text-amber-600 dark:text-amber-400 font-bold">POST</span>
-                    <span>/passkey/challenge</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('totp')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
-                      activeEndpoint === 'totp'
-                        ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
-                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
-                    }`}
-                  >
-                    <span className="text-[9.5px] text-purple-600 dark:text-purple-400 font-bold">POST</span>
-                    <span>/totp/enable</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('sessions')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
-                      activeEndpoint === 'sessions'
-                        ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
-                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
-                    }`}
-                  >
-                    <span className="text-[9.5px] text-cyan-600 dark:text-cyan-400 font-bold">GET</span>
-                    <span>/sessions</span>
+                    <span>/auth/login</span>
                   </button>
 
                   <button
@@ -504,7 +470,7 @@ export const Hero: React.FC = () => {
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
                     }`}
                   >
-                    <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">GET</span>
+                    <span className="text-[9.5px] text-purple-600 dark:text-purple-400 font-bold">GET</span>
                     <span>/metrics</span>
                   </button>
                 </div>
@@ -536,10 +502,11 @@ export const Hero: React.FC = () => {
                 <div className="text-slate-500 dark:text-zinc-400 mb-1.5 flex items-center gap-1.5 text-[11px] font-medium">
                   <span className="text-cyan-600 dark:text-accent-cyan font-bold">$</span>
                   <span>curl -X {currentConfig.method} https://finnapigo.onrender.com{currentConfig.path}</span>
-                  {activeEndpoint !== 'metrics' && <span className="text-purple-500 font-mono text-[10px]">-H "Authorization: Bearer &lt;JWT&gt;"</span>}
                 </div>
                 <pre className="text-slate-800 dark:text-zinc-100 font-mono text-[11px] leading-relaxed font-medium">
-                  {JSON.stringify(displayedJson, null, 2)}
+                  {typeof displayedContent === 'string' 
+                    ? displayedContent 
+                    : JSON.stringify(displayedContent, null, 2)}
                 </pre>
               </div>
 
@@ -549,7 +516,7 @@ export const Hero: React.FC = () => {
                   <Broadcast size={13} className="text-emerald-600 dark:text-emerald-400" />
                   <span>{isLiveConnected ? (lang === 'vi' ? 'Đã kết nối Backend Render Thật' : 'Connected to Render Live Backend') : (lang === 'vi' ? 'API Render Sẵn sàng' : 'Render Live API Ready')}</span>
                 </span>
-                <span className="text-slate-500 dark:text-zinc-400">Go 1.23 · WebAuthn FIDO2 · Redis 7</span>
+                <span className="text-slate-500 dark:text-zinc-400">Go 1.23 · PostgreSQL 16 · Redis 7</span>
               </div>
 
             </div>
