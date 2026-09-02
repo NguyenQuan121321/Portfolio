@@ -117,7 +117,14 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: scale(1.22);
     }
 
-    /* Sleeping Corgi State */
+    /* Sleeping Corgi State (Disappears smoothly into bed) */
+    #jake-ai-corgi.jake-corgi-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: scale(0.2) !important;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
     #jake-ai-corgi.jake-corgi-sleeping {
       animation: jakeCorgiSleepBreathe 2.4s infinite ease-in-out;
       filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.35));

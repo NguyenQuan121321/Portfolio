@@ -44,10 +44,17 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
   // Mount MovementEngine once and cleanup properly
   useEffect(() => {
     if (corgiRef.current) {
-      const engine = new MovementEngine(corgiRef.current, { ...props, theme: currentTheme as 'dark' | 'light' }, (x, y) => {
-        setCorgiCoord({ x, y });
-        setIsActionMenuOpen((prev) => !prev);
-      });
+      const engine = new MovementEngine(
+        corgiRef.current,
+        { ...props, theme: currentTheme as 'dark' | 'light' },
+        (x, y) => {
+          setCorgiCoord({ x, y });
+          setIsActionMenuOpen((prev) => !prev);
+        },
+        (sleeping) => {
+          setIsSleeping(sleeping);
+        }
+      );
       movementEngineRef.current = engine;
       setIsSleeping(engine.isSleeping);
 
@@ -119,25 +126,6 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     e.stopPropagation();
     if (movementEngineRef.current) {
       movementEngineRef.current.goToBed();
-      setIsSleeping(true);
-      setCorgiCoord({
-        x: movementEngineRef.current.corgiX,
-        y: movementEngineRef.current.corgiY
-      });
-    }
-    setIsActionMenuOpen(false);
-  };
-
-  const handleWakeUp = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (movementEngineRef.current) {
-      movementEngineRef.current.wakeUp();
-      setIsSleeping(false);
-      setCorgiCoord({
-        x: movementEngineRef.current.corgiX,
-        y: movementEngineRef.current.corgiY
-      });
     }
     setIsActionMenuOpen(false);
   };
@@ -145,17 +133,15 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
   const handleDogBedClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isSleeping) {
-      if (movementEngineRef.current) {
+    if (movementEngineRef.current) {
+      if (isSleeping) {
         movementEngineRef.current.wakeUp();
         setIsSleeping(false);
-      }
-    } else {
-      if (movementEngineRef.current) {
+      } else {
         movementEngineRef.current.goToBed();
-        setIsSleeping(true);
       }
     }
+    setIsActionMenuOpen(false);
   };
 
   const bedImageSrc = dogHouseImage || COZY_BED_BASE64;
@@ -170,7 +156,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
       <div
         ref={corgiRef}
         id="jake-ai-corgi"
-        className={`jake-corgi-sprite ${isSleeping ? 'jake-corgi-sleeping' : ''}`}
+        className="jake-corgi-sprite"
         role="button"
         tabIndex={0}
         aria-label={`${name} the Corgi companion`}
@@ -181,7 +167,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         )}
 
         {/* Action Menu popup directly above Corgi: 2 compact circular icon buttons */}
-        {isActionMenuOpen && (
+        {isActionMenuOpen && !isSleeping && (
           <div 
             className="jake-action-menu jake-menu-open"
             onClick={(e) => e.stopPropagation()}
@@ -197,27 +183,15 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
               💬
             </button>
 
-            {isSleeping ? (
-              <button
-                type="button"
-                className="jake-circle-action-btn"
-                onClick={handleWakeUp}
-                title={lang === 'vi' ? 'Gọi Jake thức dậy' : 'Wake up Jake'}
-                aria-label={lang === 'vi' ? 'Gọi Jake thức dậy' : 'Wake up Jake'}
-              >
-                🐾
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="jake-circle-action-btn"
-                onClick={handleGoToBed}
-                title={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
-                aria-label={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
-              >
-                💤
-              </button>
-            )}
+            <button
+              type="button"
+              className="jake-circle-action-btn"
+              onClick={handleGoToBed}
+              title={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
+              aria-label={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
+            >
+              💤
+            </button>
           </div>
         )}
       </div>
@@ -231,7 +205,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           onClick={handleDogBedClick}
           aria-label={`${name}'s Cozy Bed`}
           title={isSleeping 
-            ? (lang === 'vi' ? 'Jake đang ngủ (Nhấp để gọi dậy) 🐾' : 'Jake is sleeping (Click to wake up) 🐾') 
+            ? (lang === 'vi' ? 'Jake đang ngủ (Nhấp đệm để gọi dậy đi dạo) 🐾' : 'Jake is sleeping (Click bed to wake up) 🐾') 
             : (lang === 'vi' ? 'Đệm ngủ của Jake (Nhấp để về ngủ) 💤' : "Jake's bed (Click to sleep) 💤")}
         >
           <img
@@ -248,7 +222,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           )}
           <span className="jake-dogbed-tooltip">
             {isSleeping 
-              ? (lang === 'vi' ? `Gọi ${name} thức dậy 🐾` : `Wake up ${name} 🐾`) 
+              ? (lang === 'vi' ? `Gọi ${name} thức dậy đi dạo 🐾` : `Wake up ${name} 🐾`) 
               : (lang === 'vi' ? `Đệm ngủ của ${name} 💤` : `${name}'s Bed 💤`)}
           </span>
         </button>

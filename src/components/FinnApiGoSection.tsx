@@ -138,8 +138,8 @@ export const FinnApiGoSection: React.FC = () => {
 
   const [copiedCurl, setCopiedCurl] = useState<boolean>(false);
 
-  const liveRenderUrl = 'https://finnapigo.onrender.com';
-  const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html';
+  const liveRenderUrl = 'https://finnapigo.onrender.com/swagger/index.html#/';
+  const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html#/';
 
   // Handle ESC key to close modal
   const handleCloseModal = useCallback(() => {
@@ -340,13 +340,13 @@ export const FinnApiGoSection: React.FC = () => {
     try {
       let res: Response;
       try {
-        res = await fetch('/render-api/api/v1/auth/refresh', {
+        res = await fetch('/render-api/api/v1/auth/refresh-token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken: currentRef })
         });
       } catch {
-        res = await fetch('https://finnapigo.onrender.com/api/v1/auth/refresh', {
+        res = await fetch('https://finnapigo.onrender.com/api/v1/auth/refresh-token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken: currentRef })

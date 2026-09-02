@@ -24,6 +24,7 @@ export class MovementEngine {
   public isSleeping: boolean = false;
 
   private onCorgiClick?: (x: number, y: number) => void;
+  private onSleepStateChange?: (isSleeping: boolean) => void;
 
   private clickHandler = (e: MouseEvent) => {
     // Guard: Ignore clicks inside action menu buttons so they don't get canceled
@@ -54,10 +55,12 @@ export class MovementEngine {
   constructor(
     element: HTMLElement,
     props: JakeProps = {},
-    onCorgiClick?: (x: number, y: number) => void
+    onCorgiClick?: (x: number, y: number) => void,
+    onSleepStateChange?: (isSleeping: boolean) => void
   ) {
     this.element = element;
     this.onCorgiClick = onCorgiClick;
+    this.onSleepStateChange = onSleepStateChange;
     this.config = {
       backendUrl: props.backendUrl || '',
       greeting: props.greeting || "Xin chào, tôi là Jake — Portfolio Hub Agent của Quân.",
@@ -136,16 +139,27 @@ export class MovementEngine {
     this.targetY = bounds.bedY;
     this.state = 'going_to_bed';
     this.isPaused = false;
+    this.isSleeping = false;
+    this.element.classList.remove('jake-corgi-hidden');
   }
 
   public wakeUp(): void {
     this.isSleeping = false;
     this.isPaused = false;
+    this.element.classList.remove('jake-corgi-hidden');
+    if (this.onSleepStateChange) {
+      this.onSleepStateChange(false);
+    }
     const bounds = this.getCozyBounds();
+    this.corgiX = bounds.bedX - 12;
+    this.corgiY = bounds.bedY - 12;
     this.targetX = bounds.minX + 35;
     this.targetY = bounds.maxY - 15;
     this.state = 'wandering';
     this.idleTimer = 0;
+    this.lastDirection = 'NW';
+    this.updatePosition();
+    this.spriteEngine.setSprite('running', 'NW', 0);
   }
 
   public showHint(_text?: string, _duration?: number): void {
@@ -175,8 +189,6 @@ export class MovementEngine {
 
   public tick(): void {
     if (this.isSleeping) {
-      this.spriteEngine.setSprite('idle', 'S', 0);
-      this.updatePosition();
       return;
     }
 
@@ -185,14 +197,17 @@ export class MovementEngine {
       const dy = this.targetY - this.corgiY;
       const distance = Math.hypot(dx, dy);
 
-      if (distance <= 4) {
+      // Reached bed: disappear into the bed and start sleeping!
+      if (distance <= 5) {
         this.corgiX = this.targetX;
         this.corgiY = this.targetY;
         this.isSleeping = true;
         this.isPaused = true;
         this.state = 'idle';
-        this.lastDirection = 'S';
-        this.spriteEngine.setSprite('idle', 'S', 0);
+        this.element.classList.add('jake-corgi-hidden');
+        if (this.onSleepStateChange) {
+          this.onSleepStateChange(true);
+        }
         this.updatePosition();
         return;
       }
