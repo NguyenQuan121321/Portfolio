@@ -168,9 +168,9 @@ const en: Record<string, string> = {
   "project.finnapi.sec.ci_desc": "7-job GitHub Actions pipeline running 301 unit tests, gosec static security analysis, Trivy container vulnerability scanning, govulncheck, 3 fuzzing targets, and 14 CI coverage floors.",
 
   // Project Links
-  "project.links.source": "GitHub Source Code",
-  "project.links.live": "Live Deployment (Render)",
-  "project.links.docs": "Swagger OpenAPI Docs",
+  "project.links.docs": "Swagger OpenAPI UI (31 Routes)",
+  "project.links.health": "Live Cluster Status (/readyz)",
+  "project.links.source": "GitHub Repository (FinnApiGo)",
 
   // Write-ups / Engineering Deep-Dives
   "writeups.badge": "ENGINEERING CASE STUDIES & POST-MORTEMS",

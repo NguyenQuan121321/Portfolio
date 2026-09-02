@@ -90,10 +90,10 @@ export class MovementEngine {
     const width = window.innerWidth;
     const height = window.innerHeight;
     return {
-      minX: width - 160,
-      maxX: width - 60,
-      minY: height - 90,
-      maxY: height - 40,
+      minX: width - 260,
+      maxX: width - 50,
+      minY: height - 160,
+      maxY: height - 35,
       bedX: width - 42,
       bedY: height - 42
     };
@@ -235,10 +235,10 @@ export class MovementEngine {
       this.spriteEngine.setSprite('idle', this.lastDirection, 0);
       this.updatePosition();
 
-      // After resting (approx 3.5s - 5.5s), choose a new spot to wander nearby
+      // After resting (approx 1.2s - 2.8s), choose a new spot to wander nearby
       if (this.idleTimer >= this.idleWaitFrames) {
         this.idleTimer = 0;
-        this.idleWaitFrames = Math.floor(35 + Math.random() * 25);
+        this.idleWaitFrames = Math.floor(12 + Math.random() * 16);
         this.pickNewCozyTarget();
       }
       return;
@@ -265,7 +265,7 @@ export class MovementEngine {
     this.lastDirection = dirInfo.name;
 
     // Leisurely calm walking speed
-    const stepSpeed = Math.min(1.4, distance);
+    const stepSpeed = Math.min(1.8, distance);
     this.corgiX += (dx / distance) * stepSpeed;
     this.corgiY += (dy / distance) * stepSpeed;
 

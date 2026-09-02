@@ -165,9 +165,9 @@ const vi: Record<string, string> = {
   "project.finnapi.sec.ci_desc": "Pipeline GitHub Actions 7 jobs tự động: chạy 301 unit tests, 3 fuzzing tests, kiểm thử bảo mật gosec, rà soát lỗ hổng thư viện govulncheck và quét container Trivy.",
 
   // Project Links
-  "project.links.source": "Mã nguồn GitHub",
-  "project.links.live": "Trang Web Render (Live)",
-  "project.links.docs": "Tài liệu API Swagger",
+  "project.links.docs": "Tài liệu Swagger UI (31 Routes)",
+  "project.links.health": "Kiểm tra Trạng thái Live (/readyz)",
+  "project.links.source": "Mã nguồn GitHub (FinnApiGo)",
 
   // Write-ups / Engineering Deep-Dives
   "writeups.badge": "BÀI HỌC KỸ THUẬT & DEBUGGING",

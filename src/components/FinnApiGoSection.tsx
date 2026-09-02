@@ -138,7 +138,7 @@ export const FinnApiGoSection: React.FC = () => {
 
   const [copiedCurl, setCopiedCurl] = useState<boolean>(false);
 
-  const liveRenderUrl = 'https://finnapigo.onrender.com/swagger/index.html#/';
+  const liveHealthUrl = 'https://finnapigo.onrender.com/readyz';
   const liveSwaggerUrl = 'https://finnapigo.onrender.com/swagger/index.html#/';
 
   // Handle ESC key to close modal
@@ -563,28 +563,30 @@ export const FinnApiGoSection: React.FC = () => {
             {/* Quick Links */}
             <div className="flex flex-wrap items-center gap-3">
               <a
-                href={liveRenderUrl}
+                href={liveSwaggerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent-cyan text-surface-950 font-semibold text-xs transition-colors hover:bg-cyan-300 shadow-[0_0_15px_-4px_rgba(0,229,255,0.3)]"
               >
-                <span>{t('project.links.live')}</span>
+                <BookOpen size={14} weight="bold" />
+                <span>{t('project.links.docs')}</span>
                 <ArrowSquareOut size={14} weight="bold" />
               </a>
 
               <a
-                href={liveSwaggerUrl}
+                href={liveHealthUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono text-zinc-200 transition-colors"
+                title="Live PostgreSQL & Service Cluster Health Probe (/readyz)"
               >
-                <BookOpen size={14} className="text-amber-400" />
-                <span>{t('project.links.docs')}</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>{t('project.links.health')}</span>
                 <ArrowSquareOut size={14} />
               </a>
 
               <a
-                href="https://github.com/NguyenQuan121321"
+                href="https://github.com/NguyenQuan121321/FinnApiGo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-900 hover:bg-surface-850 border border-border-subtle hover:border-border-highlight text-xs font-mono text-zinc-200 transition-colors"
