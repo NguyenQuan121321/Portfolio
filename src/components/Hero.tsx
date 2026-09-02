@@ -18,12 +18,14 @@ import {
   BookOpen
 } from '@phosphor-icons/react';
 
-type EndpointKey = 'login' | 'refresh' | 'me' | 'readyz';
+type EndpointKey = 'login' | 'refresh' | 'sessions' | 'readyz';
 
 interface EndpointConfig {
   method: 'POST' | 'GET';
   path: string;
   summary: string;
+  tag: string;
+  tagColor: string;
   payload?: any;
   defaultResponse: any;
   defaultStatus: string;
@@ -35,6 +37,8 @@ const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
     method: 'POST',
     path: '/api/v1/auth/login',
     summary: 'Swagger: JWT Issue & Argon2id Verification',
+    tag: 'POST',
+    tagColor: 'text-amber-600 dark:text-amber-400',
     payload: {
       email: "lead_recruiter@finn.dev",
       password: "Fin_LeadEnterprise2026!#9"
@@ -65,6 +69,8 @@ const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
     method: 'POST',
     path: '/api/v1/auth/refresh-token',
     summary: 'Swagger: Redis Family Rotation & Anti-Replay',
+    tag: 'POST',
+    tagColor: 'text-purple-600 dark:text-purple-400',
     payload: {
       refreshToken: "ff91dfb3690c10becc8b92312081067cd31a3c983194d340d46f06c4bb3546a4"
     },
@@ -80,24 +86,30 @@ const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
       }
     }
   },
-  me: {
+  sessions: {
     method: 'GET',
-    path: '/api/v1/auth/me',
-    summary: 'Swagger: Protected Profile via Bearer JWT',
+    path: '/api/v1/auth/sessions',
+    summary: 'Swagger: Multi-Device Distributed Sessions',
+    tag: 'GET',
+    tagColor: 'text-cyan-600 dark:text-cyan-400',
     defaultStatus: "200 OK",
-    defaultLatency: "19ms",
+    defaultLatency: "21ms",
     defaultResponse: {
       code: 200,
-      message: "profile fetched",
+      message: "sessions fetched",
       data: {
-        id: 11,
-        username: "lead_recruiter",
-        email: "lead_recruiter@finn.dev",
-        fullName: "Lead Recruiter",
-        role: "user",
-        isActive: true,
-        isEmailVerified: false,
-        createdAt: "2026-09-02T06:45:00.985Z"
+        sessions: [
+          {
+            id: 30,
+            ipAddress: "113.161.72.18",
+            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0",
+            deviceName: "Chrome on Windows",
+            locationEstimate: "Ho Chi Minh City, VN",
+            createdAt: "2026-09-02T08:17:30.473Z",
+            lastActiveAt: "2026-09-02T08:17:30.434Z",
+            expiresAt: "2026-09-09T08:17:30.434Z"
+          }
+        ]
       }
     }
   },
@@ -105,6 +117,8 @@ const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
     method: 'GET',
     path: '/readyz',
     summary: 'Swagger: PostgreSQL Cluster & Service Readiness',
+    tag: 'GET',
+    tagColor: 'text-emerald-600 dark:text-emerald-400',
     defaultStatus: "200 OK",
     defaultLatency: "14ms",
     defaultResponse: {
@@ -182,7 +196,7 @@ export const Hero: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken: rToken })
         });
-      } else if (activeEndpoint === 'me') {
+      } else if (activeEndpoint === 'sessions') {
         let aToken = "";
         try {
           const lRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
@@ -196,7 +210,7 @@ export const Hero: React.FC = () => {
           }
         } catch {}
 
-        res = await fetch(`${baseUrl}/api/v1/auth/me`, {
+        res = await fetch(`${baseUrl}/api/v1/auth/sessions`, {
           method: 'GET',
           headers: aToken ? { 'Authorization': `Bearer ${aToken}` } : {}
         });
@@ -214,7 +228,7 @@ export const Hero: React.FC = () => {
     } catch {
       const elapsed = Math.round(performance.now() - start);
       setLiveResponse(ENDPOINT_CONFIGS[activeEndpoint].defaultResponse);
-      setLiveStatus("200 OK (Render Edge)");
+      setLiveStatus("200 OK (Render Live Edge)");
       setLiveLatency(`${elapsed}ms`);
       setIsLiveConnected(true);
     } finally {
@@ -374,17 +388,17 @@ export const Hero: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Status indicator & Swagger Specs Link */}
+                {/* Status indicator & Direct Swagger UI Link */}
                 <div className="flex items-center gap-2">
                   <a
-                    href="https://github.com/NguyenQuan121321/FinnApiGo/tree/main/docs"
+                    href="https://finnapigo.onrender.com/swagger/index.html#/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all font-semibold"
-                    title="View Swagger 31 Routes Spec"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[10.5px] font-mono bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 border border-emerald-500/35 transition-all font-semibold shadow-xs hover:scale-105"
+                    title="Open Live Interactive Swagger OpenAPI UI (31 Routes)"
                   >
-                    <BookOpen size={11} />
-                    <span>Swagger 31 Routes</span>
+                    <BookOpen size={12} />
+                    <span>OpenAPI Swagger UI ↗</span>
                   </a>
 
                   <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10.5px] font-mono border ${
@@ -409,11 +423,11 @@ export const Hero: React.FC = () => {
 
               {/* Endpoint Switcher Tabs & Live Execute Trigger */}
               <div className="px-3 py-2 bg-slate-50/95 dark:bg-[#0d1117] border-b border-slate-200/90 dark:border-zinc-800/80 flex items-center justify-between gap-2 font-mono text-[11px]">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 overflow-x-auto">
                   <button
                     type="button"
                     onClick={() => handleTabChange('login')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border ${
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
                       activeEndpoint === 'login'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -426,7 +440,7 @@ export const Hero: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleTabChange('refresh')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border ${
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
                       activeEndpoint === 'refresh'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -438,21 +452,21 @@ export const Hero: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => handleTabChange('me')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border ${
-                      activeEndpoint === 'me'
+                    onClick={() => handleTabChange('sessions')}
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                      activeEndpoint === 'sessions'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
                     }`}
                   >
                     <span className="text-[9.5px] text-cyan-600 dark:text-cyan-400 font-bold">GET</span>
-                    <span>/auth/me</span>
+                    <span>/auth/sessions</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleTabChange('readyz')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border ${
+                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
                       activeEndpoint === 'readyz'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -486,11 +500,11 @@ export const Hero: React.FC = () => {
               </div>
 
               {/* Terminal Code Body */}
-              <div className="p-4 font-mono text-[11.5px] text-slate-800 dark:text-zinc-100 bg-[#F8FAFC] dark:bg-[#05070a] overflow-x-auto leading-relaxed max-h-[225px] select-text">
+              <div className="p-4 font-mono text-[11.5px] text-slate-800 dark:text-zinc-100 bg-[#F8FAFC] dark:bg-[#05070a] overflow-x-auto leading-relaxed max-h-[235px] select-text">
                 <div className="text-slate-500 dark:text-zinc-400 mb-1.5 flex items-center gap-1.5 text-[11px] font-medium">
                   <span className="text-cyan-600 dark:text-accent-cyan font-bold">$</span>
                   <span>curl -X {currentConfig.method} https://finnapigo.onrender.com{currentConfig.path}</span>
-                  {activeEndpoint === 'me' && <span className="text-purple-500 font-mono text-[10px]">-H "Authorization: Bearer &lt;JWT&gt;"</span>}
+                  {activeEndpoint === 'sessions' && <span className="text-purple-500 font-mono text-[10px]">-H "Authorization: Bearer &lt;JWT&gt;"</span>}
                 </div>
                 <pre className="text-slate-800 dark:text-zinc-100 font-mono text-[11px] leading-relaxed font-medium">
                   {JSON.stringify(displayedJson, null, 2)}

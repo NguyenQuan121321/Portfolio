@@ -1,4 +1,4 @@
-// Injected scoped CSS styles for JakeAI (TypeScript) with full Light & Dark mode support
+// Injected scoped CSS styles for JakeAI (TypeScript) with full Light & Dark mode support and sleeping animations
 import { JakeTheme } from '../types';
 
 export function injectStyles(_theme: JakeTheme = 'auto'): void {
@@ -117,11 +117,19 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: scale(1.22);
     }
 
-    #jake-ai-corgi.jake-corgi-hidden {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transform: scale(0.3) !important;
-      transition: opacity 0.2s ease, transform 0.2s ease !important;
+    /* Sleeping Corgi State */
+    #jake-ai-corgi.jake-corgi-sleeping {
+      animation: jakeCorgiSleepBreathe 2.4s infinite ease-in-out;
+      filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.35));
+    }
+
+    @keyframes jakeCorgiSleepBreathe {
+      0%, 100% {
+        transform: scale(1.12) translateY(0);
+      }
+      50% {
+        transform: scale(1.16) translateY(-2px);
+      }
     }
 
     /* Speech Hint Bubble above Corgi */
@@ -213,10 +221,10 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     #jake-ai-dogbed, .jake-dogbed {
       position: fixed;
       z-index: 99980;
-      bottom: 20px;
-      right: 20px;
-      width: 46px;
-      height: 46px;
+      bottom: 18px;
+      right: 18px;
+      width: 48px;
+      height: 48px;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -227,22 +235,28 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       justify-content: center;
       user-select: none;
       -webkit-user-select: none;
-      transition: transform 0.2s ease, filter 0.2s ease;
+      transition: transform 0.25s ease, filter 0.25s ease;
       touch-action: none;
     }
 
     #jake-ai-dogbed.jake-bed-sleeping {
-      animation: jakeBedBreathe 3s infinite ease-in-out;
+      animation: jakeBedGlowPulse 2.8s infinite ease-in-out;
     }
 
-    @keyframes jakeBedBreathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06) translateY(-1px); }
+    @keyframes jakeBedGlowPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.3));
+      }
+      50% {
+        transform: scale(1.05) translateY(-2px);
+        filter: drop-shadow(0 6px 18px rgba(245, 158, 11, 0.65));
+      }
     }
 
     #jake-ai-dogbed:hover, .jake-dogbed:hover {
-      transform: scale(1.14) translateY(-2px) !important;
-      filter: drop-shadow(0 4px 14px rgba(245, 158, 11, 0.45));
+      transform: scale(1.15) translateY(-3px) !important;
+      filter: drop-shadow(0 6px 18px rgba(245, 158, 11, 0.6)) !important;
     }
 
     #jake-ai-dogbed:active, .jake-dogbed:active {
@@ -250,35 +264,59 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     }
 
     .jake-cozybed-img {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       object-fit: contain;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
 
-    .jake-sleep-zzz {
+    /* Animated Floating zZz Particles */
+    .jake-sleep-particles {
       position: absolute;
-      top: -10px;
-      right: 2px;
-      font-size: 11px;
-      font-weight: 700;
-      font-family: monospace;
-      color: #f59e0b;
-      animation: jakeZzz 2.2s infinite ease-in-out;
+      top: -12px;
+      right: -2px;
+      display: flex;
+      align-items: flex-start;
       pointer-events: none;
-      text-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
     }
 
-    @keyframes jakeZzz {
-      0% { opacity: 0; transform: translateY(2px) scale(0.8); }
-      50% { opacity: 1; transform: translateY(-4px) scale(1.1); }
-      100% { opacity: 0; transform: translateY(-10px) scale(1.3); }
+    .jake-zzz-item {
+      font-size: 11px;
+      font-weight: 800;
+      font-family: monospace;
+      color: #f59e0b;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.75);
+      animation: jakeZzzFloat 2.2s infinite ease-in-out;
+      opacity: 0;
+    }
+
+    .jake-zzz-1 { animation-delay: 0s; }
+    .jake-zzz-2 { animation-delay: 0.6s; font-size: 13px; margin-left: 2px; }
+    .jake-zzz-3 { animation-delay: 1.2s; font-size: 15px; margin-left: 2px; }
+
+    @keyframes jakeZzzFloat {
+      0% {
+        opacity: 0;
+        transform: translate(0, 4px) scale(0.7);
+      }
+      40% {
+        opacity: 1;
+        transform: translate(3px, -6px) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+        transform: translate(6px, -16px) scale(1.25);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(9px, -24px) scale(1.4);
+      }
     }
 
     .jake-dogbed-tooltip {
       position: absolute;
-      bottom: calc(100% + 6px);
+      bottom: calc(100% + 8px);
       right: 0;
       background: var(--jake-bg);
       color: var(--jake-text);
@@ -300,231 +338,209 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: translateY(0);
     }
 
-    /* Floating Chat Modal (Bottom-Right Docked) */
+    /* Floating Chat Window Modal */
     #jake-ai-chat, .jake-chat-window {
-      position: fixed !important;
-      right: 20px !important;
-      bottom: 80px !important;
-      left: auto !important;
-      top: auto !important;
-      z-index: 99999 !important;
-      width: 390px;
+      position: fixed;
+      z-index: 99995;
+      bottom: 70px;
+      right: 20px;
+      width: 380px;
       max-width: calc(100vw - 32px);
-      height: 520px;
+      height: 490px;
       max-height: calc(100vh - 100px);
       background: var(--jake-bg-glass);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--jake-card-border);
-      border-radius: 20px;
+      border-radius: 18px;
       box-shadow: var(--jake-shadow);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: jakeScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: scale(0.96) translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes jakeScaleIn {
-      0% { opacity: 0; transform: scale(0.92) translateY(16px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+    #jake-ai-chat.jake-chat-open, .jake-chat-window.jake-chat-open {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
     }
 
     /* Chat Header */
-    #jake-ai-header, .jake-chat-header {
+    .jake-chat-header {
+      padding: 12px 14px;
+      background: var(--jake-header-bg);
+      border-bottom: 1px solid var(--jake-card-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--jake-header-bg);
-      border-bottom: 1px solid var(--jake-card-border);
       user-select: none;
-      flex-shrink: 0;
     }
 
     .jake-header-profile {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
     .jake-avatar-badge {
-      width: 32px;
-      height: 32px;
+      position: relative;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: var(--jake-btn-bg);
+      border: 1px solid var(--jake-card-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
 
     .jake-status-dot {
       position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 8px;
-      height: 8px;
-      background: #10B981;
-      border: 2px solid var(--jake-header-bg);
+      bottom: 0px;
+      right: 0px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
+      background: #10b981;
+      border: 1.5px solid var(--jake-bg);
     }
 
     .jake-title-wrap {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      line-height: 1.2;
     }
 
     .jake-title {
-      font-size: 13.5px;
       font-weight: 700;
       color: var(--jake-text);
+      font-size: 13px;
     }
 
     .jake-subtitle {
       font-size: 10px;
-      font-family: monospace;
       color: var(--jake-text-muted);
     }
 
     .jake-header-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .jake-btn-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--jake-btn-bg);
-      border: 1px solid var(--jake-btn-border);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
       color: var(--jake-text-muted);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: background 0.15s ease, color 0.15s ease;
     }
 
     .jake-btn-icon:hover {
       background: var(--jake-btn-hover);
       color: var(--jake-text);
-      border-color: var(--jake-card-border);
     }
 
     .jake-btn-close:hover {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.12);
       color: #ef4444;
-      border-color: rgba(239, 68, 68, 0.4);
     }
 
-    /* Chat Body & Messages */
-    #jake-ai-messages, .jake-chat-body {
+    /* Chat Body */
+    .jake-chat-body {
       flex: 1;
-      padding: 14px 16px;
       overflow-y: auto;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      background: var(--jake-bg);
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+
+    .jake-chat-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .jake-chat-body::-webkit-scrollbar-thumb {
+      background: var(--jake-card-border);
+      border-radius: 4px;
     }
 
     .jake-msg-row {
       display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      width: 100%;
+      align-items: flex-end;
+      gap: 7px;
+      max-width: 88%;
     }
 
     .jake-msg-user-row {
-      justify-content: flex-end;
+      align-self: flex-end;
+      flex-direction: row-reverse;
     }
 
     .jake-msg-ai-row {
-      justify-content: flex-start;
+      align-self: flex-start;
     }
 
     .jake-msg-avatar {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.25);
+      background: var(--jake-btn-bg);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-top: 2px;
-      overflow: hidden;
+      margin-bottom: 2px;
     }
 
     .jake-msg-bubble {
-      max-width: 84%;
-      padding: 10px 14px;
-      border-radius: 16px;
+      padding: 8px 12px;
+      border-radius: 12px;
       font-size: 12px;
-      line-height: 1.55;
-      word-break: break-word;
+      line-height: 1.5;
       position: relative;
+      word-break: break-word;
     }
 
     .jake-msg-ai {
       background: var(--jake-msg-ai-bg);
       color: var(--jake-msg-ai-text);
       border: 1px solid var(--jake-msg-ai-border);
-      border-top-left-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border-bottom-left-radius: 3px;
     }
 
     .jake-msg-user {
       background: var(--jake-msg-user-bg);
       color: var(--jake-msg-user-text);
-      font-weight: 500;
-      border-top-right-radius: 4px;
+      border-bottom-right-radius: 3px;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
 
     .jake-msg-time {
       display: block;
       font-size: 9px;
-      font-family: monospace;
-      margin-top: 4px;
+      margin-top: 3px;
       opacity: 0.65;
-    }
-
-    .jake-msg-user .jake-msg-time {
       text-align: right;
     }
 
-    .jake-code-block {
-      background: var(--jake-code-bg);
-      border: 1px solid var(--jake-card-border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      margin: 6px 0;
-      overflow-x: auto;
-      font-family: monospace;
-      font-size: 11px;
-      color: var(--jake-code-text);
-    }
-
-    .jake-inline-code {
-      background: var(--jake-primary-light);
-      border-radius: 4px;
-      padding: 2px 4px;
-      font-family: monospace;
-      font-size: 11px;
-      color: var(--jake-primary);
-    }
-
-    /* Typing Dots */
+    /* Typing Indicator */
     .jake-typing-indicator {
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 10px 14px;
+      padding: 8px 12px;
     }
 
     .jake-dot {
@@ -532,30 +548,29 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       height: 5px;
       border-radius: 50%;
       background: var(--jake-primary);
-      animation: jakeBounce 1.2s infinite ease-in-out;
+      animation: jakeTyping 1.4s infinite ease-in-out;
     }
 
     .jake-dot:nth-child(2) { animation-delay: 0.2s; }
     .jake-dot:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes jakeBounce {
-      0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
-      40% { transform: scale(1.2); opacity: 1; }
+    @keyframes jakeTyping {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-4px); opacity: 1; }
     }
 
-    /* Quick Action Chips (Circular Pills) */
+    /* Quick Action Chips */
     .jake-quick-actions {
-      padding: 8px 12px;
-      background: var(--jake-header-bg);
+      padding: 6px 12px 8px;
       border-top: 1px solid var(--jake-card-border);
-      flex-shrink: 0;
+      background: var(--jake-header-bg);
     }
 
     .jake-chips-scroll {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      scrollbar-width: none;
+      padding-bottom: 2px;
     }
 
     .jake-chips-scroll::-webkit-scrollbar {
@@ -566,9 +581,10 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       background: var(--jake-chip-bg);
       color: var(--jake-chip-text);
       border: 1px solid var(--jake-chip-border);
-      border-radius: 9999px;
-      padding: 4px 10px;
       font-size: 10.5px;
+      font-weight: 500;
+      padding: 4px 9px;
+      border-radius: 9999px;
       white-space: nowrap;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -582,12 +598,14 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: translateY(-1px);
     }
 
-    /* Footer & Input Form */
+    /* Footer & Input */
     .jake-chat-footer {
-      padding: 10px 12px;
-      background: var(--jake-header-bg);
+      padding: 8px 12px 10px;
+      background: var(--jake-bg);
       border-top: 1px solid var(--jake-card-border);
-      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .jake-input-box {
@@ -596,9 +614,9 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       gap: 6px;
       background: var(--jake-input-bg);
       border: 1px solid var(--jake-input-border);
-      border-radius: 9999px;
-      padding: 3px 6px 3px 12px;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      border-radius: 10px;
+      padding: 3px 6px 3px 10px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .jake-input-box:focus-within {
@@ -608,41 +626,35 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
 
     .jake-input-field {
       flex: 1;
-      background: transparent;
       border: none;
-      outline: none;
+      background: transparent;
       color: var(--jake-text);
       font-size: 12px;
+      outline: none;
       font-family: inherit;
-    }
-
-    .jake-input-field::placeholder {
-      color: var(--jake-text-muted);
     }
 
     .jake-chat-send {
       width: 28px;
       height: 28px;
-      border-radius: 50%;
+      border-radius: 7px;
       background: var(--jake-primary);
-      color: #ffffff;
       border: none;
+      color: #ffffff;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.15s, background 0.15s;
-      flex-shrink: 0;
+      transition: background 0.15s ease, transform 0.1s ease;
     }
 
     .jake-chat-send:hover {
-      filter: brightness(1.1);
-      transform: scale(1.06);
+      background: var(--jake-primary-hover);
+      transform: scale(1.05);
     }
 
     .jake-chat-send:disabled {
-      background: var(--jake-btn-border);
-      color: var(--jake-text-muted);
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
     }
@@ -651,12 +663,30 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 6px;
       font-size: 9.5px;
-      font-family: monospace;
       color: var(--jake-text-muted);
-      padding: 0 4px;
+    }
+
+    .jake-code-block {
+      background: var(--jake-code-bg);
+      color: var(--jake-code-text);
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 11px;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+
+    .jake-inline-code {
+      background: var(--jake-code-bg);
+      color: var(--jake-code-text);
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
     }
   `;
+
   document.head.appendChild(styleEl);
 }

@@ -170,13 +170,13 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
       <div
         ref={corgiRef}
         id="jake-ai-corgi"
-        className={`jake-corgi-sprite ${isSleeping ? 'jake-corgi-hidden' : ''}`}
+        className={`jake-corgi-sprite ${isSleeping ? 'jake-corgi-sleeping' : ''}`}
         role="button"
         tabIndex={0}
         aria-label={`${name} the Corgi companion`}
       >
-        {/* Name Tooltip (Only visible when action menu is CLOSED) */}
-        {!isActionMenuOpen && (
+        {/* Name Tooltip (Only visible when action menu is CLOSED and not sleeping) */}
+        {!isActionMenuOpen && !isSleeping && (
           <span className="jake-corgi-hint">Jake AI</span>
         )}
 
@@ -239,7 +239,13 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
             alt={`${name}'s Cozy Bed`}
             className="jake-cozybed-img"
           />
-          {isSleeping && <span className="jake-sleep-zzz">zZz</span>}
+          {isSleeping && (
+            <div className="jake-sleep-particles">
+              <span className="jake-zzz-item jake-zzz-1">z</span>
+              <span className="jake-zzz-item jake-zzz-2">Z</span>
+              <span className="jake-zzz-item jake-zzz-3">Z</span>
+            </div>
+          )}
           <span className="jake-dogbed-tooltip">
             {isSleeping 
               ? (lang === 'vi' ? `Gọi ${name} thức dậy 🐾` : `Wake up ${name} 🐾`) 

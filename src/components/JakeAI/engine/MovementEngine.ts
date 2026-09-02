@@ -127,14 +127,17 @@ export class MovementEngine {
 
   public goToBed(): void {
     this.isSleeping = true;
-    this.isPaused = false;
-    this.element.classList.add('jake-corgi-hidden');
+    this.isPaused = true;
+    const bounds = this.getCozyBounds();
+    this.corgiX = bounds.bedX;
+    this.corgiY = bounds.bedY - 4;
+    this.updatePosition();
+    this.spriteEngine.setSprite('idle', 'S', 0);
   }
 
   public wakeUp(): void {
     this.isSleeping = false;
     this.isPaused = false;
-    this.element.classList.remove('jake-corgi-hidden');
     const bounds = this.getCozyBounds();
     this.corgiX = bounds.minX + 25;
     this.corgiY = bounds.maxY - 15;
