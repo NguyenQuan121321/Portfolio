@@ -96,8 +96,8 @@ export class AIService {
           );
         } else if (q.includes('jake') || q.includes('who are you') || q.includes('corgi') || q.includes('bạn là ai')) {
           resolve(
-            "🐕 Gâu! Mình là **Jake**, chú cún Corgi hướng dẫn viên thông minh trên portfolio của **Nguyễn Hoàng Anh Quân**!\n\n" +
-            "Mình chạy bằng **TypeScript + React Component**, sử dụng hardware-accelerated GPU 60 FPS, và kết nối trực tiếp với backend **Go (Golang)** để trả lời câu hỏi & test API tự động!"
+            "Tôi là **Jake** — Portfolio Hub Agent của **Nguyễn Hoàng Anh Quân**!\n\n" +
+            "Tôi được kết nối trực tiếp với backend **Go (Golang)** (tại github.com/NguyenQuan121321/JakeAI) để hỗ trợ bạn tìm hiểu về các dự án thực tế, kỹ năng chuyên sâu và thông tin liên hệ của Quân."
           );
         } else if (q.includes('test') || q.includes('api') || q.includes('endpoint')) {
           resolve(
@@ -106,8 +106,6 @@ export class AIService {
           );
         } else {
           resolve(
-            "🐾 Câu hỏi tuyệt vời! Mình có thể giúp bạn khám phá:\n" +
-            "- **FinnApiGo** (Backend Go tài chính & chứng khoán)\n" +
             "- **VovinamApiNode** (API võ thuật Vovinam trên Node.js)\n" +
             "- **JakeAI** (Kiến trúc TypeScript, React & Backend Go)\n" +
             "- Chạy thử trực tiếp các API endpoint!"

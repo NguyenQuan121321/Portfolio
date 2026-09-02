@@ -1,82 +1,39 @@
 // Injected scoped CSS styles for JakeAI (TypeScript)
 import { JakeTheme } from '../types';
 
-export function injectStyles(_theme: JakeTheme = 'auto'): void {
+export function injectStyles(_theme: JakeTheme = 'dark'): void {
   if (typeof document === 'undefined') return;
-  if (document.getElementById('jake-ai-styles')) return;
+  const existing = document.getElementById('jake-ai-styles');
+  if (existing) existing.remove();
 
   const styleEl = document.createElement('style');
   styleEl.id = 'jake-ai-styles';
   styleEl.textContent = `
     /* JakeAI Container & Themes */
     #jake-ai-container, .jake-ai-root {
-      --jake-primary: #ff9f43;
-      --jake-primary-hover: #ee8c2e;
-      --jake-primary-light: #fff0df;
-      --jake-text: #2d3436;
-      --jake-text-muted: #636e72;
-      --jake-bg: #ffffff;
-      --jake-bg-glass: rgba(255, 255, 255, 0.95);
-      --jake-card-border: rgba(0, 0, 0, 0.08);
-      --jake-shadow: 0 12px 36px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
-      --jake-msg-ai-bg: #f5f6fa;
-      --jake-msg-ai-text: #2f3640;
-      --jake-msg-user-bg: #ff9f43;
+      --jake-primary: #00E5FF;
+      --jake-primary-hover: #00b4d8;
+      --jake-primary-light: rgba(0, 229, 255, 0.12);
+      --jake-text: #f8fafc;
+      --jake-text-muted: #94a3b8;
+      --jake-bg: #0d1117;
+      --jake-bg-glass: rgba(13, 17, 23, 0.96);
+      --jake-card-border: rgba(255, 255, 255, 0.12);
+      --jake-shadow: 0 20px 50px -5px rgba(0, 0, 0, 0.6);
+      --jake-msg-ai-bg: #080a0f;
+      --jake-msg-ai-text: #f1f5f9;
+      --jake-msg-user-bg: linear-gradient(135deg, #0284c7, #00E5FF);
       --jake-msg-user-text: #ffffff;
-      --jake-code-bg: #282c34;
-      --jake-code-text: #abb2bf;
-      --jake-input-bg: #f8f9fa;
-      --jake-input-border: #dfe6e9;
-      --jake-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --jake-code-bg: #080a0f;
+      --jake-code-text: #e2e8f0;
+      --jake-input-bg: #121722;
+      --jake-input-border: #1e293b;
+      --jake-font: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-family: var(--jake-font);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
       box-sizing: border-box;
       -webkit-font-smoothing: antialiased;
-    }
-
-    #jake-ai-container.jake-theme-dark,
-    .jake-ai-root.jake-theme-dark {
-      --jake-primary: #ff9f43;
-      --jake-primary-hover: #ffa856;
-      --jake-primary-light: #3d2a1a;
-      --jake-text: #f5f6fa;
-      --jake-text-muted: #a4b0be;
-      --jake-bg: #1e222d;
-      --jake-bg-glass: rgba(30, 34, 45, 0.95);
-      --jake-card-border: rgba(255, 255, 255, 0.1);
-      --jake-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-      --jake-msg-ai-bg: #2a2e3d;
-      --jake-msg-ai-text: #f1f2f6;
-      --jake-msg-user-bg: #ee8c2e;
-      --jake-msg-user-text: #ffffff;
-      --jake-code-bg: #14171f;
-      --jake-code-text: #e1e2e6;
-      --jake-input-bg: #2a2e3d;
-      --jake-input-border: #3d4356;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      #jake-ai-container.jake-theme-auto,
-      .jake-ai-root.jake-theme-auto {
-        --jake-primary: #ff9f43;
-        --jake-primary-hover: #ffa856;
-        --jake-primary-light: #3d2a1a;
-        --jake-text: #f5f6fa;
-        --jake-text-muted: #a4b0be;
-        --jake-bg: #1e222d;
-        --jake-bg-glass: rgba(30, 34, 45, 0.95);
-        --jake-card-border: rgba(255, 255, 255, 0.1);
-        --jake-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-        --jake-msg-ai-bg: #2a2e3d;
-        --jake-msg-ai-text: #f1f2f6;
-        --jake-msg-user-bg: #ee8c2e;
-        --jake-msg-user-text: #ffffff;
-        --jake-code-bg: #14171f;
-        --jake-code-text: #e1e2e6;
-        --jake-input-bg: #2a2e3d;
-        --jake-input-border: #3d4356;
-      }
     }
 
     #jake-ai-container *, .jake-ai-root * {
@@ -88,9 +45,7 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     /* Corgi Sprite Element */
     #jake-ai-corgi, .jake-corgi-sprite {
       position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 2147483647;
+      z-index: 99990;
       width: 32px;
       height: 32px;
       cursor: pointer;
@@ -98,52 +53,47 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       image-rendering: crisp-edges;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-user-drag: none;
       background-repeat: no-repeat;
       display: block;
       pointer-events: auto;
       transform-origin: center center;
-      transform: scale(1.3);
-      will-change: left, top;
-      transition: filter 0.15s ease, transform 0.15s ease;
+      transform: scale(1.15);
+      transition: filter 0.2s ease, transform 0.2s ease;
       touch-action: none;
     }
 
     #jake-ai-corgi:hover, .jake-corgi-sprite:hover {
-      filter: drop-shadow(0 4px 10px rgba(255, 159, 67, 0.6));
-      transform: scale(1.45);
+      filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.5));
+      transform: scale(1.22);
+    }
+
+    #jake-ai-corgi.jake-corgi-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: scale(0.3) !important;
+      transition: opacity 0.2s ease, transform 0.2s ease !important;
     }
 
     /* Speech Hint Bubble above Corgi */
     .jake-corgi-hint {
       position: absolute;
-      bottom: calc(100% + 8px);
+      bottom: calc(100% + 6px);
       left: 50%;
       transform: translateX(-50%) translateY(4px);
-      background: var(--jake-bg, #ffffff);
-      color: var(--jake-text, #2d3436);
-      font-size: 11.5px;
+      background: #0d1117;
+      color: #00E5FF;
+      font-size: 10px;
+      font-family: monospace;
       font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 8px;
+      padding: 2px 8px;
+      border-radius: 9999px;
       white-space: nowrap;
       pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border: 1px solid var(--jake-card-border, rgba(0,0,0,0.1));
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 229, 255, 0.3);
       opacity: 0;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      z-index: 2147483641;
-    }
-
-    .jake-corgi-hint::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 5px;
-      border-style: solid;
-      border-color: var(--jake-bg, #ffffff) transparent transparent transparent;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 99991;
     }
 
     #jake-ai-corgi:hover .jake-corgi-hint,
@@ -152,46 +102,180 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Floating Chat Modal */
-    #jake-ai-chat, .jake-chat-window {
+    /* Mini Action Popup over Corgi: 2 Sleek Circular Icon Buttons */
+    .jake-action-menu {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: rgba(13, 17, 23, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+      z-index: 99992;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .jake-action-menu.jake-menu-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .jake-circle-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #182030;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .jake-circle-action-btn:hover {
+      background: #0284c7;
+      border-color: #00E5FF;
+      transform: scale(1.12);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+    }
+
+    .jake-circle-action-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Dog Bed (Sleep Cushion at bottom right) */
+    #jake-ai-dogbed, .jake-dogbed {
       position: fixed;
-      z-index: 2147483645;
-      width: 380px;
+      z-index: 99980;
+      bottom: 20px;
+      right: 20px;
+      width: 46px;
+      height: 46px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      touch-action: none;
+    }
+
+    #jake-ai-dogbed.jake-bed-sleeping {
+      animation: jakeBedBreathe 3s infinite ease-in-out;
+    }
+
+    @keyframes jakeBedBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06) translateY(-1px); }
+    }
+
+    #jake-ai-dogbed:hover, .jake-dogbed:hover {
+      transform: scale(1.14) translateY(-2px) !important;
+      filter: drop-shadow(0 4px 14px rgba(245, 158, 11, 0.45));
+    }
+
+    #jake-ai-dogbed:active, .jake-dogbed:active {
+      transform: scale(0.95);
+    }
+
+    .jake-cozybed-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .jake-sleep-zzz {
+      position: absolute;
+      top: -10px;
+      right: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: monospace;
+      color: #f59e0b;
+      animation: jakeZzz 2.2s infinite ease-in-out;
+      pointer-events: none;
+      text-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+    }
+
+    @keyframes jakeZzz {
+      0% { opacity: 0; transform: translateY(2px) scale(0.8); }
+      50% { opacity: 1; transform: translateY(-4px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-10px) scale(1.3); }
+    }
+
+    .jake-dogbed-tooltip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      right: 0;
+      background: #0d1117;
+      color: #f1f5f9;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    #jake-ai-dogbed:hover .jake-dogbed-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Floating Chat Modal (Always reliably anchored at bottom-right) */
+    #jake-ai-chat, .jake-chat-window {
+      position: fixed !important;
+      right: 20px !important;
+      bottom: 80px !important;
+      left: auto !important;
+      top: auto !important;
+      z-index: 99999 !important;
+      width: 390px;
       max-width: calc(100vw - 32px);
       height: 520px;
-      max-height: calc(100vh - 64px);
+      max-height: calc(100vh - 100px);
       background: var(--jake-bg-glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--jake-card-border);
-      border-radius: 18px;
+      border-radius: 20px;
       box-shadow: var(--jake-shadow);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      opacity: 0;
-      transform: scale(0.92) translateY(16px);
-      pointer-events: none;
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: jakeScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    #jake-ai-chat.jake-chat-open, .jake-chat-window.jake-chat-open {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-      pointer-events: auto;
-    }
-
-    #jake-ai-chat.jake-chat-minimized, .jake-chat-window.jake-chat-minimized {
-      height: 56px !important;
-      max-height: 56px !important;
-    }
-
-    #jake-ai-chat.jake-chat-minimized #jake-ai-messages,
-    #jake-ai-chat.jake-chat-minimized #jake-ai-input-form,
-    #jake-ai-chat.jake-chat-minimized .jake-quick-actions,
-    .jake-chat-window.jake-chat-minimized .jake-chat-body,
-    .jake-chat-window.jake-chat-minimized .jake-chat-footer {
-      display: none !important;
+    @keyframes jakeScaleIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(16px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     /* Chat Header */
@@ -200,14 +284,10 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       align-items: center;
       justify-content: space-between;
       padding: 12px 16px;
-      background: var(--jake-bg);
+      background: #080a0f;
       border-bottom: 1px solid var(--jake-card-border);
-      cursor: grab;
       user-select: none;
-    }
-
-    #jake-ai-header:active, .jake-chat-header:active {
-      cursor: grabbing;
+      flex-shrink: 0;
     }
 
     .jake-header-profile {
@@ -220,11 +300,11 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: var(--jake-primary-light);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
       position: relative;
     }
 
@@ -232,29 +312,28 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 9px;
-      height: 9px;
-      background: #2ed573;
-      border: 2px solid var(--jake-bg);
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border: 2px solid #080a0f;
       border-radius: 50%;
     }
 
     .jake-title-wrap {
       display: flex;
       flex-direction: column;
+      gap: 1px;
     }
 
     .jake-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
-      color: var(--jake-text);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: #ffffff;
     }
 
-    .jake-tagline {
-      font-size: 11px;
+    .jake-subtitle {
+      font-size: 10px;
+      font-family: monospace;
       color: var(--jake-text-muted);
     }
 
@@ -265,423 +344,267 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     }
 
     .jake-btn-icon {
-      background: transparent;
-      border: none;
-      color: var(--jake-text-muted);
-      cursor: pointer;
       width: 28px;
       height: 28px;
-      border-radius: 6px;
+      border-radius: 50%;
+      background: #182030;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      transition: background 0.15s, color 0.15s;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
 
     .jake-btn-icon:hover {
-      background: var(--jake-msg-ai-bg);
-      color: var(--jake-text);
+      background: #222c42;
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
-    /* Message List */
-    #jake-ai-messages, .jake-chat-messages {
+    .jake-btn-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    /* Chat Body & Messages */
+    #jake-ai-messages, .jake-chat-body {
       flex: 1;
+      padding: 14px 16px;
       overflow-y: auto;
-      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      scroll-behavior: smooth;
+      background: #080a0f;
     }
 
-    #jake-ai-messages::-webkit-scrollbar, .jake-chat-messages::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    #jake-ai-messages::-webkit-scrollbar-thumb, .jake-chat-messages::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
-    }
-
-    /* Message Bubbles */
-    .jake-msg {
+    .jake-msg-row {
       display: flex;
-      flex-direction: column;
-      max-width: 86%;
-      animation: jakeFadeIn 0.2s ease-out;
+      gap: 8px;
+      align-items: flex-start;
+      width: 100%;
     }
 
-    @keyframes jakeFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+    .jake-msg-user-row {
+      justify-content: flex-end;
     }
 
-    .jake-msg-ai {
-      align-self: flex-start;
+    .jake-msg-ai-row {
+      justify-content: flex-start;
     }
 
-    .jake-msg-user {
-      align-self: flex-end;
+    .jake-msg-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      overflow: hidden;
     }
 
     .jake-msg-bubble {
+      max-width: 84%;
       padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 13.5px;
-      line-height: 1.5;
+      border-radius: 16px;
+      font-size: 12px;
+      line-height: 1.55;
       word-break: break-word;
+      position: relative;
     }
 
-    .jake-msg-ai .jake-msg-bubble {
-      background: var(--jake-msg-ai-bg);
-      color: var(--jake-msg-ai-text);
-      border-bottom-left-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    .jake-msg-ai {
+      background: #0d1117;
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top-left-radius: 4px;
     }
 
-    .jake-msg-user .jake-msg-bubble {
-      background: var(--jake-msg-user-bg);
-      color: var(--jake-msg-user-text);
-      border-bottom-right-radius: 4px;
+    .jake-msg-user {
+      background: linear-gradient(135deg, #0284c7, #00E5FF);
+      color: #ffffff;
+      font-weight: 500;
+      border-top-right-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
     }
 
     .jake-msg-time {
-      font-size: 10px;
-      color: var(--jake-text-muted);
-      margin-top: 3px;
-      padding: 0 4px;
+      display: block;
+      font-size: 9px;
+      font-family: monospace;
+      margin-top: 4px;
+      opacity: 0.6;
     }
 
     .jake-msg-user .jake-msg-time {
       text-align: right;
     }
 
-    /* Markdown Formatted Elements */
-    .jake-msg-bubble p {
-      margin-bottom: 6px;
-    }
-    .jake-msg-bubble p:last-child {
-      margin-bottom: 0;
-    }
-    .jake-msg-bubble code {
-      font-family: Consolas, Monaco, "Courier New", monospace;
-      font-size: 12px;
-      padding: 2px 5px;
-      background: rgba(0, 0, 0, 0.08);
-      border-radius: 4px;
-    }
-    .jake-msg-user .jake-msg-bubble code {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .jake-msg-bubble pre {
-      background: var(--jake-code-bg);
-      color: var(--jake-code-text);
-      padding: 10px;
+    .jake-code-block {
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      overflow-x: auto;
-      font-size: 12px;
-      margin: 8px 0;
-      font-family: Consolas, Monaco, "Courier New", monospace;
-    }
-    .jake-msg-bubble pre code {
-      background: transparent;
-      padding: 0;
-      color: inherit;
-    }
-    .jake-msg-bubble a {
-      color: var(--jake-primary);
-      text-decoration: underline;
-      font-weight: 500;
-    }
-    .jake-msg-user .jake-msg-bubble a {
-      color: #ffffff;
-    }
-    .jake-msg-bubble ul, .jake-msg-bubble ol {
-      padding-left: 18px;
+      padding: 8px 10px;
       margin: 6px 0;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 11px;
+      color: #00E5FF;
     }
 
-    /* Quick Chips */
-    .jake-quick-actions {
+    .jake-inline-code {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 2px 4px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #00E5FF;
+    }
+
+    /* Typing Dots */
+    .jake-typing-indicator {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .jake-chip {
-      background: var(--jake-primary-light);
-      color: var(--jake-primary-hover);
-      font-size: 11.5px;
-      font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 159, 67, 0.25);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .jake-chip:hover {
-      background: var(--jake-primary);
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* Typing Animation */
-    .jake-typing {
-      display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 10px 14px;
-      background: var(--jake-msg-ai-bg);
-      border-radius: 14px;
-      border-bottom-left-radius: 4px;
-      width: fit-content;
     }
 
-    .jake-typing-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--jake-text-muted);
+    .jake-dot {
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      animation: jakeBounce 1.4s infinite ease-in-out both;
+      background: #00E5FF;
+      animation: jakeBounce 1.2s infinite ease-in-out;
     }
 
-    .jake-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .jake-typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    .jake-typing-dot:nth-child(3) { animation-delay: 0s; }
+    .jake-dot:nth-child(2) { animation-delay: 0.2s; }
+    .jake-dot:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes jakeBounce {
-      0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-      40% { transform: scale(1); opacity: 1; }
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+      40% { transform: scale(1.2); opacity: 1; }
     }
 
-    /* Input Footer */
-    #jake-ai-input-form, .jake-chat-footer {
+    /* Quick Action Chips (Circular Pills) */
+    .jake-quick-actions {
+      padding: 8px 12px;
+      background: #080a0f;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .jake-chips-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .jake-chips-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .jake-chip {
+      background: #121722;
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      padding: 4px 10px;
+      font-size: 10.5px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .jake-chip:hover {
+      background: rgba(0, 229, 255, 0.12);
+      border-color: #00E5FF;
+      color: #00E5FF;
+      transform: translateY(-1px);
+    }
+
+    /* Footer & Input Form */
+    .jake-chat-footer {
+      padding: 10px 12px;
+      background: #0d1117;
+      border-top: 1px solid var(--jake-card-border);
+      flex-shrink: 0;
+    }
+
+    .jake-input-box {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: var(--jake-bg);
-      border-top: 1px solid var(--jake-card-border);
-    }
-
-    #jake-ai-input, .jake-chat-input {
-      flex: 1;
-      background: var(--jake-input-bg);
+      gap: 6px;
+      background: #121722;
       border: 1px solid var(--jake-input-border);
-      color: var(--jake-text);
-      font-family: inherit;
-      font-size: 13.5px;
-      padding: 9px 14px;
-      border-radius: 20px;
+      border-radius: 9999px;
+      padding: 3px 6px 3px 12px;
+      transition: border-color 0.15s;
+    }
+
+    .jake-input-box:focus-within {
+      border-color: #00E5FF;
+      box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.25);
+    }
+
+    .jake-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
       outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    #jake-ai-input:focus, .jake-chat-input:focus {
-      border-color: var(--jake-primary);
-      box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.2);
-    }
-
-    #jake-ai-send, .jake-chat-send {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--jake-primary);
       color: #ffffff;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .jake-input-field::placeholder {
+      color: #64748b;
+    }
+
+    .jake-chat-send {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #00E5FF;
+      color: #080a0f;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.15s, background 0.15s;
       flex-shrink: 0;
-      transition: background 0.15s, transform 0.15s;
     }
 
-    #jake-ai-send:hover, .jake-chat-send:hover {
-      background: var(--jake-primary-hover);
-      transform: scale(1.05);
+    .jake-chat-send:hover {
+      background: #38bdf8;
+      transform: scale(1.06);
     }
 
-    #jake-ai-send:disabled, .jake-chat-send:disabled {
-      background: var(--jake-input-border);
+    .jake-chat-send:disabled {
+      background: #1e293b;
+      color: #64748b;
       cursor: not-allowed;
       transform: none;
     }
 
-    #jake-ai-send svg, .jake-chat-send svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-
-    #jake-ai-corgi.jake-corgi-hidden {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transform: scale(0.4) !important;
-      transition: opacity 0.25s ease, transform 0.25s ease !important;
-    }
-
-    /* Mini Action Popup over Corgi */
-    .jake-action-menu {
-      position: absolute;
-      bottom: calc(100% + 14px);
-      left: 50%;
-      transform: translateX(-50%) scale(0.95);
-      background: var(--jake-bg-glass);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--jake-card-border);
-      border-radius: 12px;
-      padding: 6px;
-      display: flex;
-      gap: 6px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-      z-index: 2147483646;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      white-space: nowrap;
-    }
-
-    .jake-action-menu.jake-menu-open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) scale(1);
-    }
-
-    .jake-action-btn {
-      background: var(--jake-msg-ai-bg);
-      color: var(--jake-text);
-      border: 1px solid var(--jake-card-border);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+    .jake-footer-note {
       display: flex;
       align-items: center;
-      gap: 5px;
-      transition: background 0.15s, color 0.15s, transform 0.15s;
-    }
-
-    .jake-action-btn:hover {
-      background: var(--jake-primary);
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    .jake-action-btn:active {
-      transform: scale(0.96);
-    }
-
-    /* Dog Bed (Sleep Cushion at bottom right) */
-    #jake-ai-dogbed, .jake-dogbed {
-      position: fixed;
-      z-index: 2147483637;
-      bottom: 20px;
-      right: 20px;
-      width: 48px;
-      height: 48px;
-      cursor: pointer;
-      background: transparent;
-      border: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      -webkit-user-select: none;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
-      touch-action: none;
-    }
-
-    #jake-ai-dogbed.jake-bed-sleeping {
-      animation: jakeBedBreathe 3s infinite ease-in-out;
-    }
-
-    @keyframes jakeBedBreathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08) translateY(-2px); }
-    }
-
-    #jake-ai-dogbed:hover, .jake-dogbed:hover {
-      transform: scale(1.18) translateY(-3px) !important;
-      filter: drop-shadow(0 6px 16px rgba(255, 159, 67, 0.55));
-    }
-
-    #jake-ai-dogbed:active, .jake-dogbed:active {
-      transform: scale(0.95);
-    }
-
-    .jake-cozybed-img {
-      width: 46px;
-      height: 46px;
-      object-fit: contain;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-    }
-
-    .jake-dogbed-tooltip {
-      position: absolute;
-      bottom: calc(100% + 6px);
-      right: 0;
-      background: var(--jake-bg, #1e222d);
-      color: var(--jake-text, #f5f6fa);
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      white-space: nowrap;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--jake-card-border, rgba(255, 255, 255, 0.1));
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.15s ease, transform 0.15s ease;
-    }
-
-    #jake-ai-dogbed:hover .jake-dogbed-tooltip,
-    .jake-dogbed:hover .jake-dogbed-tooltip {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Zzz floating animation */
-    .jake-sleep-zzz {
-      position: absolute;
-      top: -12px;
-      right: 2px;
-      font-size: 12px;
-      font-weight: 800;
-      color: #38bdf8;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 9.5px;
       font-family: monospace;
-      animation: jakeZzzFloat 2.4s infinite ease-in-out;
-      pointer-events: none;
-    }
-
-    @keyframes jakeZzzFloat {
-      0% { opacity: 0; transform: translateY(4px) scale(0.6); }
-      40% { opacity: 1; transform: translateY(-4px) scale(1); }
-      80% { opacity: 0.8; transform: translateY(-12px) scale(1.15); }
-      100% { opacity: 0; transform: translateY(-16px) scale(1.25); }
-    }
-
-    @media (max-width: 480px) {
-      #jake-ai-chat, .jake-chat-window {
-        width: calc(100vw - 20px);
-        height: 80vh;
-        bottom: 10px !important;
-        right: 10px !important;
-        left: auto !important;
-        top: auto !important;
-      }
+      color: #64748b;
+      padding: 0 4px;
     }
   `;
-
   document.head.appendChild(styleEl);
 }

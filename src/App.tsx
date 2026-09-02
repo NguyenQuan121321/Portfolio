@@ -31,13 +31,12 @@ export const App: React.FC = () => {
             <About />
             <Contact />
           </main>
-          {/* JakeAI Corgi Companion & AI Hub */}
+          {/* JakeAI Companion & Portfolio Hub Agent */}
           <JakeAI
-            greeting="Chào bạn! Mình là Jake, chú cún Corgi hướng dẫn viên portfolio của Nguyễn Hoàng Anh Quân. Bạn có thể hỏi mình về FinnApiGo, VovinamApiNode hoặc thử nghiệm API nhé!"
+            greeting="Xin chào, tôi là Jake — Portfolio Hub Agent của Nguyễn Hoàng Anh Quân. Bạn có thể hỏi tôi về kỹ năng backend, dự án FinnApiGo, hoặc liên hệ phỏng vấn Quân."
             position="bottom-right"
-            speed={6}
             theme="dark"
-            enableSound={true}
+            enableSound={false}
           />
           <Footer />
         </div>

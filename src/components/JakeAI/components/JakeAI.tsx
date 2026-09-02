@@ -9,7 +9,7 @@ import { COZY_BED_BASE64 } from '../assets';
 export const JakeAI: React.FC<JakeProps> = (props) => {
   const {
     backendUrl = '',
-    theme = 'auto',
+    theme = 'dark',
     name = 'Jake',
     dogHouseImage,
     showDogHouse = true,
@@ -98,12 +98,14 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     return () => window.removeEventListener('click', handleWindowClick);
   }, []);
 
-  const handleOpenChat = () => {
+  const handleOpenChat = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsActionMenuOpen(false);
     setIsChatOpen(true);
   };
 
-  const handleGoToBed = () => {
+  const handleGoToBed = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (movementEngineRef.current) {
       movementEngineRef.current.goToBed();
       setIsSleeping(true);
@@ -115,7 +117,8 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     setIsActionMenuOpen(false);
   };
 
-  const handleWakeUp = () => {
+  const handleWakeUp = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (movementEngineRef.current) {
       movementEngineRef.current.wakeUp();
       setIsSleeping(false);
@@ -129,9 +132,15 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
 
   const handleDogBedClick = () => {
     if (isSleeping) {
-      handleWakeUp();
+      if (movementEngineRef.current) {
+        movementEngineRef.current.wakeUp();
+        setIsSleeping(false);
+      }
     } else {
-      handleGoToBed();
+      if (movementEngineRef.current) {
+        movementEngineRef.current.goToBed();
+        setIsSleeping(true);
+      }
     }
   };
 
@@ -152,34 +161,37 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         tabIndex={0}
         aria-label={`${name} the Corgi companion`}
       >
-        {/* Action Menu popup directly above Corgi */}
+        {/* Action Menu popup directly above Corgi: 2 compact circular icon buttons */}
         <div className={`jake-action-menu ${isActionMenuOpen ? 'jake-menu-open' : ''}`}>
           <button
             type="button"
-            className="jake-action-btn"
+            className="jake-circle-action-btn"
             onClick={handleOpenChat}
-            title="Mở khung trò chuyện"
+            title="Trò chuyện với Jake AI"
+            aria-label="Trò chuyện"
           >
-            💬 Trò chuyện
+            💬
           </button>
 
           {isSleeping ? (
             <button
               type="button"
-              className="jake-action-btn"
+              className="jake-circle-action-btn"
               onClick={handleWakeUp}
-              title="Đánh thức Jake dậy"
+              title="Gọi Jake thức dậy"
+              aria-label="Gọi Jake thức dậy"
             >
-              🐾 Đi theo chuột
+              🐾
             </button>
           ) : (
             <button
               type="button"
-              className="jake-action-btn"
+              className="jake-circle-action-btn"
               onClick={handleGoToBed}
               title="Cho Jake về đệm ngủ"
+              aria-label="Cho Jake về đệm ngủ"
             >
-              💤 Về chỗ ngủ
+              💤
             </button>
           )}
         </div>
@@ -193,7 +205,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           className={`jake-dogbed ${isSleeping ? 'jake-bed-sleeping' : ''}`}
           onClick={handleDogBedClick}
           aria-label={`${name}'s Cozy Bed`}
-          title={isSleeping ? "Jake đang ngủ ngoan (Nhấp để gọi dậy) 🐾" : "Đệm ngủ của Jake (Nhấp để về ngủ) 💤"}
+          title={isSleeping ? "Jake đang ngủ (Nhấp để gọi dậy) 🐾" : "Đệm ngủ của Jake (Nhấp để về ngủ) 💤"}
         >
           <img
             src={bedImageSrc}
@@ -202,7 +214,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           />
           {isSleeping && <span className="jake-sleep-zzz">zZz</span>}
           <span className="jake-dogbed-tooltip">
-            {isSleeping ? `${name} đang ngủ ngoan (Nhấp để gọi dậy) 🐾` : `Đệm ngủ của ${name} (Nhấp để về ngủ) 💤`}
+            {isSleeping ? `Gọi ${name} thức dậy 🐾` : `Đệm ngủ của ${name} 💤`}
           </span>
         </button>
       )}

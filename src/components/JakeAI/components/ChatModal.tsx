@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChatMessage, JakeProps } from '../types';
 import { AIService } from '../services/aiService';
 
@@ -13,71 +13,25 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   isOpen,
   onClose,
   aiService,
-  corgiPos,
-  greeting = "Hi! I'm Jake, your portfolio guide 🐕\nAsk me about the projects or how I can help test APIs!",
-  name = 'Jake',
+  greeting = "Xin chào, tôi là Jake — Portfolio Hub Agent của Quân. Tôi có thể hỗ trợ giải đáp nhanh về kỹ năng backend, kiến trúc dự án FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân.",
+  name = 'Jake AI',
   quickChips = [
-    'Tell me about FinnApiGo 📈',
-    'What is VovinamApiNode? 🥋',
-    'How does JakeAI work? 🐕',
-    'Test FinnApiGo stock endpoint'
-  ],
-  enableSound = true
+    'Kỹ năng chính của Quân là gì?',
+    'Dự án FinnApiGo giải quyết bài toán gì?',
+    'Quân định hướng làm vị trí nào?',
+    'Làm sao để liên hệ phỏng vấn Quân?'
+  ]
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputVal, setInputVal] = useState<string>('');
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [soundOn, setSoundOn] = useState<boolean>(enableSound);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Dragging state
-  const dragRef = useRef<{ isDragging: boolean; startX: number; startY: number; posX: number; posY: number }>({
-    isDragging: false,
-    startX: 0,
-    startY: 0,
-    posX: 0,
-    posY: 0
-  });
 
   const getCurrentTime = (): string => {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-
-  const playAudio = useCallback((type: 'send' | 'receive' | 'open') => {
-    if (!soundOn || typeof window === 'undefined') return;
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      const now = ctx.currentTime;
-
-      if (type === 'send') {
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-        osc.start(now);
-        osc.stop(now + 0.08);
-      } else {
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(900, now + 0.12);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-        osc.start(now);
-        osc.stop(now + 0.12);
-      }
-    } catch {
-      // AudioContext policy restrictions
-    }
-  }, [soundOn]);
 
   // Load chat history or initial greeting
   useEffect(() => {
@@ -93,7 +47,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       }
     } catch {}
 
-    // Add initial greeting
     setMessages([
       {
         id: 'msg-init',
@@ -104,7 +57,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     ]);
   }, [greeting]);
 
-  // Save history
+  // Save history & scroll down
   useEffect(() => {
     if (messages.length > 0 && typeof window !== 'undefined') {
       try {
@@ -112,31 +65,14 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       } catch {}
     }
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isWaiting]);
 
-  // Handle open focus and initial positioning
+  // Focus input on open
   useEffect(() => {
     if (isOpen) {
-      playAudio('open');
-      setTimeout(() => inputRef.current?.focus(), 200);
-
-      if (corgiPos && chatRef.current && !chatRef.current.style.left) {
-        const chatWidth = 380;
-        const chatHeight = 520;
-        let left = corgiPos.x - chatWidth / 2;
-        let top = corgiPos.y - chatHeight - 20;
-
-        if (top < 20) top = corgiPos.y + 40;
-        left = Math.max(16, Math.min(window.innerWidth - chatWidth - 16, left));
-        top = Math.max(16, Math.min(window.innerHeight - chatHeight - 16, top));
-
-        chatRef.current.style.left = `${left}px`;
-        chatRef.current.style.top = `${top}px`;
-        chatRef.current.style.right = 'auto';
-        chatRef.current.style.bottom = 'auto';
-      }
+      setTimeout(() => inputRef.current?.focus(), 150);
     }
-  }, [isOpen, corgiPos, playAudio]);
+  }, [isOpen]);
 
   const handleSend = async (customText?: string) => {
     const text = (customText || inputVal).trim();
@@ -151,7 +87,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    playAudio('send');
     setIsWaiting(true);
 
     try {
@@ -163,64 +98,31 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         timestamp: getCurrentTime()
       };
       setMessages((prev) => [...prev, aiMsg]);
-      playAudio('receive');
-    } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: 'msg-err-' + Date.now(),
-          sender: 'ai',
-          text: `Woof! 🐾 Có trục trặc nhỏ: ${errorMsg}. Bạn có muốn hỏi về FinnApiGo hay VovinamApiNode không?`,
-          timestamp: getCurrentTime()
-        }
-      ]);
+    } catch {
+      const errorMsg: ChatMessage = {
+        id: 'msg-err-' + Date.now(),
+        sender: 'ai',
+        text: "Hiện tại kết nối tới backend đang khởi động lại. Bạn có thể gửi câu hỏi trực tiếp qua email: nguyenhoanganhquan13@gmail.com nhé!",
+        timestamp: getCurrentTime()
+      };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsWaiting(false);
     }
   };
 
-  // Draggable logic
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.jake-btn-icon')) return;
-    if (!chatRef.current) return;
-
-    const rect = chatRef.current.getBoundingClientRect();
-    dragRef.current = {
-      isDragging: true,
-      startX: e.clientX,
-      startY: e.clientY,
-      posX: rect.left,
-      posY: rect.top
-    };
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!dragRef.current.isDragging || !chatRef.current) return;
-      const dx = moveEvent.clientX - dragRef.current.startX;
-      const dy = moveEvent.clientY - dragRef.current.startY;
-
-      let newX = dragRef.current.posX + dx;
-      let newY = dragRef.current.posY + dy;
-
-      const width = chatRef.current.offsetWidth;
-      const height = chatRef.current.offsetHeight;
-      newX = Math.max(10, Math.min(window.innerWidth - width - 10, newX));
-      newY = Math.max(10, Math.min(window.innerHeight - height - 10, newY));
-
-      chatRef.current.style.left = `${newX}px`;
-      chatRef.current.style.top = `${newY}px`;
-      chatRef.current.style.right = 'auto';
-      chatRef.current.style.bottom = 'auto';
-    };
-
-    const handleMouseUp = () => {
-      dragRef.current.isDragging = false;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+  const handleClearHistory = () => {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem('jakeai_chat_history');
+    }
+    setMessages([
+      {
+        id: 'msg-' + Date.now(),
+        sender: 'ai',
+        text: greeting,
+        timestamp: getCurrentTime()
+      }
+    ]);
   };
 
   const renderMarkdown = (rawText: string) => {
@@ -229,8 +131,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    html = html.replace(/```([a-zA-Z0-9_]*)\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>');
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/```([a-zA-Z0-9_]*)\n([\s\S]*?)```/g, '<pre class="jake-code-block"><code>$2</code></pre>');
+    html = html.replace(/`([^`]+)`/g, '<code class="jake-inline-code">$1</code>');
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
     html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
@@ -246,126 +148,165 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
   return (
     <div
-      ref={chatRef}
       id="jake-ai-chat"
-      className={`jake-chat-window jake-chat-open ${isMinimized ? 'jake-chat-minimized' : ''}`}
+      className="jake-chat-window jake-chat-open"
       role="dialog"
       aria-label={`${name} Assistant`}
     >
       {/* Header */}
-      <div id="jake-ai-header" className="jake-chat-header" onMouseDown={handleMouseDown}>
+      <div id="jake-ai-header" className="jake-chat-header">
         <div className="jake-header-profile">
           <div className="jake-avatar-badge">
-            🐕
+            <img src="/img/jake.png" alt="Jake AI" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
             <span className="jake-status-dot" title="Online"></span>
           </div>
           <div className="jake-title-wrap">
-            <span className="jake-title">{name}</span>
-            <span className="jake-tagline">Go Backend & Portfolio Hub</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="jake-title">{name}</span>
+              <span style={{ fontSize: '9px', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '9999px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+                Hub Agent
+              </span>
+            </div>
+            <span className="jake-subtitle">Portfolio Hub Agent · Go Microservice</span>
           </div>
         </div>
 
         <div className="jake-header-actions">
+          <a
+            href="https://github.com/NguyenQuan121321/JakeAI"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="jake-btn-icon"
+            title="Xem mã nguồn Go Backend"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+          </a>
           <button
             type="button"
             className="jake-btn-icon"
-            onClick={() => setSoundOn(!soundOn)}
-            title={soundOn ? 'Mute' : 'Unmute'}
+            onClick={handleClearHistory}
+            title="Làm mới hội thoại"
           >
-            {soundOn ? '🔔' : '🔕'}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+            </svg>
           </button>
           <button
             type="button"
-            className="jake-btn-icon"
-            onClick={() => setIsMinimized(!isMinimized)}
-            title={isMinimized ? 'Restore' : 'Minimize'}
-          >
-            {isMinimized ? '□' : '─'}
-          </button>
-          <button
-            type="button"
-            className="jake-btn-icon"
+            className="jake-btn-icon jake-btn-close"
             onClick={onClose}
-            title="Close"
+            title="Đóng chat (ESC)"
           >
-            ✕
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
       </div>
 
       {/* Messages */}
-      {!isMinimized && (
-        <>
-          <div id="jake-ai-messages" className="jake-chat-messages">
-            {messages.map((m) => (
-              <div key={m.id} className={`jake-msg jake-msg-${m.sender}`}>
-                <div
-                  className="jake-msg-bubble"
-                  dangerouslySetInnerHTML={m.sender === 'ai' ? renderMarkdown(m.text) : { __html: m.text }}
-                />
-                <div className="jake-msg-time">{m.timestamp}</div>
-              </div>
-            ))}
-
-            {isWaiting && (
-              <div className="jake-typing">
-                <span className="jake-typing-dot"></span>
-                <span className="jake-typing-dot"></span>
-                <span className="jake-typing-dot"></span>
-              </div>
-            )}
-
-            {/* Quick Chips if 1st message */}
-            {messages.length === 1 && quickChips.length > 0 && (
-              <div className="jake-quick-actions">
-                {quickChips.map((chip, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className="jake-chip"
-                    onClick={() => handleSend(chip)}
-                  >
-                    {chip}
-                  </button>
-                ))}
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Footer Form */}
-          <form
-            id="jake-ai-input-form"
-            className="jake-chat-footer"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
+      <div id="jake-ai-messages" className="jake-chat-body">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={`jake-msg-row ${m.sender === 'user' ? 'jake-msg-user-row' : 'jake-msg-ai-row'}`}
           >
-            <input
-              ref={inputRef}
-              type="text"
-              id="jake-ai-input"
-              className="jake-chat-input"
-              placeholder={`Ask ${name} about projects or test APIs...`}
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              disabled={isWaiting}
-            />
-            <button
-              type="submit"
-              id="jake-ai-send"
-              className="jake-chat-send"
-              disabled={isWaiting || !inputVal.trim()}
-              title="Send message"
-            >
-              <svg viewBox="0 0 24 24">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-              </svg>
-            </button>
-          </form>
-        </>
+            {m.sender === 'ai' && (
+              <div className="jake-msg-avatar">
+                <img src="/img/jake.png" alt="Jake" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+              </div>
+            )}
+            <div className={`jake-msg-bubble ${m.sender === 'user' ? 'jake-msg-user' : 'jake-msg-ai'}`}>
+              <div
+                className="jake-msg-text"
+                dangerouslySetInnerHTML={renderMarkdown(m.text)}
+              />
+              <span className="jake-msg-time">{m.timestamp}</span>
+            </div>
+          </div>
+        ))}
+
+        {isWaiting && (
+          <div className="jake-msg-row jake-msg-ai-row">
+            <div className="jake-msg-avatar">
+              <img src="/img/jake.png" alt="Jake" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+            </div>
+            <div className="jake-msg-bubble jake-msg-ai jake-typing-indicator">
+              <span className="jake-dot"></span>
+              <span className="jake-dot"></span>
+              <span className="jake-dot"></span>
+              <span style={{ fontSize: '11px', color: 'var(--jake-text-muted)', marginLeft: '4px' }}>Jake AI đang phản hồi...</span>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Suggestions / Quick chips */}
+      {quickChips && quickChips.length > 0 && (
+        <div className="jake-quick-actions">
+          <div className="jake-chips-scroll">
+            {quickChips.map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className="jake-chip"
+                onClick={() => handleSend(chip)}
+                disabled={isWaiting}
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
+
+      {/* Input Footer */}
+      <div className="jake-chat-footer">
+        <form
+          id="jake-ai-input-form"
+          className="jake-input-box"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+        >
+          <input
+            ref={inputRef}
+            type="text"
+            id="jake-ai-input"
+            className="jake-input-field"
+            value={inputVal}
+            onChange={(e) => setInputVal(e.target.value)}
+            placeholder="Nhập câu hỏi cho Jake AI..."
+            disabled={isWaiting}
+            autoComplete="off"
+          />
+          <button
+            type="submit"
+            id="jake-ai-send"
+            className="jake-chat-send"
+            disabled={!inputVal.trim() || isWaiting}
+            title="Gửi câu hỏi"
+          >
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+        <div className="jake-footer-note">
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10b981' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+            <span>Kết nối JakeAI Go Microservice</span>
+          </span>
+          <span>ESC để đóng</span>
+        </div>
+      </div>
     </div>
   );
 };
