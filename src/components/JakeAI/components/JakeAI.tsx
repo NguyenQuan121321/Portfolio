@@ -4,29 +4,14 @@ import { injectStyles } from '../styles/styles';
 import { MovementEngine } from '../engine/MovementEngine';
 import { AIService } from '../services/aiService';
 import { ChatModal } from './ChatModal';
-
-export const DogBedIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 54 42" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Soft Pet Bed Outer Rim (Warm Amber / Brown) */}
-    <ellipse cx="27" cy="24" rx="25" ry="15" fill="#d35400" />
-    <ellipse cx="27" cy="22" rx="24" ry="14" fill="#e67e22" />
-    {/* Inner Plush Cushion (Cream / Soft Tan) */}
-    <ellipse cx="27" cy="23" rx="19" ry="10" fill="#f8c291" />
-    <ellipse cx="27" cy="22" rx="17" ry="8" fill="#fad390" />
-    {/* Little Cute Paw Imprint on Cushion */}
-    <circle cx="27" cy="23" r="2.5" fill="#e67e22" />
-    <circle cx="23" cy="19.5" r="1.3" fill="#e67e22" />
-    <circle cx="26" cy="18" r="1.3" fill="#e67e22" />
-    <circle cx="29" cy="18" r="1.3" fill="#e67e22" />
-    <circle cx="32" cy="19.5" r="1.3" fill="#e67e22" />
-  </svg>
-);
+import { COZY_BED_BASE64 } from '../assets';
 
 export const JakeAI: React.FC<JakeProps> = (props) => {
   const {
     backendUrl = '',
     theme = 'auto',
     name = 'Jake',
+    dogHouseImage,
     showDogHouse = true,
     className = '',
     style = {}
@@ -101,7 +86,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     }
   }, [theme]);
 
-  // Click outside to close action menu
+  // Close action menu on outside click
   useEffect(() => {
     const handleWindowClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -134,19 +119,23 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     if (movementEngineRef.current) {
       movementEngineRef.current.wakeUp();
       setIsSleeping(false);
+      setCorgiCoord({
+        x: movementEngineRef.current.corgiX,
+        y: movementEngineRef.current.corgiY
+      });
     }
     setIsActionMenuOpen(false);
   };
 
   const handleDogBedClick = () => {
-    if (movementEngineRef.current) {
-      if (isSleeping) {
-        handleWakeUp();
-      } else {
-        handleGoToBed();
-      }
+    if (isSleeping) {
+      handleWakeUp();
+    } else {
+      handleGoToBed();
     }
   };
+
+  const bedImageSrc = dogHouseImage || COZY_BED_BASE64;
 
   return (
     <div
@@ -158,7 +147,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
       <div
         ref={corgiRef}
         id="jake-ai-corgi"
-        className="jake-corgi-sprite"
+        className={`jake-corgi-sprite ${isSleeping ? 'jake-corgi-hidden' : ''}`}
         role="button"
         tabIndex={0}
         aria-label={`${name} the Corgi companion`}
@@ -188,7 +177,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
               type="button"
               className="jake-action-btn"
               onClick={handleGoToBed}
-              title="Cho Jake về chỗ ngủ"
+              title="Cho Jake về đệm ngủ"
             >
               💤 Về chỗ ngủ
             </button>
@@ -196,20 +185,24 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         </div>
       </div>
 
-      {/* Dog Bed (Sleep Cushion at bottom right) */}
+      {/* Cozy Dog Bed (At bottom right corner) */}
       {showDogHouse && (
         <button
           type="button"
           id="jake-ai-dogbed"
-          className="jake-dogbed"
+          className={`jake-dogbed ${isSleeping ? 'jake-bed-sleeping' : ''}`}
           onClick={handleDogBedClick}
-          aria-label={`${name}'s Bed`}
-          title={isSleeping ? "Nhấp để gọi Jake dậy 🐾" : "Nhấp để Jake về chỗ ngủ 💤"}
+          aria-label={`${name}'s Cozy Bed`}
+          title={isSleeping ? "Jake đang ngủ ngoan (Nhấp để gọi dậy) 🐾" : "Đệm ngủ của Jake (Nhấp để về ngủ) 💤"}
         >
-          <DogBedIcon className="jake-dogbed-svg" />
+          <img
+            src={bedImageSrc}
+            alt={`${name}'s Cozy Bed`}
+            className="jake-cozybed-img"
+          />
           {isSleeping && <span className="jake-sleep-zzz">zZz</span>}
           <span className="jake-dogbed-tooltip">
-            {isSleeping ? "Jake đang ngủ (Nhấp để gọi dậy) 🐾" : "Chỗ ngủ của Jake (Nhấp để về ngủ) 💤"}
+            {isSleeping ? `${name} đang ngủ ngoan (Nhấp để gọi dậy) 🐾` : `Đệm ngủ của ${name} (Nhấp để về ngủ) 💤`}
           </span>
         </button>
       )}

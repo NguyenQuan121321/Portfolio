@@ -35,7 +35,7 @@ export const App: React.FC = () => {
           <JakeAI
             greeting="Chào bạn! Mình là Jake, chú cún Corgi hướng dẫn viên portfolio của Nguyễn Hoàng Anh Quân. Bạn có thể hỏi mình về FinnApiGo, VovinamApiNode hoặc thử nghiệm API nhé!"
             position="bottom-right"
-            speed={4}
+            speed={6}
             theme="dark"
             enableSound={true}
           />

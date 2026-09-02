@@ -35,7 +35,7 @@ export class MovementEngine {
       backendUrl: props.backendUrl || '',
       greeting: props.greeting || "Hi! I'm Jake, your portfolio guide 🐕",
       position: props.position || 'bottom-right',
-      speed: props.speed ?? 3,
+      speed: props.speed ?? 6,
       theme: props.theme || 'auto',
       name: props.name || 'Jake',
       persistPosition: props.persistPosition ?? true,
@@ -69,7 +69,12 @@ export class MovementEngine {
       this.corgiX = Math.min(Math.max(20, saved.x), window.innerWidth - 20);
       this.corgiY = Math.min(Math.max(20, saved.y), window.innerHeight - 20);
       this.lastDirection = saved.dir || 'S';
-      if (typeof saved.isSleeping === 'boolean') this.isSleeping = saved.isSleeping;
+      if (typeof saved.isSleeping === 'boolean') {
+        this.isSleeping = saved.isSleeping;
+        if (this.isSleeping) {
+          this.element.classList.add('jake-corgi-hidden');
+        }
+      }
     } else if (typeof window !== 'undefined') {
       const pos = String(this.config.position).toLowerCase();
       const margin = 80;
@@ -96,8 +101,8 @@ export class MovementEngine {
           break;
         case 'bottom-right':
         default:
-          this.corgiX = window.innerWidth - 75;
-          this.corgiY = window.innerHeight - 45;
+          this.corgiX = window.innerWidth - 80;
+          this.corgiY = window.innerHeight - 50;
           this.lastDirection = 'NW';
           break;
       }
@@ -150,8 +155,8 @@ export class MovementEngine {
 
     window.addEventListener('resize', () => {
       if (this.isSleeping) {
-        this.corgiX = window.innerWidth - 75;
-        this.corgiY = window.innerHeight - 45;
+        this.corgiX = window.innerWidth - 80;
+        this.corgiY = window.innerHeight - 50;
       } else {
         this.corgiX = Math.min(Math.max(20, this.corgiX), window.innerWidth - 20);
         this.corgiY = Math.min(Math.max(20, this.corgiY), window.innerHeight - 20);
@@ -191,19 +196,25 @@ export class MovementEngine {
 
   public goToBed(): void {
     this.isSleeping = true;
-    this.corgiX = window.innerWidth - 75;
-    this.corgiY = window.innerHeight - 45;
+    this.element.classList.add('jake-corgi-hidden');
+    this.corgiX = window.innerWidth - 80;
+    this.corgiY = window.innerHeight - 50;
     this.targetX = this.corgiX;
     this.targetY = this.corgiY;
     this.lastDirection = 'S';
     this.spriteEngine.setSprite('idle', 'S', 0);
     this.updatePosition();
-    this.showHint("Sleeping in bed zZz... 🐾", 3000);
   }
 
   public wakeUp(): void {
     this.isSleeping = false;
-    this.showHint("Woof! Ready to explore! 🐾", 3000);
+    this.element.classList.remove('jake-corgi-hidden');
+    this.corgiX = window.innerWidth - 80;
+    this.corgiY = window.innerHeight - 50;
+    this.targetX = this.corgiX;
+    this.targetY = this.corgiY;
+    this.updatePosition();
+    this.showHint("Gâu gâu! Mình dậy rồi đây! 🐾", 3000);
   }
 
   public step(timestamp: number): void {
@@ -212,31 +223,22 @@ export class MovementEngine {
     if (!this.lastTimestamp) this.lastTimestamp = timestamp;
     const elapsed = timestamp - this.lastTimestamp;
 
-    // 130ms gentle cadence for natural trot
-    if (elapsed >= 130) {
+    // 90ms calibrated cadence for smooth, agile stride at speed 6
+    if (elapsed >= 90) {
       this.lastTimestamp = timestamp;
       this.tick();
     }
   }
 
   public tick(): void {
-    if (this.isPaused) return;
-
-    // If sleeping in dog bed, stay quiet
-    if (this.isSleeping) {
-      this.corgiX = window.innerWidth - 75;
-      this.corgiY = window.innerHeight - 45;
-      this.spriteEngine.setSprite('idle', 'S', 0);
-      this.updatePosition();
-      return;
-    }
+    if (this.isPaused || this.isSleeping) return;
 
     const dx = this.targetX - this.corgiX;
     const dy = this.targetY - this.corgiY;
     const distance = Math.hypot(dx, dy);
 
-    // Comfortable distance bubble (60px) so Jake doesn't crowd cursor
-    const stopDistance = 60;
+    // Stop distance bubble (65px)
+    const stopDistance = 65;
     if (distance <= stopDistance) {
       this.idleTime += 1;
       this.frameCount = 0;
@@ -249,7 +251,7 @@ export class MovementEngine {
     // Alert reaction countdown
     if (this.idleTime > 6) {
       this.idleTime -= 2;
-      if (distance > 20) {
+      if (distance > 25) {
         const dir = SpriteEngine.getDirection(dx, dy);
         this.lastDirection = dir.name;
       }
@@ -260,14 +262,14 @@ export class MovementEngine {
     this.idleTime = 0;
     this.frameCount += 1;
 
-    // Direction deadzone (prevents rapid head-shaking jitter)
-    if (distance > 24) {
+    // Direction deadzone (28px) - keeps head steady and prevents motion sickness
+    if (distance > 28) {
       const dirInfo = SpriteEngine.getDirection(dx, dy);
       this.lastDirection = dirInfo.name;
     }
 
-    // Smooth step velocity (decelerates smoothly as it nears target)
-    const stepSpeed = Math.min(this.config.speed, Math.max(1.2, distance * 0.06));
+    // Smooth step velocity - fast approach, smooth deceleration near cursor
+    const stepSpeed = Math.min(this.config.speed, Math.max(1.8, distance * 0.085));
     const moveX = (dx / distance) * stepSpeed;
     const moveY = (dy / distance) * stepSpeed;
 

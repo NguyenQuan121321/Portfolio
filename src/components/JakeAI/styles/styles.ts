@@ -518,6 +518,13 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       fill: currentColor;
     }
 
+    #jake-ai-corgi.jake-corgi-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: scale(0.4) !important;
+      transition: opacity 0.25s ease, transform 0.25s ease !important;
+    }
+
     /* Mini Action Popup over Corgi */
     .jake-action-menu {
       position: absolute;
@@ -577,8 +584,8 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       z-index: 2147483637;
       bottom: 20px;
       right: 20px;
-      width: 54px;
-      height: 42px;
+      width: 48px;
+      height: 48px;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -593,19 +600,30 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       touch-action: none;
     }
 
+    #jake-ai-dogbed.jake-bed-sleeping {
+      animation: jakeBedBreathe 3s infinite ease-in-out;
+    }
+
+    @keyframes jakeBedBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08) translateY(-2px); }
+    }
+
     #jake-ai-dogbed:hover, .jake-dogbed:hover {
-      transform: scale(1.1) translateY(-2px);
-      filter: drop-shadow(0 6px 14px rgba(255, 159, 67, 0.45));
+      transform: scale(1.18) translateY(-3px) !important;
+      filter: drop-shadow(0 6px 16px rgba(255, 159, 67, 0.55));
     }
 
     #jake-ai-dogbed:active, .jake-dogbed:active {
       transform: scale(0.95);
     }
 
-    .jake-dogbed-svg {
-      width: 100%;
-      height: 100%;
+    .jake-cozybed-img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
       image-rendering: pixelated;
+      image-rendering: crisp-edges;
     }
 
     .jake-dogbed-tooltip {
