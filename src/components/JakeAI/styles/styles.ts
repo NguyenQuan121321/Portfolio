@@ -1,7 +1,7 @@
-// Injected scoped CSS styles for JakeAI (TypeScript)
+// Injected scoped CSS styles for JakeAI (TypeScript) with full Light & Dark mode support
 import { JakeTheme } from '../types';
 
-export function injectStyles(_theme: JakeTheme = 'dark'): void {
+export function injectStyles(_theme: JakeTheme = 'auto'): void {
   if (typeof document === 'undefined') return;
   const existing = document.getElementById('jake-ai-styles');
   if (existing) existing.remove();
@@ -9,8 +9,51 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
   const styleEl = document.createElement('style');
   styleEl.id = 'jake-ai-styles';
   styleEl.textContent = `
-    /* JakeAI Container & Themes */
-    #jake-ai-container, .jake-ai-root {
+    /* JakeAI Container Base Variables (Light Mode Default) */
+    #jake-ai-container, .jake-ai-root, .jake-theme-light {
+      --jake-primary: #0284c7;
+      --jake-primary-hover: #0369a1;
+      --jake-primary-light: rgba(2, 132, 199, 0.12);
+      --jake-text: #0f172a;
+      --jake-text-muted: #64748b;
+      --jake-bg: #ffffff;
+      --jake-bg-glass: rgba(255, 255, 255, 0.98);
+      --jake-card-border: #e2e8f0;
+      --jake-shadow: 0 20px 45px -5px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      --jake-msg-ai-bg: #f1f5f9;
+      --jake-msg-ai-text: #1e293b;
+      --jake-msg-ai-border: #e2e8f0;
+      --jake-msg-user-bg: linear-gradient(135deg, #0284c7, #00E5FF);
+      --jake-msg-user-text: #ffffff;
+      --jake-code-bg: #0f172a;
+      --jake-code-text: #38bdf8;
+      --jake-input-bg: #ffffff;
+      --jake-input-border: #cbd5e1;
+      --jake-header-bg: #f8fafc;
+      --jake-btn-bg: #f1f5f9;
+      --jake-btn-hover: #e2e8f0;
+      --jake-btn-border: #cbd5e1;
+      --jake-chip-bg: #ffffff;
+      --jake-chip-text: #334155;
+      --jake-chip-border: #e2e8f0;
+      --jake-action-menu-bg: rgba(255, 255, 255, 0.96);
+      --jake-action-menu-border: #cbd5e1;
+      --jake-circle-btn-bg: #f8fafc;
+      --jake-circle-btn-text: #0f172a;
+      --jake-circle-btn-border: #cbd5e1;
+      --jake-font: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--jake-font);
+      font-size: 13px;
+      line-height: 1.5;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* JakeAI Dark Mode Variables */
+    html.dark #jake-ai-container,
+    .dark #jake-ai-container,
+    #jake-ai-container.jake-theme-dark,
+    .jake-ai-root.jake-theme-dark {
       --jake-primary: #00E5FF;
       --jake-primary-hover: #00b4d8;
       --jake-primary-light: rgba(0, 229, 255, 0.12);
@@ -22,18 +65,25 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       --jake-shadow: 0 20px 50px -5px rgba(0, 0, 0, 0.6);
       --jake-msg-ai-bg: #080a0f;
       --jake-msg-ai-text: #f1f5f9;
+      --jake-msg-ai-border: rgba(255, 255, 255, 0.1);
       --jake-msg-user-bg: linear-gradient(135deg, #0284c7, #00E5FF);
       --jake-msg-user-text: #ffffff;
       --jake-code-bg: #080a0f;
-      --jake-code-text: #e2e8f0;
+      --jake-code-text: #00E5FF;
       --jake-input-bg: #121722;
       --jake-input-border: #1e293b;
-      --jake-font: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-family: var(--jake-font);
-      font-size: 13px;
-      line-height: 1.5;
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
+      --jake-header-bg: #080a0f;
+      --jake-btn-bg: #182030;
+      --jake-btn-hover: #222c42;
+      --jake-btn-border: rgba(255, 255, 255, 0.1);
+      --jake-chip-bg: #121722;
+      --jake-chip-text: #cbd5e1;
+      --jake-chip-border: rgba(255, 255, 255, 0.1);
+      --jake-action-menu-bg: rgba(13, 17, 23, 0.94);
+      --jake-action-menu-border: rgba(255, 255, 255, 0.15);
+      --jake-circle-btn-bg: #182030;
+      --jake-circle-btn-text: #ffffff;
+      --jake-circle-btn-border: rgba(255, 255, 255, 0.12);
     }
 
     #jake-ai-container *, .jake-ai-root * {
@@ -80,8 +130,8 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       bottom: calc(100% + 6px);
       left: 50%;
       transform: translateX(-50%) translateY(4px);
-      background: #0d1117;
-      color: #00E5FF;
+      background: var(--jake-bg);
+      color: var(--jake-primary);
       font-size: 10px;
       font-family: monospace;
       font-weight: 600;
@@ -89,8 +139,8 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       border-radius: 9999px;
       white-space: nowrap;
       pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(0, 229, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--jake-card-border);
       opacity: 0;
       transition: opacity 0.15s ease, transform 0.15s ease;
       z-index: 99991;
@@ -108,16 +158,16 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       bottom: calc(100% + 10px);
       left: 50%;
       transform: translateX(-50%) translateY(4px);
-      background: rgba(13, 17, 23, 0.94);
+      background: var(--jake-action-menu-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--jake-action-menu-border);
       border-radius: 9999px;
       padding: 4px;
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--jake-shadow);
       z-index: 99992;
       opacity: 0;
       pointer-events: none;
@@ -135,21 +185,22 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: #182030;
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--jake-circle-btn-bg);
+      color: var(--jake-circle-btn-text);
+      border: 1px solid var(--jake-circle-btn-border);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 14px;
       transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .jake-circle-action-btn:hover {
       background: #0284c7;
       border-color: #00E5FF;
+      color: #ffffff;
       transform: scale(1.12);
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
     }
@@ -229,16 +280,16 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       position: absolute;
       bottom: calc(100% + 6px);
       right: 0;
-      background: #0d1117;
-      color: #f1f5f9;
+      background: var(--jake-bg);
+      color: var(--jake-text);
       font-size: 10.5px;
       font-weight: 600;
       padding: 3px 8px;
       border-radius: 6px;
       white-space: nowrap;
       pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--jake-card-border);
       opacity: 0;
       transform: translateY(4px);
       transition: opacity 0.15s ease, transform 0.15s ease;
@@ -249,7 +300,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       transform: translateY(0);
     }
 
-    /* Floating Chat Modal (Always reliably anchored at bottom-right) */
+    /* Floating Chat Modal (Bottom-Right Docked) */
     #jake-ai-chat, .jake-chat-window {
       position: fixed !important;
       right: 20px !important;
@@ -284,7 +335,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       align-items: center;
       justify-content: space-between;
       padding: 12px 16px;
-      background: #080a0f;
+      background: var(--jake-header-bg);
       border-bottom: 1px solid var(--jake-card-border);
       user-select: none;
       flex-shrink: 0;
@@ -315,7 +366,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       width: 8px;
       height: 8px;
       background: #10B981;
-      border: 2px solid #080a0f;
+      border: 2px solid var(--jake-header-bg);
       border-radius: 50%;
     }
 
@@ -328,7 +379,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     .jake-title {
       font-size: 13.5px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--jake-text);
     }
 
     .jake-subtitle {
@@ -347,9 +398,9 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: #182030;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #94a3b8;
+      background: var(--jake-btn-bg);
+      border: 1px solid var(--jake-btn-border);
+      color: var(--jake-text-muted);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -358,13 +409,13 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-btn-icon:hover {
-      background: #222c42;
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.25);
+      background: var(--jake-btn-hover);
+      color: var(--jake-text);
+      border-color: var(--jake-card-border);
     }
 
     .jake-btn-close:hover {
-      background: rgba(239, 68, 68, 0.2);
+      background: rgba(239, 68, 68, 0.15);
       color: #ef4444;
       border-color: rgba(239, 68, 68, 0.4);
     }
@@ -377,7 +428,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      background: #080a0f;
+      background: var(--jake-bg);
     }
 
     .jake-msg-row {
@@ -420,18 +471,19 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-msg-ai {
-      background: #0d1117;
-      color: #f1f5f9;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--jake-msg-ai-bg);
+      color: var(--jake-msg-ai-text);
+      border: 1px solid var(--jake-msg-ai-border);
       border-top-left-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .jake-msg-user {
-      background: linear-gradient(135deg, #0284c7, #00E5FF);
-      color: #ffffff;
+      background: var(--jake-msg-user-bg);
+      color: var(--jake-msg-user-text);
       font-weight: 500;
       border-top-right-radius: 4px;
-      box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
 
     .jake-msg-time {
@@ -439,7 +491,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       font-size: 9px;
       font-family: monospace;
       margin-top: 4px;
-      opacity: 0.6;
+      opacity: 0.65;
     }
 
     .jake-msg-user .jake-msg-time {
@@ -447,24 +499,24 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-code-block {
-      background: #000000;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--jake-code-bg);
+      border: 1px solid var(--jake-card-border);
       border-radius: 8px;
       padding: 8px 10px;
       margin: 6px 0;
       overflow-x: auto;
       font-family: monospace;
       font-size: 11px;
-      color: #00E5FF;
+      color: var(--jake-code-text);
     }
 
     .jake-inline-code {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--jake-primary-light);
       border-radius: 4px;
       padding: 2px 4px;
       font-family: monospace;
       font-size: 11px;
-      color: #00E5FF;
+      color: var(--jake-primary);
     }
 
     /* Typing Dots */
@@ -479,7 +531,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: #00E5FF;
+      background: var(--jake-primary);
       animation: jakeBounce 1.2s infinite ease-in-out;
     }
 
@@ -494,8 +546,8 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     /* Quick Action Chips (Circular Pills) */
     .jake-quick-actions {
       padding: 8px 12px;
-      background: #080a0f;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--jake-header-bg);
+      border-top: 1px solid var(--jake-card-border);
       flex-shrink: 0;
     }
 
@@ -511,9 +563,9 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-chip {
-      background: #121722;
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--jake-chip-bg);
+      color: var(--jake-chip-text);
+      border: 1px solid var(--jake-chip-border);
       border-radius: 9999px;
       padding: 4px 10px;
       font-size: 10.5px;
@@ -524,16 +576,16 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-chip:hover {
-      background: rgba(0, 229, 255, 0.12);
-      border-color: #00E5FF;
-      color: #00E5FF;
+      background: var(--jake-primary-light);
+      border-color: var(--jake-primary);
+      color: var(--jake-primary);
       transform: translateY(-1px);
     }
 
     /* Footer & Input Form */
     .jake-chat-footer {
       padding: 10px 12px;
-      background: #0d1117;
+      background: var(--jake-header-bg);
       border-top: 1px solid var(--jake-card-border);
       flex-shrink: 0;
     }
@@ -542,16 +594,16 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #121722;
+      background: var(--jake-input-bg);
       border: 1px solid var(--jake-input-border);
       border-radius: 9999px;
       padding: 3px 6px 3px 12px;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .jake-input-box:focus-within {
-      border-color: #00E5FF;
-      box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.25);
+      border-color: var(--jake-primary);
+      box-shadow: 0 0 0 2px var(--jake-primary-light);
     }
 
     .jake-input-field {
@@ -559,21 +611,21 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       background: transparent;
       border: none;
       outline: none;
-      color: #ffffff;
+      color: var(--jake-text);
       font-size: 12px;
       font-family: inherit;
     }
 
     .jake-input-field::placeholder {
-      color: #64748b;
+      color: var(--jake-text-muted);
     }
 
     .jake-chat-send {
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: #00E5FF;
-      color: #080a0f;
+      background: var(--jake-primary);
+      color: #ffffff;
       border: none;
       cursor: pointer;
       display: flex;
@@ -584,13 +636,13 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
     }
 
     .jake-chat-send:hover {
-      background: #38bdf8;
+      filter: brightness(1.1);
       transform: scale(1.06);
     }
 
     .jake-chat-send:disabled {
-      background: #1e293b;
-      color: #64748b;
+      background: var(--jake-btn-border);
+      color: var(--jake-text-muted);
       cursor: not-allowed;
       transform: none;
     }
@@ -602,7 +654,7 @@ export function injectStyles(_theme: JakeTheme = 'dark'): void {
       margin-top: 6px;
       font-size: 9.5px;
       font-family: monospace;
-      color: #64748b;
+      color: var(--jake-text-muted);
       padding: 0 4px;
     }
   `;

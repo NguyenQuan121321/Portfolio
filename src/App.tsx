@@ -33,9 +33,7 @@ export const App: React.FC = () => {
           </main>
           {/* JakeAI Companion & Portfolio Hub Agent */}
           <JakeAI
-            greeting="Xin chào, tôi là Jake — Portfolio Hub Agent của Nguyễn Hoàng Anh Quân. Bạn có thể hỏi tôi về kỹ năng backend, dự án FinnApiGo, hoặc liên hệ phỏng vấn Quân."
             position="bottom-right"
-            theme="dark"
             enableSound={false}
           />
           <Footer />

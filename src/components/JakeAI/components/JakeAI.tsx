@@ -5,11 +5,17 @@ import { MovementEngine } from '../engine/MovementEngine';
 import { AIService } from '../services/aiService';
 import { ChatModal } from './ChatModal';
 import { COZY_BED_BASE64 } from '../assets';
+import { useTheme } from '../../../context/ThemeContext';
+import { useLanguage } from '../../../context/LanguageContext';
 
 export const JakeAI: React.FC<JakeProps> = (props) => {
+  const { theme: contextTheme } = useTheme();
+  const { lang } = useLanguage();
+
+  const currentTheme = props.theme || contextTheme || 'dark';
+
   const {
     backendUrl = '',
-    theme = 'dark',
     name = 'Jake',
     dogHouseImage,
     showDogHouse = true,
@@ -30,11 +36,14 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     aiService.setBackendUrl(backendUrl);
   }, [backendUrl, aiService]);
 
+  // Re-inject styles whenever theme changes
   useEffect(() => {
-    injectStyles(theme);
+    injectStyles(currentTheme as 'dark' | 'light' | 'auto');
+  }, [currentTheme]);
 
+  useEffect(() => {
     if (corgiRef.current) {
-      const engine = new MovementEngine(corgiRef.current, props, (x, y) => {
+      const engine = new MovementEngine(corgiRef.current, { ...props, theme: currentTheme as 'dark' | 'light' }, (x, y) => {
         setCorgiCoord({ x, y });
         setIsActionMenuOpen((prev) => !prev);
       });
@@ -67,7 +76,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           say: (text: string) => {
             console.log(`[JakeAI] say: ${text}`);
           },
-          showHint: (_text: string) => {},
+          showHint: (_text?: string) => {},
           moveTo: (x: number, y: number) => {
             engine.teleportTo(x, y);
           },
@@ -82,7 +91,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         cancelAnimationFrame(animId);
       };
     }
-  }, [theme]);
+  }, [currentTheme]);
 
   // Close action menu on outside click
   useEffect(() => {
@@ -152,7 +161,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
   return (
     <div
       id="jake-ai-container"
-      className={`jake-ai-root jake-theme-${theme} ${className}`}
+      className={`jake-ai-root jake-theme-${currentTheme} ${className}`}
       style={style}
     >
       {/* Corgi Pet Element */}
@@ -180,8 +189,8 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
               type="button"
               className="jake-circle-action-btn"
               onClick={handleOpenChat}
-              title="Mở khung trò chuyện"
-              aria-label="Trò chuyện"
+              title={lang === 'vi' ? 'Mở khung trò chuyện' : 'Open chat'}
+              aria-label={lang === 'vi' ? 'Trò chuyện' : 'Chat'}
             >
               💬
             </button>
@@ -191,8 +200,8 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
                 type="button"
                 className="jake-circle-action-btn"
                 onClick={handleWakeUp}
-                title="Gọi Jake thức dậy"
-                aria-label="Gọi Jake thức dậy"
+                title={lang === 'vi' ? 'Gọi Jake thức dậy' : 'Wake up Jake'}
+                aria-label={lang === 'vi' ? 'Gọi Jake thức dậy' : 'Wake up Jake'}
               >
                 🐾
               </button>
@@ -201,8 +210,8 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
                 type="button"
                 className="jake-circle-action-btn"
                 onClick={handleGoToBed}
-                title="Cho Jake về đệm ngủ"
-                aria-label="Cho Jake về đệm ngủ"
+                title={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
+                aria-label={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
               >
                 💤
               </button>
@@ -219,7 +228,9 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           className={`jake-dogbed ${isSleeping ? 'jake-bed-sleeping' : ''}`}
           onClick={handleDogBedClick}
           aria-label={`${name}'s Cozy Bed`}
-          title={isSleeping ? "Jake đang ngủ (Nhấp để gọi dậy) 🐾" : "Đệm ngủ của Jake (Nhấp để về ngủ) 💤"}
+          title={isSleeping 
+            ? (lang === 'vi' ? 'Jake đang ngủ (Nhấp để gọi dậy) 🐾' : 'Jake is sleeping (Click to wake up) 🐾') 
+            : (lang === 'vi' ? 'Đệm ngủ của Jake (Nhấp để về ngủ) 💤' : "Jake's bed (Click to sleep) 💤")}
         >
           <img
             src={bedImageSrc}
@@ -228,7 +239,9 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           />
           {isSleeping && <span className="jake-sleep-zzz">zZz</span>}
           <span className="jake-dogbed-tooltip">
-            {isSleeping ? `Gọi ${name} thức dậy 🐾` : `Đệm ngủ của ${name} 💤`}
+            {isSleeping 
+              ? (lang === 'vi' ? `Gọi ${name} thức dậy 🐾` : `Wake up ${name} 🐾`) 
+              : (lang === 'vi' ? `Đệm ngủ của ${name} 💤` : `${name}'s Bed 💤`)}
           </span>
         </button>
       )}
