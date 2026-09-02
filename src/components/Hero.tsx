@@ -293,7 +293,7 @@ export const Hero: React.FC = () => {
             {/* Core Tech Stack Badges */}
             <div className="flex flex-wrap gap-2 pt-1 font-mono text-xs">
               <span className="px-2.5 py-1 rounded bg-surface-900 border border-cyan-500/30 text-cyan-300">
-                Go 1.23 · Gin
+                Go 1.26 · Gin
               </span>
               <span className="px-2.5 py-1 rounded bg-surface-900 border border-emerald-500/30 text-emerald-300">
                 PostgreSQL 16 · Redis 7
@@ -361,7 +361,7 @@ export const Hero: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1.5 ml-2 text-[11px] font-mono text-slate-600 dark:text-zinc-300">
                     <Terminal size={13} className="text-cyan-600 dark:text-accent-cyan" />
-                    <span>finnapigo.onrender.com · Go 1.23</span>
+                    <span>finnapigo.onrender.com · Go 1.26</span>
                   </div>
                 </div>
 
@@ -502,7 +502,7 @@ export const Hero: React.FC = () => {
                   <Broadcast size={13} className="text-emerald-600 dark:text-emerald-400" />
                   <span>{isLiveConnected ? (lang === 'vi' ? 'Đã kết nối Backend Render Thật' : 'Connected to Render Live Backend') : (lang === 'vi' ? 'API Render Sẵn sàng' : 'Render Live API Ready')}</span>
                 </span>
-                <span className="text-slate-500 dark:text-zinc-400">Go 1.23 · PostgreSQL 16 · Redis 7</span>
+                <span className="text-slate-500 dark:text-zinc-400">Go 1.26 · PostgreSQL 16 · Redis 7</span>
               </div>
 
             </div>
