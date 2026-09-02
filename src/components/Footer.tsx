@@ -16,11 +16,11 @@ export const Footer: React.FC = () => {
         
         {/* Left: Branding & Verification */}
         <div className="flex items-center gap-3 text-zinc-400 group">
-          <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle group-hover:border-accent-cyan overflow-hidden flex items-center justify-center transition-colors shrink-0 shadow-sm">
-            <div 
-              className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150"
-              style={{ backgroundImage: `url('/img/finn.png')` }}
-              aria-hidden="true"
+          <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle group-hover:border-accent-cyan overflow-hidden flex items-center justify-center transition-colors shrink-0 shadow-sm p-0.5">
+            <img 
+              src="/img/maskironman.gif" 
+              alt="Avatar" 
+              className="w-full h-full object-contain" 
             />
           </div>
           <span>&copy; {year} Nguyễn Hoàng Anh Quân · {t('footer.text')}</span>

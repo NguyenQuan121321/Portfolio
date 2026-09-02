@@ -62,11 +62,11 @@ export const Navbar: React.FC = () => {
               className="flex items-center gap-2.5 font-mono text-lg font-bold text-zinc-100 group transition-colors select-none"
               title="Finn.dev"
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm">
-                <div 
-                  className="w-full h-full bg-no-repeat bg-[length:200%_100%] bg-[position:0%_center] group-hover:bg-[position:100%_center] transition-[background-position] duration-150 transform group-hover:scale-105"
-                  style={{ backgroundImage: `url('/img/finn.png')` }}
-                  aria-label="Finn Avatar"
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm p-0.5">
+                <img 
+                  src="/img/maskironman.gif" 
+                  alt="Avatar" 
+                  className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-200"
                 />
               </div>
               <span className="text-base sm:text-lg">Finn<span className="text-accent-cyan">.dev</span></span>
