@@ -67,9 +67,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
           say: (text: string) => {
             console.log(`[JakeAI] say: ${text}`);
           },
-          showHint: (text: string, duration?: number) => {
-            engine.showHint(text, duration);
-          },
+          showHint: (_text: string) => {},
           moveTo: (x: number, y: number) => {
             engine.teleportTo(x, y);
           },
@@ -99,12 +97,14 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
   }, []);
 
   const handleOpenChat = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     setIsActionMenuOpen(false);
     setIsChatOpen(true);
   };
 
   const handleGoToBed = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (movementEngineRef.current) {
       movementEngineRef.current.goToBed();
@@ -118,6 +118,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
   };
 
   const handleWakeUp = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (movementEngineRef.current) {
       movementEngineRef.current.wakeUp();
@@ -130,7 +131,9 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     setIsActionMenuOpen(false);
   };
 
-  const handleDogBedClick = () => {
+  const handleDogBedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (isSleeping) {
       if (movementEngineRef.current) {
         movementEngineRef.current.wakeUp();
@@ -161,40 +164,51 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         tabIndex={0}
         aria-label={`${name} the Corgi companion`}
       >
-        {/* Action Menu popup directly above Corgi: 2 compact circular icon buttons */}
-        <div className={`jake-action-menu ${isActionMenuOpen ? 'jake-menu-open' : ''}`}>
-          <button
-            type="button"
-            className="jake-circle-action-btn"
-            onClick={handleOpenChat}
-            title="Trò chuyện với Jake AI"
-            aria-label="Trò chuyện"
-          >
-            💬
-          </button>
+        {/* Name Tooltip (Only visible when action menu is CLOSED) */}
+        {!isActionMenuOpen && (
+          <span className="jake-corgi-hint">Jake AI</span>
+        )}
 
-          {isSleeping ? (
+        {/* Action Menu popup directly above Corgi: 2 compact circular icon buttons */}
+        {isActionMenuOpen && (
+          <div 
+            className="jake-action-menu jake-menu-open"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               className="jake-circle-action-btn"
-              onClick={handleWakeUp}
-              title="Gọi Jake thức dậy"
-              aria-label="Gọi Jake thức dậy"
+              onClick={handleOpenChat}
+              title="Mở khung trò chuyện"
+              aria-label="Trò chuyện"
             >
-              🐾
+              💬
             </button>
-          ) : (
-            <button
-              type="button"
-              className="jake-circle-action-btn"
-              onClick={handleGoToBed}
-              title="Cho Jake về đệm ngủ"
-              aria-label="Cho Jake về đệm ngủ"
-            >
-              💤
-            </button>
-          )}
-        </div>
+
+            {isSleeping ? (
+              <button
+                type="button"
+                className="jake-circle-action-btn"
+                onClick={handleWakeUp}
+                title="Gọi Jake thức dậy"
+                aria-label="Gọi Jake thức dậy"
+              >
+                🐾
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="jake-circle-action-btn"
+                onClick={handleGoToBed}
+                title="Cho Jake về đệm ngủ"
+                aria-label="Cho Jake về đệm ngủ"
+              >
+                💤
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Cozy Dog Bed (At bottom right corner) */}

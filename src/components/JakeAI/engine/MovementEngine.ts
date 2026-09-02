@@ -24,8 +24,6 @@ export class MovementEngine {
   public isSleeping: boolean = false;
 
   private onCorgiClick?: (x: number, y: number) => void;
-  private tooltipEl?: HTMLElement;
-  private hintTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
     element: HTMLElement,
@@ -54,7 +52,6 @@ export class MovementEngine {
 
     this.initPosition();
     this.setupListeners();
-    this.createTooltip();
   }
 
   private getCozyBounds() {
@@ -89,6 +86,10 @@ export class MovementEngine {
     if (typeof window === 'undefined') return;
 
     this.element.addEventListener('click', (e: MouseEvent) => {
+      // Guard: Ignore clicks inside action menu buttons so they don't get canceled
+      if ((e.target as HTMLElement).closest('.jake-action-menu')) {
+        return;
+      }
       e.stopPropagation();
       this.isPaused = !this.isPaused;
       if (this.onCorgiClick) {
@@ -104,25 +105,6 @@ export class MovementEngine {
       this.targetY = this.corgiY;
       this.updatePosition();
     }, { passive: true });
-  }
-
-  private createTooltip(): void {
-    if (typeof document === 'undefined') return;
-    const hint = document.createElement('div');
-    hint.className = 'jake-corgi-hint';
-    hint.textContent = 'Jake AI';
-    this.element.appendChild(hint);
-    this.tooltipEl = hint;
-  }
-
-  public showHint(text: string = 'Jake AI', durationMs: number = 2500): void {
-    if (!this.tooltipEl) return;
-    this.tooltipEl.textContent = text;
-    this.tooltipEl.classList.add('jake-hint-visible');
-    if (this.hintTimer) clearTimeout(this.hintTimer);
-    this.hintTimer = setTimeout(() => {
-      this.tooltipEl?.classList.remove('jake-hint-visible');
-    }, durationMs);
   }
 
   public updatePosition(): void {
@@ -155,6 +137,10 @@ export class MovementEngine {
     this.lastDirection = 'NW';
     this.updatePosition();
     this.spriteEngine.setSprite('idle', 'NW', 0);
+  }
+
+  public showHint(_text?: string, _duration?: number): void {
+    // Safe compatibility method for standalone engine
   }
 
   public pickNewCozyTarget(): void {
