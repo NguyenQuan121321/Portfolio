@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
         <div className="flex items-center gap-3 text-zinc-400 group">
           <div className="w-6 h-6 rounded bg-surface-900 border border-border-subtle group-hover:border-accent-cyan overflow-hidden flex items-center justify-center transition-colors shrink-0 shadow-sm p-0.5">
             <img 
-              src="/img/maskironman.gif" 
+              src="/img/technologymask.gif" 
               alt="Avatar" 
               className="w-full h-full object-contain" 
             />

@@ -118,7 +118,7 @@ export const IntroPreloader: React.FC<IntroPreloaderProps> = ({ onComplete }) =>
           {/* Mask Ironman Avatar */}
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-accent-cyan bg-surface-900 overflow-hidden flex items-center justify-center shadow-[0_0_25px_-4px_rgba(0,229,255,0.6)] p-1">
             <img 
-              src="/img/maskironman.gif" 
+              src="/img/technologymask.gif" 
               alt="Avatar" 
               className="w-full h-full object-contain" 
             />

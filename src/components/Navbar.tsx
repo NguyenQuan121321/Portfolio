@@ -64,7 +64,7 @@ export const Navbar: React.FC = () => {
             >
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-900 border border-border-highlight group-hover:border-accent-cyan overflow-hidden relative flex items-center justify-center transition-all shrink-0 shadow-sm p-0.5">
                 <img 
-                  src="/img/maskironman.gif" 
+                  src="/img/technologymask.gif" 
                   alt="Avatar" 
                   className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-200"
                 />

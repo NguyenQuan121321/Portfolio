@@ -29,6 +29,63 @@ interface EndpointConfig {
   defaultLatency: string;
 }
 
+const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
+  login: {
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    payload: {
+      email: "recruiter_demo@finn.dev",
+      password: "SecurePassword123!"
+    },
+    defaultStatus: "200 OK",
+    defaultLatency: "38ms",
+    defaultResponse: {
+      status: "SUCCESS",
+      code: 200,
+      data: {
+        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c3JfOWY4YzJlMSIsImV4cCI6MTcyNTIxOTIwMH0...",
+        refreshToken: "rft_live_fam_8f1a2c4e9b7d3a01",
+        tokenType: "Bearer",
+        expiresIn: 900,
+        authEngine: "Argon2id + AES-256-GCM"
+      }
+    }
+  },
+  refresh: {
+    method: 'POST',
+    path: '/api/v1/auth/refresh',
+    payload: {
+      refreshToken: "rft_live_fam_8f1a2c4e9b7d3a01"
+    },
+    defaultStatus: "200 OK",
+    defaultLatency: "24ms",
+    defaultResponse: {
+      status: "TOKEN_ROTATED",
+      code: 200,
+      data: {
+        newAccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c3JfOWY4YzJlMSIsImV4cCI6MTcyNTIyMDEwMH0...",
+        newRefreshToken: "rft_live_fam_9c2b3d5f0e8a4b12",
+        familyRevoked: false,
+        verifiedVia: "Redis_Lua_Distributed_Lock"
+      }
+    }
+  },
+  health: {
+    method: 'GET',
+    path: '/api/v1/health',
+    defaultStatus: "200 OK",
+    defaultLatency: "16ms",
+    defaultResponse: {
+      status: "HEALTHY",
+      runtime: "go1.23.0 linux/amd64",
+      architecture: "Clean Architecture (5 Layers)",
+      database: "PostgreSQL 16 (Pool: MaxIdle=10, MaxOpen=50)",
+      cache: "Redis 7.2 (Distributed Sliding Window RateLimiter)",
+      security: ["Argon2id", "FIDO2 Passkeys", "Sudo Mode Step-Up"]
+    }
+  }
+};
+
 export const Hero: React.FC = () => {
   const { lang, t } = useLanguage();
   const [activeEndpoint, setActiveEndpoint] = useState<EndpointKey>('login');
@@ -39,162 +96,83 @@ export const Hero: React.FC = () => {
   const [liveLatency, setLiveLatency] = useState<string | null>(null);
   const [isLiveConnected, setIsLiveConnected] = useState(false);
 
-  const endpointConfigs: Record<EndpointKey, EndpointConfig> = {
-    login: {
-      method: 'POST',
-      path: '/api/v1/auth/login',
-      payload: {
-        email: "recruiter_demo@finn.dev",
-        password: "SecurePassword123!"
-      },
-      defaultStatus: "200 OK",
-      defaultLatency: "38ms",
-      defaultResponse: {
-        status: "SUCCESS",
-        code: 200,
-        data: {
-          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c3JfOWY4YzJlMSIsImV4cCI6MTcyNTIxOTIwMH0...",
-          refreshToken: "rft_live_fam_8f1a2c4e9b7d3a01",
-          tokenType: "Bearer",
-          expiresIn: 900,
-          authEngine: "Argon2id + AES-256-GCM"
-        }
-      }
-    },
-    refresh: {
-      method: 'POST',
-      path: '/api/v1/auth/refresh',
-      payload: {
-        refreshToken: "rft_live_fam_8f1a2c4e9b7d3a01"
-      },
-      defaultStatus: "200 OK",
-      defaultLatency: "24ms",
-      defaultResponse: {
-        status: "TOKEN_ROTATED",
-        code: 200,
-        data: {
-          newAccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c3JfOWY4YzJlMSIsImV4cCI6MTcyNTIyMDEwMH0...",
-          newRefreshToken: "rft_live_fam_9c2b3d5f0e8a4b12",
-          familyRevoked: false,
-          verifiedVia: "Redis_Lua_Distributed_Lock"
-        }
-      }
-    },
-    health: {
-      method: 'GET',
-      path: '/api/v1/health',
-      defaultStatus: "200 OK",
-      defaultLatency: "16ms",
-      defaultResponse: {
-        status: "HEALTHY",
-        runtime: "go1.23.0 linux/amd64",
-        architecture: "Clean Architecture (5 Layers)",
-        database: "PostgreSQL 16 (Pool: MaxIdle=10, MaxOpen=50)",
-        cache: "Redis 7.2 (Distributed Sliding Window RateLimiter)",
-        security: ["Argon2id", "FIDO2 Passkeys", "Sudo Mode Step-Up"]
-      }
-    }
-  };
-
-  const currentConfig = endpointConfigs[activeEndpoint];
+  const currentConfig = ENDPOINT_CONFIGS[activeEndpoint];
   const displayedJson = liveResponse || currentConfig.defaultResponse;
   const displayedStatus = liveStatus || currentConfig.defaultStatus;
   const displayedLatency = liveLatency || currentConfig.defaultLatency;
 
-  const handleExecuteLive = async () => {
+  const handleExecuteLive = React.useCallback(async () => {
     setIsExecuting(true);
     const start = performance.now();
 
     try {
       const baseUrl = 'https://finnapigo.onrender.com';
       let res: Response;
+      const targetConfig = ENDPOINT_CONFIGS[activeEndpoint];
 
-      if (activeEndpoint === 'login') {
-        // Step 1: Ensure user is registered, then login
-        const randomSeed = Math.floor(Math.random() * 9000) + 1000;
-        const demoEmail = `recruiter_${randomSeed}@finn.dev`;
-        const demoPass = "SecurePassword123!";
-
-        try {
-          await fetch(`${baseUrl}/api/v1/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: demoEmail, password: demoPass })
-          });
-        } catch {
-          // ignore if already registered
-        }
-
-        res = await fetch(`${baseUrl}/api/v1/auth/login`, {
+      if (targetConfig.method === 'POST') {
+        res = await fetch(`${baseUrl}${targetConfig.path}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: demoEmail, password: demoPass })
-        });
-      } else if (activeEndpoint === 'refresh') {
-        res = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken: "rft_live_demo_sample_token" })
+          body: JSON.stringify(targetConfig.payload || {})
         });
       } else {
-        res = await fetch(`${baseUrl}/api/v1/auth/login`, {
-          method: 'OPTIONS'
-        });
+        res = await fetch(`${baseUrl}${targetConfig.path}`);
       }
 
-      const elapsed = Math.round(performance.now() - start) + 'ms';
-      let data: any;
-      try {
-        data = await res.json();
-      } catch {
-        data = currentConfig.defaultResponse;
-      }
+      const elapsed = Math.round(performance.now() - start);
+      const json = await res.json();
 
-      setLiveResponse(data || currentConfig.defaultResponse);
-      setLiveStatus(res.status ? `${res.status} ${res.statusText || 'OK'}` : '200 OK');
-      setLiveLatency(elapsed);
+      setLiveResponse(json);
+      setLiveStatus(`${res.status} ${res.statusText || 'OK'}`);
+      setLiveLatency(`${elapsed}ms`);
       setIsLiveConnected(true);
     } catch {
-      const elapsed = Math.round(performance.now() - start) + 'ms';
-      setLiveResponse(currentConfig.defaultResponse);
-      setLiveStatus("200 OK");
-      setLiveLatency(elapsed);
-      setIsLiveConnected(true);
+      const elapsed = Math.round(performance.now() - start);
+      setLiveResponse({
+        status: "FALLBACK_MOCK",
+        notice: "Render backend cold-starting, showing calibrated simulation",
+        data: ENDPOINT_CONFIGS[activeEndpoint].defaultResponse.data || ENDPOINT_CONFIGS[activeEndpoint].defaultResponse
+      });
+      setLiveStatus("200 OK (Simulated)");
+      setLiveLatency(`${elapsed}ms`);
     } finally {
       setIsExecuting(false);
     }
-  };
+  }, [activeEndpoint]);
 
-  const handleTabChange = (key: EndpointKey) => {
+  const handleCopyJson = React.useCallback(() => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(JSON.stringify(displayedJson, null, 2));
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    }
+  }, [displayedJson]);
+
+  const handleTabChange = React.useCallback((key: EndpointKey) => {
     setActiveEndpoint(key);
     setLiveResponse(null);
     setLiveStatus(null);
     setLiveLatency(null);
-  };
+  }, []);
 
-  const handleCopyJson = () => {
-    navigator.clipboard.writeText(JSON.stringify(displayedJson, null, 2));
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
-
-  const telemetryItems = [
+  const telemetryItems = React.useMemo(() => [
     { 
       label: t('telemetry.uptime'), 
       val: t('telemetry.uptime_val'), 
-      icon: <Gauge size={16} className="text-accent-mint" />,
-      sub: "Render Prod" 
+      icon: <Gauge size={16} className="text-accent-cyan" />,
+      sub: "Render Edge" 
     },
     { 
-      label: t('telemetry.tests'), 
-      val: t('telemetry.tests_val'), 
-      icon: <CheckCircle size={16} className="text-accent-cyan" />,
-      sub: "Unit & Fuzz" 
+      label: t('telemetry.coverage'), 
+      val: t('telemetry.coverage_val'), 
+      icon: <CheckCircle size={16} className="text-emerald-400" />,
+      sub: "Go Unit Tests" 
     },
     { 
-      label: t('telemetry.ci'), 
+      label: t('telemetry.ci_status'), 
       val: t('telemetry.ci_val'), 
-      icon: <GitBranch size={16} className="text-emerald-400" />,
+      icon: <GitBranch size={16} className="text-cyan-400" />,
       sub: "GitHub Actions" 
     },
     { 
@@ -203,7 +181,7 @@ export const Hero: React.FC = () => {
       icon: <Cpu size={16} className="text-amber-400" />,
       sub: "Benchmarked" 
     },
-  ];
+  ], [t]);
 
   return (
     <section className="relative min-h-[92dvh] flex flex-col justify-center pt-24 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
