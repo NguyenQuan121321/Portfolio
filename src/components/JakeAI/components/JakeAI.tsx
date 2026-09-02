@@ -41,6 +41,7 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     injectStyles(currentTheme as 'dark' | 'light' | 'auto');
   }, [currentTheme]);
 
+  // Mount MovementEngine once and cleanup properly
   useEffect(() => {
     if (corgiRef.current) {
       const engine = new MovementEngine(corgiRef.current, { ...props, theme: currentTheme as 'dark' | 'light' }, (x, y) => {
@@ -88,10 +89,11 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
       }
 
       return () => {
+        engine.destroy();
         cancelAnimationFrame(animId);
       };
     }
-  }, [currentTheme]);
+  }, []);
 
   // Close action menu on outside click
   useEffect(() => {

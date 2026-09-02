@@ -25,6 +25,27 @@ export class MovementEngine {
 
   private onCorgiClick?: (x: number, y: number) => void;
 
+  private clickHandler = (e: MouseEvent) => {
+    // Guard: Ignore clicks inside action menu buttons so they don't get canceled
+    if ((e.target as HTMLElement).closest('.jake-action-menu')) {
+      return;
+    }
+    e.stopPropagation();
+    this.isPaused = !this.isPaused;
+    if (this.onCorgiClick) {
+      this.onCorgiClick(this.corgiX, this.corgiY);
+    }
+  };
+
+  private resizeHandler = () => {
+    const bounds = this.getCozyBounds();
+    this.corgiX = Math.min(Math.max(bounds.minX, this.corgiX), bounds.maxX);
+    this.corgiY = Math.min(Math.max(bounds.minY, this.corgiY), bounds.maxY);
+    this.targetX = this.corgiX;
+    this.targetY = this.corgiY;
+    this.updatePosition();
+  };
+
   constructor(
     element: HTMLElement,
     props: JakeProps = {},
@@ -37,7 +58,7 @@ export class MovementEngine {
       greeting: props.greeting || "Xin chào, tôi là Jake — Portfolio Hub Agent của Quân.",
       position: props.position || 'bottom-right',
       speed: props.speed ?? 1.4,
-      theme: props.theme || 'dark',
+      theme: props.theme || 'auto',
       name: props.name || 'Jake',
       persistPosition: false,
       quickChips: props.quickChips || [],
@@ -84,27 +105,14 @@ export class MovementEngine {
 
   private setupListeners(): void {
     if (typeof window === 'undefined') return;
+    this.element.addEventListener('click', this.clickHandler);
+    window.addEventListener('resize', this.resizeHandler, { passive: true });
+  }
 
-    this.element.addEventListener('click', (e: MouseEvent) => {
-      // Guard: Ignore clicks inside action menu buttons so they don't get canceled
-      if ((e.target as HTMLElement).closest('.jake-action-menu')) {
-        return;
-      }
-      e.stopPropagation();
-      this.isPaused = !this.isPaused;
-      if (this.onCorgiClick) {
-        this.onCorgiClick(this.corgiX, this.corgiY);
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      const bounds = this.getCozyBounds();
-      this.corgiX = Math.min(Math.max(bounds.minX, this.corgiX), bounds.maxX);
-      this.corgiY = Math.min(Math.max(bounds.minY, this.corgiY), bounds.maxY);
-      this.targetX = this.corgiX;
-      this.targetY = this.corgiY;
-      this.updatePosition();
-    }, { passive: true });
+  public destroy(): void {
+    if (typeof window === 'undefined') return;
+    this.element.removeEventListener('click', this.clickHandler);
+    window.removeEventListener('resize', this.resizeHandler);
   }
 
   public updatePosition(): void {
