@@ -11,7 +11,7 @@ import { Skills } from './components/Skills';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { ChatbotAiFab } from './components/ChatbotAiFab';
+import { JakeAI } from './components/JakeAI';
 import { ThemeTransitionEffect } from './components/ThemeTransitionEffect';
 
 export const App: React.FC = () => {
@@ -31,7 +31,14 @@ export const App: React.FC = () => {
             <About />
             <Contact />
           </main>
-          <ChatbotAiFab />
+          {/* JakeAI Corgi Companion & AI Hub */}
+          <JakeAI
+            greeting="Chào bạn! Mình là Jake, chú cún Corgi hướng dẫn viên portfolio của Nguyễn Hoàng Anh Quân. Bạn có thể hỏi mình về FinnApiGo, VovinamApiNode hoặc thử nghiệm API nhé!"
+            position="bottom-right"
+            speed={10}
+            theme="dark"
+            enableSound={true}
+          />
           <Footer />
         </div>
       </LanguageProvider>
