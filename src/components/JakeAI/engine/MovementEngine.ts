@@ -16,7 +16,7 @@ export class MovementEngine {
   public frameCount: number = 0;
   public idleTimer: number = 0;
   public idleWaitFrames: number = 60;
-  public state: 'idle' | 'wandering' = 'idle';
+  public state: 'idle' | 'wandering' | 'going_to_bed' = 'idle';
 
   public lastTimestamp: number = 0;
   public isChatOpen: boolean = false;
@@ -39,8 +39,13 @@ export class MovementEngine {
 
   private resizeHandler = () => {
     const bounds = this.getCozyBounds();
-    this.corgiX = Math.min(Math.max(bounds.minX, this.corgiX), bounds.maxX);
-    this.corgiY = Math.min(Math.max(bounds.minY, this.corgiY), bounds.maxY);
+    if (this.isSleeping) {
+      this.corgiX = bounds.bedX;
+      this.corgiY = bounds.bedY;
+    } else {
+      this.corgiX = Math.min(Math.max(bounds.minX, this.corgiX), bounds.maxX);
+      this.corgiY = Math.min(Math.max(bounds.minY, this.corgiY), bounds.maxY);
+    }
     this.targetX = this.corgiX;
     this.targetY = this.corgiY;
     this.updatePosition();
@@ -75,25 +80,25 @@ export class MovementEngine {
     this.setupListeners();
   }
 
-  private getCozyBounds() {
+  public getCozyBounds() {
     if (typeof window === 'undefined') {
       return { minX: 100, maxX: 200, minY: 100, maxY: 200, bedX: 150, bedY: 150 };
     }
     const width = window.innerWidth;
     const height = window.innerHeight;
     return {
-      minX: width - 145,
-      maxX: width - 55,
-      minY: height - 85,
-      maxY: height - 35,
-      bedX: width - 65,
-      bedY: height - 45
+      minX: width - 160,
+      maxX: width - 60,
+      minY: height - 90,
+      maxY: height - 40,
+      bedX: width - 42,
+      bedY: height - 42
     };
   }
 
   private initPosition(): void {
     const bounds = this.getCozyBounds();
-    this.corgiX = bounds.minX + 25;
+    this.corgiX = bounds.minX + 35;
     this.corgiY = bounds.maxY - 15;
     this.targetX = this.corgiX;
     this.targetY = this.corgiY;
@@ -126,28 +131,21 @@ export class MovementEngine {
   }
 
   public goToBed(): void {
-    this.isSleeping = true;
-    this.isPaused = true;
     const bounds = this.getCozyBounds();
-    this.corgiX = bounds.bedX;
-    this.corgiY = bounds.bedY - 4;
-    this.updatePosition();
-    this.spriteEngine.setSprite('idle', 'S', 0);
+    this.targetX = bounds.bedX;
+    this.targetY = bounds.bedY;
+    this.state = 'going_to_bed';
+    this.isPaused = false;
   }
 
   public wakeUp(): void {
     this.isSleeping = false;
     this.isPaused = false;
     const bounds = this.getCozyBounds();
-    this.corgiX = bounds.minX + 25;
-    this.corgiY = bounds.maxY - 15;
-    this.targetX = this.corgiX;
-    this.targetY = this.corgiY;
-    this.state = 'idle';
+    this.targetX = bounds.minX + 35;
+    this.targetY = bounds.maxY - 15;
+    this.state = 'wandering';
     this.idleTimer = 0;
-    this.lastDirection = 'NW';
-    this.updatePosition();
-    this.spriteEngine.setSprite('idle', 'NW', 0);
   }
 
   public showHint(_text?: string, _duration?: number): void {
@@ -163,7 +161,7 @@ export class MovementEngine {
   }
 
   public step(timestamp: number): void {
-    if (!this.element.isConnected || this.isSleeping) return;
+    if (!this.element.isConnected) return;
 
     if (!this.lastTimestamp) this.lastTimestamp = timestamp;
     const elapsed = timestamp - this.lastTimestamp;
@@ -176,7 +174,42 @@ export class MovementEngine {
   }
 
   public tick(): void {
-    if (this.isPaused || this.isSleeping) {
+    if (this.isSleeping) {
+      this.spriteEngine.setSprite('idle', 'S', 0);
+      this.updatePosition();
+      return;
+    }
+
+    if (this.state === 'going_to_bed') {
+      const dx = this.targetX - this.corgiX;
+      const dy = this.targetY - this.corgiY;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance <= 4) {
+        this.corgiX = this.targetX;
+        this.corgiY = this.targetY;
+        this.isSleeping = true;
+        this.isPaused = true;
+        this.state = 'idle';
+        this.lastDirection = 'S';
+        this.spriteEngine.setSprite('idle', 'S', 0);
+        this.updatePosition();
+        return;
+      }
+
+      const dirInfo = SpriteEngine.getDirection(dx, dy);
+      this.lastDirection = dirInfo.name;
+      const stepSpeed = Math.min(2.0, distance);
+      this.corgiX += (dx / distance) * stepSpeed;
+      this.corgiY += (dy / distance) * stepSpeed;
+
+      this.frameCount = (this.frameCount + 1) % this.spriteEngine.runTotalFrames;
+      this.spriteEngine.setSprite('running', this.lastDirection, this.frameCount);
+      this.updatePosition();
+      return;
+    }
+
+    if (this.isPaused) {
       this.spriteEngine.setSprite('idle', this.lastDirection, 0);
       this.updatePosition();
       return;
@@ -217,7 +250,7 @@ export class MovementEngine {
     this.lastDirection = dirInfo.name;
 
     // Leisurely calm walking speed
-    const stepSpeed = Math.min(1.3, distance);
+    const stepSpeed = Math.min(1.4, distance);
     this.corgiX += (dx / distance) * stepSpeed;
     this.corgiY += (dy / distance) * stepSpeed;
 

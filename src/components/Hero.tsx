@@ -18,7 +18,7 @@ import {
   BookOpen
 } from '@phosphor-icons/react';
 
-type EndpointKey = 'login' | 'refresh' | 'sessions' | 'readyz';
+type EndpointKey = 'login' | 'refresh' | 'readyz';
 
 interface EndpointConfig {
   method: 'POST' | 'GET';
@@ -83,33 +83,6 @@ const ENDPOINT_CONFIGS: Record<EndpointKey, EndpointConfig> = {
         accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjExLCJyb2xlIjoidXNlciIsImVtYWlsIjoibGVhZF9yZWNydWl0ZXJAZmlubi5kZXYiLCJ0eXBlIjoiYWNjZXNzIiwiaXNzIjoiZmlubmFwaWdvIiwiZXhwIjoxNzg4MzMyNDEyfQ.6MHRhKpApNU7OlXgnsBFSeyKTMcs-XlDzTCDK6aNcUg",
         refreshToken: "7caa65ef000672a730a7174feff39468569d8ff822b79295649179b79bcd7efd",
         expiresAt: "2026-09-02T07:15:12.871Z"
-      }
-    }
-  },
-  sessions: {
-    method: 'GET',
-    path: '/api/v1/auth/sessions',
-    summary: 'Swagger: Multi-Device Distributed Sessions',
-    tag: 'GET',
-    tagColor: 'text-cyan-600 dark:text-cyan-400',
-    defaultStatus: "200 OK",
-    defaultLatency: "21ms",
-    defaultResponse: {
-      code: 200,
-      message: "sessions fetched",
-      data: {
-        sessions: [
-          {
-            id: 30,
-            ipAddress: "113.161.72.18",
-            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0",
-            deviceName: "Chrome on Windows",
-            locationEstimate: "Ho Chi Minh City, VN",
-            createdAt: "2026-09-02T08:17:30.473Z",
-            lastActiveAt: "2026-09-02T08:17:30.434Z",
-            expiresAt: "2026-09-09T08:17:30.434Z"
-          }
-        ]
       }
     }
   },
@@ -195,24 +168,6 @@ export const Hero: React.FC = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken: rToken })
-        });
-      } else if (activeEndpoint === 'sessions') {
-        let aToken = "";
-        try {
-          const lRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: "lead_recruiter@finn.dev", password: "Fin_LeadEnterprise2026!#9" })
-          });
-          const lJson = await lRes.json();
-          if (lJson?.data?.accessToken) {
-            aToken = lJson.data.accessToken;
-          }
-        } catch {}
-
-        res = await fetch(`${baseUrl}/api/v1/auth/sessions`, {
-          method: 'GET',
-          headers: aToken ? { 'Authorization': `Bearer ${aToken}` } : {}
         });
       } else {
         res = await fetch(`${baseUrl}${targetConfig.path}`);
@@ -335,7 +290,7 @@ export const Hero: React.FC = () => {
                 href="#projects"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent-cyan hover:bg-cyan-400 text-surface-950 font-bold text-sm transition-all shadow-[0_0_20px_-3px_rgba(0,229,255,0.4)] hover:shadow-[0_0_25px_-2px_rgba(0,229,255,0.6)]"
               >
-                <span>{t('hero.cta.explore')}</span>
+                <span>{t('hero.cta.projects')}</span>
                 <ArrowDown size={16} weight="bold" />
               </a>
 
@@ -355,7 +310,7 @@ export const Hero: React.FC = () => {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent hover:from-emerald-500/20 hover:to-cyan-500/20 border border-emerald-500/30 hover:border-emerald-400 text-emerald-300 text-sm font-medium transition-all"
               >
                 <FilePdf size={18} weight="bold" className="text-emerald-400" />
-                <span>{t('hero.cta.download_cv')}</span>
+                <span>{t('hero.cta.cv')}</span>
               </a>
 
               <a
@@ -423,11 +378,11 @@ export const Hero: React.FC = () => {
 
               {/* Endpoint Switcher Tabs & Live Execute Trigger */}
               <div className="px-3 py-2 bg-slate-50/95 dark:bg-[#0d1117] border-b border-slate-200/90 dark:border-zinc-800/80 flex items-center justify-between gap-2 font-mono text-[11px]">
-                <div className="flex items-center gap-1 overflow-x-auto">
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => handleTabChange('login')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 border ${
                       activeEndpoint === 'login'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -440,7 +395,7 @@ export const Hero: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleTabChange('refresh')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 border ${
                       activeEndpoint === 'refresh'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -452,21 +407,8 @@ export const Hero: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => handleTabChange('sessions')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
-                      activeEndpoint === 'sessions'
-                        ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
-                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
-                    }`}
-                  >
-                    <span className="text-[9.5px] text-cyan-600 dark:text-cyan-400 font-bold">GET</span>
-                    <span>/auth/sessions</span>
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={() => handleTabChange('readyz')}
-                    className={`px-2 py-1 rounded-md transition-all flex items-center gap-1 border shrink-0 ${
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 border ${
                       activeEndpoint === 'readyz'
                         ? 'bg-white dark:bg-cyan-500/20 border-slate-300 dark:border-cyan-400/50 text-cyan-700 dark:text-cyan-300 font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/60 border-transparent'
@@ -482,7 +424,7 @@ export const Hero: React.FC = () => {
                   type="button"
                   onClick={handleExecuteLive}
                   disabled={isExecuting}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-bold text-[11px] transition-all active:scale-95 disabled:opacity-50 shadow-sm hover:shadow-[0_0_14px_rgba(0,229,255,0.4)] shrink-0"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-bold text-[11px] transition-all active:scale-95 disabled:opacity-50 shadow-sm hover:shadow-[0_0_14px_rgba(0,229,255,0.4)] shrink-0"
                   title="Send real HTTP request to Render Backend"
                 >
                   {isExecuting ? (
@@ -504,7 +446,6 @@ export const Hero: React.FC = () => {
                 <div className="text-slate-500 dark:text-zinc-400 mb-1.5 flex items-center gap-1.5 text-[11px] font-medium">
                   <span className="text-cyan-600 dark:text-accent-cyan font-bold">$</span>
                   <span>curl -X {currentConfig.method} https://finnapigo.onrender.com{currentConfig.path}</span>
-                  {activeEndpoint === 'sessions' && <span className="text-purple-500 font-mono text-[10px]">-H "Authorization: Bearer &lt;JWT&gt;"</span>}
                 </div>
                 <pre className="text-slate-800 dark:text-zinc-100 font-mono text-[11px] leading-relaxed font-medium">
                   {JSON.stringify(displayedJson, null, 2)}
