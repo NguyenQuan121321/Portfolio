@@ -106,8 +106,8 @@ export const ChatbotAiFab: React.FC = () => {
     }
 
     return currentLang === 'vi'
-      ? `Gâu gâu! Cảm ơn bạn đã hỏi! Mình là Jake AI — Trợ lý AI độc lập của Quân (được xây dựng trên backend Golang riêng biệt tại github.com/NguyenQuan121321/JakeAI). Bạn có thể hỏi mình thêm về kỹ năng Go/Node.js, kiến trúc FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!`
-      : `Woof woof! Thanks for asking! I'm Jake AI — Quan's standalone AI Assistant (powered by a dedicated Golang backend at github.com/NguyenQuan121321/JakeAI). Feel free to ask about his Go/Node.js backend stack, live FinnApiGo project, or interview scheduling!`;
+      ? `Xin chào, tôi là Jake — Portfolio Hub Agent của Quân (được xây dựng trên backend Golang độc lập tại github.com/NguyenQuan121321/JakeAI). Bạn có thể hỏi tôi về kỹ năng Go/Node.js, kiến trúc FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân nhé!`
+      : `Hello, I am Jake — Portfolio Hub Agent (powered by a dedicated Golang backend at github.com/NguyenQuan121321/JakeAI). Feel free to ask about Quan's backend stack, live FinnApiGo project, or interview scheduling!`;
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -127,7 +127,6 @@ export const ChatbotAiFab: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // 1. Call Dedicated JakeAI Go Backend Endpoint via reverse proxy (/jake-ai-api/api/v1/chat or /jake-ai-api/chat)
       let backendReply: string | null = null;
       try {
         const res = await fetch('/jake-ai-api/api/v1/chat', {
@@ -140,11 +139,10 @@ export const ChatbotAiFab: React.FC = () => {
           backendReply = data?.reply || data?.data?.reply || data?.message || null;
         }
       } catch {
-        // Backend cold-starting, deploying or falling back to smart local knowledge
+        // Fallback to local knowledge if backend is cold-starting
       }
 
-      // Simulate micro typing delay for natural feel
-      await new Promise(r => setTimeout(r, 650));
+      await new Promise(r => setTimeout(r, 500));
 
       const replyText = backendReply || getKnowledgeResponse(text, lang);
 
@@ -186,26 +184,23 @@ export const ChatbotAiFab: React.FC = () => {
       {/* Floating Chatbot Window */}
       {isOpen && (
         <div 
-          className="fixed inset-x-3.5 bottom-20 sm:absolute sm:inset-auto sm:bottom-16 sm:right-0 mb-2 sm:w-[390px] md:w-[420px] h-[520px] max-h-[75dvh] sm:max-h-[82vh] bg-surface-900/98 backdrop-blur-2xl border border-accent-cyan/40 rounded-2xl shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-scaleUp origin-bottom-right"
+          className="fixed inset-x-3 bottom-18 sm:absolute sm:inset-auto sm:bottom-16 sm:right-0 mb-2 sm:w-[380px] md:w-[410px] h-[510px] max-h-[76dvh] sm:max-h-[80vh] bg-surface-900/98 backdrop-blur-2xl border border-border-highlight/80 rounded-2xl shadow-[0_20px_50px_-5px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden animate-scaleUp origin-bottom-right"
           role="dialog"
           aria-modal="true"
         >
           {/* Header */}
-          <div className="p-3 sm:p-4 border-b border-border-subtle bg-surface-950 flex items-center justify-between shrink-0 gap-2">
+          <div className="px-3.5 py-3 border-b border-border-subtle/80 bg-surface-950/95 flex items-center justify-between shrink-0 gap-2">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <div className="relative shrink-0">
-                {/* Jake Avatar */}
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400/15 border border-amber-400/40 p-0.5 flex items-center justify-center overflow-hidden shadow-sm">
+                {/* Jake Avatar (Round) */}
+                <div className="w-8 h-8 rounded-full bg-amber-400/10 border border-amber-400/30 p-1 flex items-center justify-center overflow-hidden shadow-sm">
                   <img 
                     src="/img/jake.png" 
                     alt="Jake AI" 
-                    className="w-full h-full object-contain transform hover:scale-110 transition-transform" 
+                    className="w-full h-full object-contain" 
                   />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-                </span>
+                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 border border-surface-950"></span>
               </div>
 
               <div className="min-w-0 flex-1">
@@ -213,75 +208,76 @@ export const ChatbotAiFab: React.FC = () => {
                   <h3 className="font-bold text-xs sm:text-sm text-zinc-100 font-sans truncate">
                     {t('chatbot.title')}
                   </h3>
-                  <span className="text-[9px] sm:text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-amber-400/10 text-amber-500 border border-amber-400/30 shrink-0">
-                    Go Backend
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/25 shrink-0">
+                    Hub Agent
                   </span>
                 </div>
-                <p className="text-[10px] sm:text-[10.5px] text-zinc-400 font-mono truncate max-w-full">
+                <p className="text-[10px] text-zinc-400 font-mono truncate max-w-full">
                   {t('chatbot.subtitle')}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 shrink-0">
+            {/* Top Circular Action Buttons */}
+            <div className="flex items-center gap-1.5 shrink-0">
               <a
                 href="https://github.com/NguyenQuan121321/JakeAI"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-surface-850 transition-colors flex items-center justify-center"
+                className="w-7 h-7 rounded-full bg-surface-850 hover:bg-surface-800 border border-border-subtle text-zinc-400 hover:text-amber-400 transition-colors flex items-center justify-center"
                 title={t('chatbot.view_github')}
                 aria-label={t('chatbot.view_github')}
               >
-                <GithubLogo size={16} weight="bold" />
+                <GithubLogo size={14} weight="bold" />
               </a>
               <button
                 type="button"
                 onClick={handleClearChat}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-surface-850 transition-colors flex items-center justify-center"
+                className="w-7 h-7 rounded-full bg-surface-850 hover:bg-surface-800 border border-border-subtle text-zinc-400 hover:text-zinc-200 transition-colors flex items-center justify-center"
                 title={t('chatbot.clear_chat')}
                 aria-label={t('chatbot.clear_chat')}
               >
-                <Trash size={15} />
+                <Trash size={13} />
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-surface-850 transition-colors flex items-center justify-center"
+                className="w-7 h-7 rounded-full bg-surface-850 hover:bg-surface-800 border border-border-subtle text-zinc-400 hover:text-red-400 transition-colors flex items-center justify-center"
                 title="Close Chat"
                 aria-label="Close Chat"
               >
-                <X size={17} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
             </div>
           </div>
 
           {/* Messages Feed */}
-          <div className="flex-1 p-3.5 sm:p-4 overflow-y-auto space-y-3 font-sans text-xs">
+          <div className="flex-1 p-3.5 sm:p-4 overflow-y-auto space-y-3 font-sans text-xs bg-surface-950/60">
             {messages.map((msg) => (
               <div 
                 key={msg.id}
-                className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'assistant' && (
-                  <div className="w-7 h-7 rounded-lg bg-amber-400/15 border border-amber-400/30 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
+                  <div className="w-6 h-6 rounded-full bg-amber-400/10 border border-amber-400/25 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
                     <img src="/img/jake.png" alt="Jake" className="w-full h-full object-contain" />
                   </div>
                 )}
 
-                <div className={`max-w-[82%] rounded-xl p-3 leading-relaxed whitespace-pre-line ${
+                <div className={`max-w-[84%] rounded-2xl p-3 leading-relaxed whitespace-pre-line ${
                   msg.sender === 'user'
-                    ? 'bg-accent-cyan text-white dark:text-surface-950 font-medium shadow-[0_0_12px_-2px_rgba(0,229,255,0.3)]'
-                    : 'bg-surface-950 border border-border-subtle text-zinc-200 shadow-sm'
+                    ? 'bg-gradient-to-r from-cyan-600 to-accent-cyan text-white font-medium rounded-tr-xs shadow-sm'
+                    : 'bg-surface-900/95 border border-border-subtle/80 text-zinc-200 rounded-tl-xs shadow-sm'
                 }`}>
-                  <div className="text-[11.5px] sm:text-xs">{msg.text}</div>
-                  <div className={`text-[9.5px] font-mono mt-1 ${msg.sender === 'user' ? 'text-white/80 dark:text-surface-900/70 text-right' : 'text-zinc-500'}`}>
+                  <div className="text-[11.5px] sm:text-[12px]">{msg.text}</div>
+                  <div className={`text-[9px] font-mono mt-1 ${msg.sender === 'user' ? 'text-cyan-100/70 text-right' : 'text-zinc-500'}`}>
                     {msg.timestamp}
                   </div>
                 </div>
 
                 {msg.sender === 'user' && (
-                  <div className="w-6 h-6 rounded-md bg-surface-850 border border-border-subtle flex items-center justify-center text-zinc-400 shrink-0 mt-0.5">
-                    <User size={13} />
+                  <div className="w-6 h-6 rounded-full bg-surface-850 border border-border-subtle flex items-center justify-center text-zinc-400 shrink-0 mt-0.5">
+                    <User size={12} />
                   </div>
                 )}
               </div>
@@ -289,14 +285,14 @@ export const ChatbotAiFab: React.FC = () => {
 
             {/* AI Typing Indicator */}
             {isLoading && (
-              <div className="flex gap-2.5 justify-start animate-fadeIn">
-                <div className="w-7 h-7 rounded-lg bg-amber-400/15 border border-amber-400/30 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
-                  <img src="/img/jake.png" alt="Jake" className="w-full h-full object-contain animate-pulse" />
+              <div className="flex gap-2 justify-start animate-fadeIn">
+                <div className="w-6 h-6 rounded-full bg-amber-400/10 border border-amber-400/25 p-0.5 flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
+                  <img src="/img/jake.png" alt="Jake" className="w-full h-full object-contain" />
                 </div>
-                <div className="bg-surface-950 border border-border-subtle rounded-xl px-3.5 py-2.5 flex items-center gap-1.5 text-zinc-400 font-mono text-[11px]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-bounce [animation-delay:0ms]"></span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-bounce [animation-delay:150ms]"></span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-bounce [animation-delay:300ms]"></span>
+                <div className="bg-surface-900/95 border border-border-subtle/80 rounded-2xl rounded-tl-xs px-3 py-2 flex items-center gap-1.5 text-zinc-400 font-mono text-[11px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-pulse [animation-delay:0ms]"></span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-pulse [animation-delay:200ms]"></span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan animate-pulse [animation-delay:400ms]"></span>
                   <span className="ml-1 text-[10.5px]">{t('chatbot.thinking')}</span>
                 </div>
               </div>
@@ -305,9 +301,9 @@ export const ChatbotAiFab: React.FC = () => {
             <div ref={chatBottomRef} />
           </div>
 
-          {/* Prompt Suggestions */}
-          <div className="px-3.5 py-2 border-t border-border-subtle/70 bg-surface-950/80 shrink-0 space-y-1.5">
-            <div className="text-[10px] font-mono text-zinc-400 flex items-center gap-1">
+          {/* Prompt Suggestions (Round Pills) */}
+          <div className="px-3 py-2 border-t border-border-subtle/60 bg-surface-950/90 shrink-0 space-y-1.5">
+            <div className="text-[10px] font-mono text-zinc-400">
               <span>{t('chatbot.suggest_title')}</span>
             </div>
             <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
@@ -325,14 +321,14 @@ export const ChatbotAiFab: React.FC = () => {
             </div>
           </div>
 
-          {/* Input Box */}
-          <div className="p-2.5 sm:p-3 border-t border-border-subtle bg-surface-950 shrink-0">
+          {/* Input Box (Pill Container + Circular Send Button) */}
+          <div className="p-2.5 sm:p-3 border-t border-border-subtle/80 bg-surface-950 shrink-0">
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 bg-surface-900 rounded-full border border-border-subtle focus-within:border-accent-cyan/60 pl-3.5 pr-1.5 py-1 transition-colors"
             >
               <input
                 ref={inputRef}
@@ -341,60 +337,57 @@ export const ChatbotAiFab: React.FC = () => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={t('chatbot.input_placeholder')}
                 disabled={isLoading}
-                className="min-w-0 flex-1 py-2 px-3 rounded-xl bg-surface-900 border border-border-subtle focus:border-accent-cyan text-xs text-zinc-100 placeholder:text-zinc-500 font-sans focus:outline-none focus:ring-1 focus:ring-accent-cyan/40 transition-colors"
+                className="min-w-0 flex-1 py-1 text-xs text-zinc-100 placeholder:text-zinc-500 font-sans bg-transparent focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isLoading}
-                className="p-2 rounded-xl bg-accent-cyan hover:bg-cyan-400 disabled:opacity-40 text-white dark:text-surface-950 transition-all flex items-center justify-center shadow-sm active:scale-95 shrink-0"
+                className="w-7 h-7 rounded-full bg-accent-cyan hover:bg-cyan-400 disabled:opacity-30 text-white dark:text-surface-950 transition-all flex items-center justify-center shadow-sm active:scale-95 shrink-0"
                 aria-label="Send Message"
               >
-                <PaperPlaneRight size={16} weight="bold" />
+                <PaperPlaneRight size={13} weight="bold" />
               </button>
             </form>
-            <div className="mt-1.5 flex items-center justify-between text-[9.5px] font-mono text-zinc-400">
+            <div className="mt-1.5 px-1 flex items-center justify-between text-[9.5px] font-mono text-zinc-400">
               <a
                 href="https://github.com/NguyenQuan121321/JakeAI"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 hover:text-amber-400 transition-colors truncate max-w-[200px]"
+                className="flex items-center gap-1 hover:text-amber-400 transition-colors truncate max-w-[220px]"
               >
                 <Broadcast size={11} className="text-emerald-400 shrink-0" />
                 <span className="truncate">{t('chatbot.backend_notice')}</span>
               </a>
-              <span className="shrink-0 ml-2">ESC to close</span>
+              <span className="shrink-0 ml-2 text-zinc-500">ESC to close</span>
             </div>
           </div>
 
         </div>
       )}
 
-      {/* Floating Action Button for Jake AI (Circular with 100% avatar fill) */}
+      {/* Floating Action Button for Jake AI (Calm & Elegant Round FAB) */}
       <div className="relative group">
-        {/* Glow Active Online Dot (Unclipped outside the button circle) */}
-        <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 z-30 pointer-events-none">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-85"></span>
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-surface-950 shadow-[0_0_8px_#10B981]"></span>
-        </span>
+        {/* Subtle Green Online Dot */}
+        <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-surface-950 shadow-[0_0_6px_#10B981] z-30 pointer-events-none"></span>
 
-        {/* Round Jake Button (100% image coverage) */}
+        {/* Round Jake Button (Smooth & Tranquil) */}
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-amber-400/90 hover:border-amber-400 bg-amber-400/20 shadow-[0_4px_20px_-2px_rgba(245,158,11,0.5)] hover:shadow-[0_6px_25px_-2px_rgba(245,158,11,0.7)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400/50 cursor-pointer overflow-hidden p-0 select-none"
+          className="relative w-12 h-12 sm:w-13 sm:h-13 rounded-full border border-amber-400/60 hover:border-amber-400 bg-surface-900/95 backdrop-blur-xl shadow-[0_4px_20px_-2px_rgba(245,158,11,0.35)] hover:shadow-[0_6px_25px_-2px_rgba(245,158,11,0.55)] flex items-center justify-center transition-transform duration-200 ease-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400/50 cursor-pointer overflow-hidden p-0 select-none"
           title={t('chatbot.button_tooltip')}
           aria-label={t('chatbot.button_tooltip')}
           aria-expanded={isOpen}
         >
           {isOpen ? (
             <div className="w-full h-full bg-surface-950 flex items-center justify-center text-amber-400">
-              <X size={22} weight="bold" className="transition-transform rotate-90" />
+              <X size={20} weight="bold" />
             </div>
           ) : (
             <img 
               src="/img/jake.png" 
               alt="Jake AI" 
-              className="w-full h-full object-cover scale-[1.15] group-hover:scale-[1.25] group-hover:rotate-6 transition-all duration-300 pointer-events-none" 
+              className="w-full h-full object-cover scale-[1.05] pointer-events-none" 
             />
           )}
         </button>
