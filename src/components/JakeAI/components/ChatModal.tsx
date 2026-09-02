@@ -160,7 +160,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       <div id="jake-ai-header" className="jake-chat-header">
         <div className="jake-header-profile">
           <div className="jake-avatar-badge">
-            <img src="/img/jake.png" alt="Jake AI" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
+            <span style={{ fontSize: '15px' }} role="img" aria-label="Jake AI">🐾</span>
             <span className="jake-status-dot" title="Online"></span>
           </div>
           <div className="jake-title-wrap">
@@ -219,7 +219,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           >
             {m.sender === 'ai' && (
               <div className="jake-msg-avatar">
-                <img src="/img/jake.png" alt="Jake" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                <span style={{ fontSize: '12px' }} role="img" aria-label="Jake">🐾</span>
               </div>
             )}
             <div className={`jake-msg-bubble ${m.sender === 'user' ? 'jake-msg-user' : 'jake-msg-ai'}`}>
@@ -235,7 +235,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         {isWaiting && (
           <div className="jake-msg-row jake-msg-ai-row">
             <div className="jake-msg-avatar">
-              <img src="/img/jake.png" alt="Jake" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+              <span style={{ fontSize: '12px' }} role="img" aria-label="Jake">🐾</span>
             </div>
             <div className="jake-msg-bubble jake-msg-ai jake-typing-indicator">
               <span className="jake-dot"></span>
