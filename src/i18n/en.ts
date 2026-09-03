@@ -18,6 +18,8 @@ const en: Record<string, string> = {
 
   // Hero
   "hero.badge": "Backend Developer · Go & Node.js",
+  "hero.role": "Backend Engineer",
+  "hero.specialty": "Go & Node.js · Clean Architecture",
   "hero.greeting": "Hi, I am",
   "hero.name": "Nguyen Hoang Anh Quan",
   "hero.headline_prefix": "Building Robust Backend Systems &",
@@ -43,10 +45,10 @@ const en: Record<string, string> = {
   "telemetry.coverage_val": "gosec & Trivy",
 
   // FinnApiGo Flagship Project
-  "project.finnapi.badge": "DEPLOYED PROJECT · GOLANG BACKEND",
+  "project.finnapi.badge": "FLAGSHIP PRODUCTION ENGINE · GOLANG BACKEND",
   "project.finnapi.title": "FinnApiGo",
-  "project.finnapi.tagline": "Authentication & Multi-Factor Security Engine in Go",
-  "project.finnapi.description": "Complete production backend deployed live on Render. Built with Clean Architecture to ensure separation of concerns, featuring JWT rotation, TOTP 2FA (RFC 6238), WebAuthn Passkeys, and defense-in-depth security mitigations.",
+  "project.finnapi.tagline": "Zero-Trust Identity & Session Defense Engine for High-Trust Platforms",
+  "project.finnapi.description": "Production-grade Go backend deployed live on Render. Engineered for high-volume platforms requiring strict session integrity, sub-20ms latency, single-use JWT rotation, FIDO2 WebAuthn Passkeys, Redis sliding-window brute force defense, and verified with 300+ automated unit tests.",
   
   // FinnApiGo Architecture Inspector
   "project.finnapi.arch.title": "Clean Architecture & Layer Breakdown",
@@ -171,6 +173,30 @@ const en: Record<string, string> = {
   "project.links.docs": "Swagger OpenAPI UI (31 Routes)",
   "project.links.health": "Live Cluster Status (/readyz)",
   "project.links.source": "GitHub Repository (FinnApiGo)",
+
+  // Vovinam Project
+  "project.vovinam.badge": "THESIS DEGREE PROJECT · NODE.JS & TYPESCRIPT",
+  "project.vovinam.title": "Vovinam Martial Arts Management & Attendance",
+  "project.vovinam.tagline": "Club Management & Automated VietQR Payment Reconciliation",
+  "project.vovinam.description": "Comprehensive operational platform built for Vovinam martial arts clubs. Features time-based rotating QR attendance, multi-tiered RBAC, and automated banking fee reconciliation via VietQR Webhooks.",
+  "project.vovinam.scope_title": "Functional Scope & Core Capabilities",
+  "project.vovinam.scope_1": "Student profiles, belt tier hierarchy, belt grading history, and guardian contact records",
+  "project.vovinam.scope_2": "Anti-screenshot Dynamic QR attendance engine with integrated geofencing checks",
+  "project.vovinam.scope_3": "4-tier RBAC: Board of Directors, Instructors, Trainees, and Accountants",
+  "project.vovinam.scope_4": "Automated tuition reconciliation via banking VietQR with automated e-receipt dispatch",
+  "project.vovinam.roadmap_title": "Delivery Roadmap & Thesis Milestones",
+  "project.vovinam.m1": "Requirements & Database Architecture",
+  "project.vovinam.m1_detail": "Field study at Vovinam club, PostgreSQL 16 schema design and RBAC security model",
+  "project.vovinam.m2": "Authentication Core & User Management",
+  "project.vovinam.m2_detail": "Implemented JWT rotation, Argon2id password hashing, and role-based access control APIs",
+  "project.vovinam.m3": "Dynamic QR Attendance Engine",
+  "project.vovinam.m3_detail": "Time-based rotating QR codes (TOTP QR) preventing proxy check-ins and screen sharing",
+  "project.vovinam.m4": "VietQR Payment & Ledger Reconciliation",
+  "project.vovinam.m4_detail": "Banking webhook processing with HMAC-SHA256 signature verification and idempotent ledger",
+  "project.vovinam.m5": "End-to-End Testing & Performance Benchmarking",
+  "project.vovinam.m5_detail": "Supertest integration tests, Apache Benchmark load testing, and OWASP ZAP vulnerability scans",
+  "project.vovinam.m6": "Live Club Deployment & Thesis Defense",
+  "project.vovinam.m6_detail": "Docker Compose packaging, cloud infrastructure deployment, and live club operational trial",
 
   // Write-ups / Engineering Deep-Dives
   "writeups.badge": "ENGINEERING CASE STUDIES & POST-MORTEMS",

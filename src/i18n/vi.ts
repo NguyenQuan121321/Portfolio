@@ -18,6 +18,8 @@ const vi: Record<string, string> = {
 
   // Hero
   "hero.badge": "Backend Developer · Go & Node.js",
+  "hero.role": "Lập trình viên Backend",
+  "hero.specialty": "Go & Node.js · Clean Architecture",
   "hero.greeting": "Xin chào, tôi là",
   "hero.name": "Nguyễn Hoàng Anh Quân",
   "hero.headline_prefix": "Xây dựng Hệ thống Backend &",
@@ -43,10 +45,10 @@ const vi: Record<string, string> = {
   "telemetry.coverage_val": "gosec & Trivy",
 
   // FinnApiGo Flagship Project
-  "project.finnapi.badge": "DỰ ÁN ĐÃ DEPLOY · GOLANG BACKEND",
+  "project.finnapi.badge": "HỆ THỐNG TRỌNG ĐIỂM · GOLANG BACKEND",
   "project.finnapi.title": "FinnApiGo",
-  "project.finnapi.tagline": "Hệ thống Xác thực & Bảo mật API Đa yếu tố viết bằng Go",
-  "project.finnapi.description": "Dự án backend hoàn chỉnh đã triển khai thực tế trên Render. Áp dụng Clean Architecture để phân tách ranh giới rõ ràng, tích hợp đầy đủ JWT rotation, TOTP 2FA (RFC 6238), WebAuthn Passkeys và các lớp bảo vệ chống tấn công phổ biến.",
+  "project.finnapi.tagline": "Hệ thống Quản trị Danh tính & Phòng thủ Phiên Zero-Trust cho Nền tảng Doanh nghiệp",
+  "project.finnapi.description": "Hệ thống backend Go chuẩn production triển khai thực tế trên Render. Được thiết kế cho các nền tảng thương mại điện tử và fintech đòi hỏi tính toàn vẹn phiên đăng nhập cao, độ trễ phản hồi < 20ms, luân chuyển JWT một lần, FIDO2 WebAuthn Passkeys, chống brute-force bằng Redis sliding-window và được bảo vệ bởi hơn 300 automated unit tests.",
   
   // FinnApiGo Architecture Inspector
   "project.finnapi.arch.title": "Mô hình Clean Architecture & Phân tầng",
@@ -166,8 +168,32 @@ const vi: Record<string, string> = {
 
   // Project Links
   "project.links.docs": "Tài liệu Swagger UI (31 Routes)",
-  "project.links.health": "Kiểm tra Trạng thái Live (/readyz)",
-  "project.links.source": "Mã nguồn GitHub (FinnApiGo)",
+  "project.links.health": "Kiểm tra Sức khỏe (/readyz)",
+  "project.links.source": "Mã nguồn GitHub",
+
+  // Vovinam Project
+  "project.vovinam.badge": "DỰ ÁN KHÓA LUẬN TỐT NGHIỆP · NODE.JS & TYPESCRIPT",
+  "project.vovinam.title": "Hệ thống Quản lý Võ sinh & Điểm danh Vovinam",
+  "project.vovinam.tagline": "Nền tảng Quản trị Võ đường & Đối soát Học phí Tự động",
+  "project.vovinam.description": "Hệ thống quản lý toàn diện dành cho các câu lạc bộ Vovinam, tích hợp điểm danh QR động theo ca tập, phân quyền RBAC chặt chẽ, và đối soát học phí tự động qua VietQR Webhook.",
+  "project.vovinam.scope_title": "Phạm vi Chức năng & Năng lực Hệ thống",
+  "project.vovinam.scope_1": "Quản lý hồ sơ võ sinh, đẳng cấp đai, lịch sử thi thăng đai và thông tin liên hệ phụ huynh",
+  "project.vovinam.scope_2": "Điểm danh qua Dynamic QR Code chống chụp màn hình chia sẻ, tích hợp định vị GPS",
+  "project.vovinam.scope_3": "Phân quyền RBAC 4 cấp: Ban Giám Đốc, Huấn Luyện Viên, Võ Sinh, Kế Toán",
+  "project.vovinam.scope_4": "Đối soát học phí tự động qua cổng VietQR ngân hàng, tự động cấp biên lai điện tử",
+  "project.vovinam.roadmap_title": "Lộ trình Triển khai & Cột mốc Khóa luận",
+  "project.vovinam.m1": "Phân tích Yêu cầu & Thiết kế CSDL",
+  "project.vovinam.m1_detail": "Khảo sát thực tế tại CLB Vovinam, thiết kế schema PostgreSQL 16 và mô hình RBAC",
+  "project.vovinam.m2": "Hạt nhân Xác thực & Quản lý Người dùng",
+  "project.vovinam.m2_detail": "Triển khai JWT rotation, Argon2id password hashing và API phân quyền đa vai trò",
+  "project.vovinam.m3": "Hệ thống Điểm danh Dynamic QR",
+  "project.vovinam.m3_detail": "Sinh mã QR xoay vòng theo thời gian (TOTP QR) ngăn chặn gian lận điểm danh",
+  "project.vovinam.m4": "Tích hợp Thanh toán & Đối soát VietQR",
+  "project.vovinam.m4_detail": "Xử lý Webhook ngân hàng với chữ ký HMAC-SHA256 và cơ chế chống ghi nhận trùng",
+  "project.vovinam.m5": "Kiểm thử Toàn diện & Tối ưu Hiệu năng",
+  "project.vovinam.m5_detail": "Viết unit test Supertest, load test Apache Benchmark và quét lỗ hổng OWASP ZAP",
+  "project.vovinam.m6": "Triển khai Thực tế & Bảo vệ Khóa luận",
+  "project.vovinam.m6_detail": "Đóng gói Docker Compose, triển khai cloud và tiến hành nghiệm thu thực tế tại võ đường",
 
   // Write-ups / Engineering Deep-Dives
   "writeups.badge": "BÀI HỌC KỸ THUẬT & DEBUGGING",

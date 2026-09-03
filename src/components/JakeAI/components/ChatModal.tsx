@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChatMessage, JakeProps } from '../types';
 import { AIService } from '../services/aiService';
 import { useLanguage } from '../../../context/LanguageContext';
+import { Sparkle } from '@phosphor-icons/react';
 
 interface ChatModalProps extends JakeProps {
   isOpen: boolean;
@@ -29,20 +30,20 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   };
 
   const currentGreeting = lang === 'vi'
-    ? 'Xin chào, tôi là Jake — Portfolio Hub Agent của Quân. Tôi có thể hỗ trợ giải đáp nhanh về kỹ năng backend, kiến trúc dự án FinnApiGo, hoặc cách thức liên hệ phỏng vấn Quân.'
-    : 'Hello, I am Jake — Quan’s Portfolio Hub Agent. Feel free to ask about his backend stack, architecture of FinnApiGo, or interview scheduling!';
+    ? 'Xin chào, tôi là Jake — AI Copilot hỗ trợ tìm hiểu về portfolio của Quân. Tôi có thể giải đáp nhanh về Clean Architecture, Go backend, hệ thống an ninh xác thực hoặc kết nối phỏng vấn Quân.'
+    : 'Hello, I am Jake — Quan’s Portfolio AI Copilot. Feel free to ask about his Clean Architecture in Go, auth defense mechanisms, or interview scheduling!';
 
   const quickChips = lang === 'vi'
     ? [
-        'Kỹ năng chính của Quân là gì?',
+        'Tóm tắt năng lực cốt lõi của Quân',
         'Dự án FinnApiGo giải quyết bài toán gì?',
-        'Quân định hướng làm vị trí nào?',
+        'Cơ chế phát hiện đánh cắp Refresh Token?',
         'Làm sao để liên hệ phỏng vấn Quân?'
       ]
     : [
-        'What are Quan’s core backend skills?',
-        'How does FinnApiGo handle security?',
-        'What role is Quan looking for?',
+        'Summarize Quan’s core backend skills',
+        'What problem does FinnApiGo solve?',
+        'How is Refresh Token theft detected?',
         'How can I schedule an interview with Quan?'
       ];
 
@@ -160,17 +161,17 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       <div id="jake-ai-header" className="jake-chat-header">
         <div className="jake-header-profile">
           <div className="jake-avatar-badge">
-            <span style={{ fontSize: '15px' }} role="img" aria-label="Jake AI">🐾</span>
+            <Sparkle size={16} weight="fill" className="text-cyan-400" />
             <span className="jake-status-dot" title="Online"></span>
           </div>
           <div className="jake-title-wrap">
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span className="jake-title">{name}</span>
-              <span style={{ fontSize: '9px', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '9999px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
-                Hub Agent
+              <span style={{ fontSize: '9px', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '9999px', background: 'rgba(6, 182, 212, 0.15)', color: '#00E5FF', border: '1px solid rgba(6, 182, 212, 0.3)' }}>
+                AI Copilot
               </span>
             </div>
-            <span className="jake-subtitle">Portfolio Hub Agent · Go Microservice</span>
+            <span className="jake-subtitle">Portfolio Copilot · Go Microservice</span>
           </div>
         </div>
 
@@ -218,8 +219,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
             className={`jake-msg-row ${m.sender === 'user' ? 'jake-msg-user-row' : 'jake-msg-ai-row'}`}
           >
             {m.sender === 'ai' && (
-              <div className="jake-msg-avatar">
-                <span style={{ fontSize: '12px' }} role="img" aria-label="Jake">🐾</span>
+              <div className="jake-msg-avatar flex items-center justify-center">
+                <Sparkle size={13} weight="fill" className="text-cyan-400" />
               </div>
             )}
             <div className={`jake-msg-bubble ${m.sender === 'user' ? 'jake-msg-user' : 'jake-msg-ai'}`}>
@@ -234,8 +235,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
         {isWaiting && (
           <div className="jake-msg-row jake-msg-ai-row">
-            <div className="jake-msg-avatar">
-              <span style={{ fontSize: '12px' }} role="img" aria-label="Jake">🐾</span>
+            <div className="jake-msg-avatar flex items-center justify-center">
+              <Sparkle size={13} weight="fill" className="text-cyan-400" />
             </div>
             <div className="jake-msg-bubble jake-msg-ai jake-typing-indicator">
               <span className="jake-dot"></span>
@@ -251,27 +252,30 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggestions / Quick chips */}
-      {quickChips && quickChips.length > 0 && (
-        <div className="jake-quick-actions">
-          <div className="jake-chips-scroll">
-            {quickChips.map((chip, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className="jake-chip"
-                onClick={() => handleSend(chip)}
-                disabled={isWaiting}
-              >
-                {chip}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input Footer */}
+      {/* Input Footer with Integrated Quick Suggestions (Single clean boundary) */}
       <div className="jake-chat-footer">
+        {quickChips && quickChips.length > 0 && (
+          <div className="jake-quick-actions">
+            <div className="jake-chips-header">
+              <Sparkle size={12} weight="fill" className="text-cyan-400" />
+              <span>{lang === 'vi' ? 'Gợi ý câu hỏi nhanh' : 'Suggested Prompts'}</span>
+            </div>
+            <div className="jake-chips-scroll">
+              {quickChips.map((chip, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="jake-chip"
+                  onClick={() => handleSend(chip)}
+                  disabled={isWaiting}
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <form
           id="jake-ai-input-form"
           className="jake-input-box"

@@ -349,23 +349,23 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     #jake-ai-chat, .jake-chat-window {
       position: fixed;
       z-index: 99995;
-      bottom: 70px;
-      right: 20px;
-      width: 380px;
+      bottom: 80px;
+      right: 24px;
+      width: 440px;
       max-width: calc(100vw - 32px);
-      height: 490px;
-      max-height: calc(100vh - 100px);
+      height: 565px;
+      max-height: calc(100vh - 110px);
       background: var(--jake-bg-glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid var(--jake-card-border);
-      border-radius: 18px;
-      box-shadow: var(--jake-shadow);
+      border-radius: 22px;
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(6, 182, 212, 0.25), 0 0 35px -10px rgba(6, 182, 212, 0.2);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       opacity: 0;
-      transform: scale(0.96) translateY(10px);
+      transform: scale(0.96) translateY(12px);
       pointer-events: none;
       transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -378,7 +378,7 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
 
     /* Chat Header */
     .jake-chat-header {
-      padding: 12px 14px;
+      padding: 14px 18px;
       background: var(--jake-header-bg);
       border-bottom: 1px solid var(--jake-card-border);
       display: flex;
@@ -390,16 +390,16 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     .jake-header-profile {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
     }
 
     .jake-avatar-badge {
       position: relative;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--jake-btn-bg);
-      border: 1px solid var(--jake-card-border);
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -409,8 +409,8 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       position: absolute;
       bottom: 0px;
       right: 0px;
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #10b981;
       border: 1.5px solid var(--jake-bg);
@@ -419,17 +419,17 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     .jake-title-wrap {
       display: flex;
       flex-direction: column;
-      line-height: 1.2;
+      line-height: 1.25;
     }
 
     .jake-title {
       font-weight: 700;
       color: var(--jake-text);
-      font-size: 13px;
+      font-size: 13.5px;
     }
 
     .jake-subtitle {
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--jake-text-muted);
     }
 
@@ -440,9 +440,9 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     }
 
     .jake-btn-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       background: transparent;
       border: none;
       color: var(--jake-text-muted);
@@ -463,14 +463,14 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       color: #ef4444;
     }
 
-    /* Chat Body */
+    /* Chat Body with generous top padding */
     .jake-chat-body {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 14px;
+      padding: 18px 18px 14px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
       scroll-behavior: smooth;
     }
 
@@ -485,9 +485,9 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
 
     .jake-msg-row {
       display: flex;
-      align-items: flex-end;
-      gap: 7px;
-      max-width: 88%;
+      align-items: flex-start;
+      gap: 9px;
+      max-width: 90%;
     }
 
     .jake-msg-user-row {
@@ -500,44 +500,53 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
     }
 
     .jake-msg-avatar {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: var(--jake-btn-bg);
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-bottom: 2px;
+      margin-top: 2px;
     }
 
     .jake-msg-bubble {
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      line-height: 1.5;
+      padding: 11px 15px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.6;
       position: relative;
       word-break: break-word;
+    }
+
+    .jake-msg-bubble p {
+      margin-bottom: 6px;
+    }
+
+    .jake-msg-bubble p:last-child {
+      margin-bottom: 0;
     }
 
     .jake-msg-ai {
       background: var(--jake-msg-ai-bg);
       color: var(--jake-msg-ai-text);
       border: 1px solid var(--jake-msg-ai-border);
-      border-bottom-left-radius: 3px;
+      border-top-left-radius: 3px;
     }
 
     .jake-msg-user {
       background: var(--jake-msg-user-bg);
       color: var(--jake-msg-user-text);
-      border-bottom-right-radius: 3px;
+      border-top-right-radius: 3px;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
 
     .jake-msg-time {
       display: block;
-      font-size: 9px;
-      margin-top: 3px;
+      font-size: 9.5px;
+      margin-top: 4px;
       opacity: 0.65;
       text-align: right;
     }
@@ -547,7 +556,7 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 8px 12px;
+      padding: 10px 14px;
     }
 
     .jake-dot {
@@ -566,35 +575,63 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       40% { transform: translateY(-4px); opacity: 1; }
     }
 
-    /* Quick Action Chips */
-    .jake-quick-actions {
-      padding: 6px 12px 8px;
-      border-top: 1px solid var(--jake-card-border);
+    /* Footer Container with Unified Border */
+    .jake-chat-footer {
+      padding: 12px 16px 14px;
       background: var(--jake-header-bg);
+      border-top: 1px solid var(--jake-card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Quick Action Chips: Clean & Seamless */
+    .jake-quick-actions {
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+
+    .jake-chips-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--jake-text-muted);
+      margin-bottom: 6px;
     }
 
     .jake-chips-scroll {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 2px;
+      padding-bottom: 4px;
     }
 
     .jake-chips-scroll::-webkit-scrollbar {
-      display: none;
+      height: 3px;
+    }
+
+    .jake-chips-scroll::-webkit-scrollbar-thumb {
+      background: var(--jake-card-border);
+      border-radius: 3px;
     }
 
     .jake-chip {
       background: var(--jake-chip-bg);
       color: var(--jake-chip-text);
       border: 1px solid var(--jake-chip-border);
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 500;
-      padding: 4px 9px;
+      padding: 5px 11px;
       border-radius: 9999px;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       flex-shrink: 0;
     }
 
@@ -605,24 +642,14 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       transform: translateY(-1px);
     }
 
-    /* Footer & Input */
-    .jake-chat-footer {
-      padding: 8px 12px 10px;
-      background: var(--jake-bg);
-      border-top: 1px solid var(--jake-card-border);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
     .jake-input-box {
       display: flex;
       align-items: center;
       gap: 6px;
       background: var(--jake-input-bg);
       border: 1px solid var(--jake-input-border);
-      border-radius: 10px;
-      padding: 3px 6px 3px 10px;
+      border-radius: 12px;
+      padding: 5px 8px 5px 12px;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -636,15 +663,15 @@ export function injectStyles(_theme: JakeTheme = 'auto'): void {
       border: none;
       background: transparent;
       color: var(--jake-text);
-      font-size: 12px;
+      font-size: 12.5px;
       outline: none;
       font-family: inherit;
     }
 
     .jake-chat-send {
-      width: 28px;
-      height: 28px;
-      border-radius: 7px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
       background: var(--jake-primary);
       border: none;
       color: #ffffff;

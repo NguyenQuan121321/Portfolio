@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { JakeProps } from '../types';
 import { injectStyles } from '../styles/styles';
-import { MovementEngine } from '../engine/MovementEngine';
 import { AIService } from '../services/aiService';
 import { ChatModal } from './ChatModal';
-import { COZY_BED_BASE64 } from '../assets';
 import { useTheme } from '../../../context/ThemeContext';
 import { useLanguage } from '../../../context/LanguageContext';
+import { ChatCircleDots } from '@phosphor-icons/react';
 
 export const JakeAI: React.FC<JakeProps> = (props) => {
   const { theme: contextTheme } = useTheme();
@@ -16,19 +15,12 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
 
   const {
     backendUrl = '',
-    name = 'Jake',
-    dogHouseImage,
-    showDogHouse = true,
+    name = 'Jake AI',
     className = '',
     style = {}
   } = props;
 
-  const corgiRef = useRef<HTMLDivElement>(null);
-  const movementEngineRef = useRef<MovementEngine | null>(null);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
-  const [isActionMenuOpen, setIsActionMenuOpen] = useState<boolean>(false);
-  const [isSleeping, setIsSleeping] = useState<boolean>(false);
-  const [corgiCoord, setCorgiCoord] = useState<{ x: number; y: number }>({ x: 100, y: 100 });
 
   const aiService = useMemo(() => new AIService(backendUrl), [backendUrl]);
 
@@ -41,110 +33,35 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
     injectStyles(currentTheme as 'dark' | 'light' | 'auto');
   }, [currentTheme]);
 
-  // Mount MovementEngine once and cleanup properly
+  // Expose global JakeAI API for external callers without breaking compatibility
   useEffect(() => {
-    if (corgiRef.current) {
-      const engine = new MovementEngine(
-        corgiRef.current,
-        { ...props, theme: currentTheme as 'dark' | 'light' },
-        (x, y) => {
-          setCorgiCoord({ x, y });
-          setIsActionMenuOpen((prev) => !prev);
+    if (typeof window !== 'undefined') {
+      window.JakeAI = {
+        openChat: () => {
+          setIsChatOpen(true);
         },
-        (sleeping) => {
-          setIsSleeping(sleeping);
-        }
-      );
-      movementEngineRef.current = engine;
-      setIsSleeping(engine.isSleeping);
-
-      let animId: number;
-      const onFrame = (time: number) => {
-        engine.step(time);
-        animId = requestAnimationFrame(onFrame);
-      };
-      animId = requestAnimationFrame(onFrame);
-
-      if (typeof window !== 'undefined') {
-        window.JakeAI = {
-          openChat: (x, y) => {
-            if (x && y) engine.teleportTo(x, y);
-            setCorgiCoord({ x: engine.corgiX, y: engine.corgiY });
-            setIsChatOpen(true);
-            setIsActionMenuOpen(false);
-          },
-          closeChat: () => {
-            setIsChatOpen(false);
-          },
-          toggleChat: () => {
-            setCorgiCoord({ x: engine.corgiX, y: engine.corgiY });
-            setIsChatOpen((prev) => !prev);
-            setIsActionMenuOpen(false);
-          },
-          say: (text: string) => {
-            console.log(`[JakeAI] say: ${text}`);
-          },
-          showHint: (_text?: string) => {},
-          moveTo: (x: number, y: number) => {
-            engine.teleportTo(x, y);
-          },
-          setSpeed: (speed: number) => {
-            engine.config.speed = speed;
-          },
-          version: '1.0.0'
-        };
-      }
-
-      return () => {
-        engine.destroy();
-        cancelAnimationFrame(animId);
+        closeChat: () => {
+          setIsChatOpen(false);
+        },
+        toggleChat: () => {
+          setIsChatOpen((prev) => !prev);
+        },
+        say: (text: string) => {
+          console.log(`[JakeAI] say: ${text}`);
+        },
+        showHint: () => {},
+        moveTo: () => {},
+        setSpeed: () => {},
+        version: '2.0.0-copilot'
       };
     }
   }, []);
 
-  // Close action menu on outside click
-  useEffect(() => {
-    const handleWindowClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('#jake-ai-corgi') && !target.closest('#jake-ai-dogbed') && !target.closest('.jake-action-menu')) {
-        setIsActionMenuOpen(false);
-      }
-    };
-    window.addEventListener('click', handleWindowClick);
-    return () => window.removeEventListener('click', handleWindowClick);
-  }, []);
-
-  const handleOpenChat = (e: React.MouseEvent) => {
+  const handleToggleChat = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsActionMenuOpen(false);
-    setIsChatOpen(true);
+    setIsChatOpen((prev) => !prev);
   };
-
-  const handleGoToBed = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (movementEngineRef.current) {
-      movementEngineRef.current.goToBed();
-    }
-    setIsActionMenuOpen(false);
-  };
-
-  const handleDogBedClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (movementEngineRef.current) {
-      if (isSleeping) {
-        movementEngineRef.current.wakeUp();
-        setIsSleeping(false);
-      } else {
-        movementEngineRef.current.goToBed();
-      }
-    }
-    setIsActionMenuOpen(false);
-  };
-
-  const bedImageSrc = dogHouseImage || COZY_BED_BASE64;
 
   return (
     <div
@@ -152,81 +69,48 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
       className={`jake-ai-root jake-theme-${currentTheme} ${className}`}
       style={style}
     >
-      {/* Corgi Pet Element */}
-      <div
-        ref={corgiRef}
-        id="jake-ai-corgi"
-        className="jake-corgi-sprite"
-        role="button"
-        tabIndex={0}
-        aria-label={`${name} the Corgi companion`}
-      >
-        {/* Name Tooltip (Only visible when action menu is CLOSED and not sleeping) */}
-        {!isActionMenuOpen && !isSleeping && (
-          <span className="jake-corgi-hint">Jake AI</span>
-        )}
-
-        {/* Action Menu popup directly above Corgi: 2 compact circular icon buttons */}
-        {isActionMenuOpen && !isSleeping && (
-          <div 
-            className="jake-action-menu jake-menu-open"
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="jake-circle-action-btn"
-              onClick={handleOpenChat}
-              title={lang === 'vi' ? 'Mở khung trò chuyện' : 'Open chat'}
-              aria-label={lang === 'vi' ? 'Trò chuyện' : 'Chat'}
-            >
-              💬
-            </button>
-
-            <button
-              type="button"
-              className="jake-circle-action-btn"
-              onClick={handleGoToBed}
-              title={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
-              aria-label={lang === 'vi' ? 'Cho Jake về đệm ngủ' : 'Put Jake to bed'}
-            >
-              💤
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Cozy Dog Bed (At bottom right corner) */}
-      {showDogHouse && (
+      {/* Floating AI Copilot Action Hub Button */}
+      <div className="fixed bottom-6 right-6 z-[9990] flex items-center">
+        {/* The Main Copilot Trigger Button */}
         <button
           type="button"
-          id="jake-ai-dogbed"
-          className={`jake-dogbed ${isSleeping ? 'jake-bed-sleeping' : ''}`}
-          onClick={handleDogBedClick}
-          aria-label={`${name}'s Cozy Bed`}
-          title={isSleeping 
-            ? (lang === 'vi' ? 'Jake đang ngủ (Nhấp đệm để gọi dậy đi dạo) 🐾' : 'Jake is sleeping (Click bed to wake up) 🐾') 
-            : (lang === 'vi' ? 'Đệm ngủ của Jake (Nhấp để về ngủ) 💤' : "Jake's bed (Click to sleep) 💤")}
+          onClick={handleToggleChat}
+          className={`group relative flex items-center gap-2.5 px-4 py-3 rounded-full font-mono text-xs font-medium transition-all duration-200 shadow-xl select-none ${
+            isChatOpen
+              ? 'bg-cyan-500 text-surface-950 border border-cyan-300 shadow-cyan-500/25 ring-2 ring-cyan-400/40'
+              : 'bg-surface-900/90 dark:bg-surface-900/90 text-zinc-100 border border-cyan-500/30 hover:border-cyan-400/80 hover:shadow-cyan-500/20 backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0'
+          }`}
+          aria-label={isChatOpen ? 'Close Jake AI Assistant' : 'Open Jake AI Assistant'}
+          title={lang === 'vi' ? 'Trò chuyện cùng Jake AI Copilot' : 'Chat with Jake AI Copilot'}
         >
-          <img
-            src={bedImageSrc}
-            alt={`${name}'s Cozy Bed`}
-            className="jake-cozybed-img"
+          {/* Live Ping Status Indicator */}
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+
+          {/* Icon */}
+          <ChatCircleDots 
+            size={18} 
+            weight={isChatOpen ? 'fill' : 'bold'} 
+            className={isChatOpen ? 'text-surface-950' : 'text-cyan-400 group-hover:rotate-12 transition-transform'} 
           />
-          {isSleeping && (
-            <div className="jake-sleep-particles">
-              <span className="jake-zzz-item jake-zzz-1">z</span>
-              <span className="jake-zzz-item jake-zzz-2">Z</span>
-              <span className="jake-zzz-item jake-zzz-3">Z</span>
-            </div>
-          )}
-          <span className="jake-dogbed-tooltip">
-            {isSleeping 
-              ? (lang === 'vi' ? `Gọi ${name} thức dậy đi dạo 🐾` : `Wake up ${name} 🐾`) 
-              : (lang === 'vi' ? `Đệm ngủ của ${name} 💤` : `${name}'s Bed 💤`)}
+
+          {/* Label (Desktop) */}
+          <span className="hidden sm:inline-block font-semibold tracking-wide">
+            {name}
+          </span>
+
+          {/* Copilot Tag */}
+          <span className={`hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-full border ${
+            isChatOpen
+              ? 'bg-surface-950/20 border-surface-950/30 text-surface-950 font-bold'
+              : 'bg-cyan-950/60 border-cyan-500/40 text-cyan-300'
+          }`}>
+            Copilot
           </span>
         </button>
-      )}
+      </div>
 
       {/* Interactive Chat Window */}
       <ChatModal
@@ -234,8 +118,9 @@ export const JakeAI: React.FC<JakeProps> = (props) => {
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
         aiService={aiService}
-        corgiPos={corgiCoord}
       />
     </div>
   );
 };
+
+export default JakeAI;
